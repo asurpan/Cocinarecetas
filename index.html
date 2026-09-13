@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CocinaREcetas | Recetas de España, Italia, Francia y más</title>
+    <title>CocinaREcetas | Recetas de España, Italia, Francia y Más</title>
 
-    <!-- SEO Meta Tags Globales -->
-    <meta name="description" content="Descubre CocinaREcetas, el recetario inteligente con más de 1300 platos. Recetas españolas, italianas, francesas y tradicionales. Cocina saludable y fácil.">
-    <meta name="keywords" content="recetas fáciles, cocina española, recetas italianas, cocina francesa, recetas tradicionales, app de cocina, menús saludables, joseman recetas">
+    <!-- SEO Pro - Global España & Internacional -->
+    <meta name="description" content="Descubre CocinaREcetas, el recetario inteligente con más de 1300 platos. Especialistas en cocina española, italiana y francesa. Saludable, fácil y rápido.">
+    <meta name="keywords" content="recetas fáciles, cocina española, cocina italiana, cocina francesa, platos tradicionales, app cocina profesional, joseman recetas, alimentación saludable">
     <meta name="author" content="JOSEMAN">
     <link rel="icon" href="recetas-removebg-preview.png" type="image/png">
     <link rel="canonical" href="https://asurpan.github.io/Cocinarecetas/">
 
     <!-- Social Media (Open Graph) -->
-    <meta property="og:title" content="CocinaREcetas - Tu Recetario Inteligente Global">
-    <meta property="og:description" content="Domina la cocina internacional y tradicional con más de 1300 recetas paso a paso.">
+    <meta property="og:title" content="CocinaREcetas - Tu Guía Gastronómica Global">
+    <meta property="og:description" content="Más de 1300 recetas de España y el mundo. Domina la cocina con trucos científicos y menús inteligentes.">
     <meta property="og:image" content="https://asurpan.github.io/Cocinarecetas/recetas-removebg-preview.png">
     <meta property="og:url" content="https://asurpan.github.io/Cocinarecetas/">
     <meta property="og:type" content="website">
@@ -29,53 +29,63 @@
             --secondary: #43A047;
             --accent: #D32F2F;
             --bg: #F0F7F8;
-            --surface: #FFFFFF;
             --text: #00363A;
+            --white: #FFFFFF;
         }
 
         * { box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; margin: 0; color: var(--text); background-color: var(--bg); overflow-x: hidden; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0; color: var(--text); background-color: var(--bg); overflow-x: hidden;
+        }
 
         header {
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            color: white; padding: 30px 20px 60px; text-align: center;
+            color: var(--white); padding: 50px 20px 80px; text-align: center;
             clip-path: polygon(0 0, 100% 0, 100% 85%, 0% 100%);
         }
 
-        .logo-img { width: 220px; height: auto; margin-bottom: 15px; filter: drop-shadow(0 8px 15px rgba(0,0,0,0.3)); transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .logo-img {
+            width: 280px; height: auto; margin-bottom: 20px;
+            filter: drop-shadow(0 8px 20px rgba(0,0,0,0.3));
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
         .logo-img:hover { transform: scale(1.05) rotate(2deg); }
-        h1 { font-size: 2.8rem; margin: 0; font-weight: 900; letter-spacing: -1px; }
-        .hero-text { font-size: 1.1rem; opacity: 0.95; margin: 10px auto 25px; max-width: 800px; }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+        h1 { font-size: 3.5rem; margin: 0; font-weight: 900; letter-spacing: -2px; }
+        .hero-text { font-size: 1.3rem; opacity: 0.95; margin: 15px auto 40px; max-width: 800px; }
 
         .btn {
             display: inline-flex; align-items: center; gap: 10px;
-            background: var(--secondary); color: white; padding: 18px 40px;
+            background: var(--secondary); color: var(--white); padding: 18px 45px;
             text-decoration: none; border-radius: 16px; font-weight: 800; font-size: 1.1rem;
             transition: all 0.3s; box-shadow: 0 10px 25px rgba(67, 160, 71, 0.3); border: none; cursor: pointer;
         }
         .btn:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(67, 160, 71, 0.4); }
 
-        /* Modal de Seguridad */
+        /* Modal de Seguridad APK */
         #safety-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 2000;
         }
         .modal-content {
             background: white; padding: 40px; border-radius: 24px; max-width: 500px; text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3); position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3); position: relative; margin: 20px;
         }
-        .modal-content h3 { color: var(--primary); margin-top: 0; }
-        .modal-content p { color: #546E7A; font-size: 0.95rem; line-height: 1.5; }
+        .modal-content h3 { color: var(--primary); margin-top: 0; font-size: 1.5rem; }
+        .modal-content p { color: #546E7A; font-size: 0.95rem; line-height: 1.6; }
         .safety-icon { color: var(--secondary); width: 60px; height: 60px; margin-bottom: 20px; }
         .close-modal { position: absolute; top: 20px; right: 20px; cursor: pointer; color: #999; }
 
-        .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
-        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: -60px; position: relative; z-index: 10; }
-        .feature-card { background: white; padding: 35px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.04); text-align: center; }
+        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: -50px; position: relative; z-index: 10; }
+        .feature-card { background: var(--white); padding: 35px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.04); text-align: center; }
         .icon-circle { width: 60px; height: 60px; background: var(--bg); border-radius: 18px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--primary); }
 
-        footer { background: var(--text); color: #CFD8DC; text-align: center; padding: 60px 20px; margin-top: 40px; }
-        .footer-links a { color: white; text-decoration: none; margin: 0 10px; font-weight: 600; }
+        footer { background: var(--text); color: #CFD8DC; text-align: center; padding: 60px 20px; margin-top: 60px; }
+        .footer-links { margin-bottom: 20px; }
+        .footer-links a { color: var(--white); text-decoration: none; margin: 0 15px; font-weight: 600; font-size: 0.9rem; }
     </style>
 </head>
 <body>
@@ -84,10 +94,10 @@
     <div class="modal-content">
         <span class="close-modal" onclick="closeSafetyModal()"><i data-lucide="x"></i></span>
         <i data-lucide="shield-check" class="safety-icon"></i>
-        <h3>Instalación Segura</h3>
-        <p>Al descargar la APK, Android podría mostrarte un aviso de "Archivo dañino" o "Desconocido".</p>
-        <p><strong>¡No te preocupes!</strong> Este es un mensaje estándar de Google para cualquier aplicación descargada fuera de la Play Store oficial. Nuestra app es 100% segura y libre de virus.</p>
-        <p>Para instalar, simplemente pulsa en "Descargar de todos modos" y activa la opción "Permitir desde esta fuente" si tu móvil te lo solicita.</p>
+        <h3>¿Es seguro descargar la APK?</h3>
+        <p><strong>¡Sí, totalmente!</strong> Al descargar el archivo, Android podría mostrarte un aviso de "Archivo dañino" o "Origen desconocido".</p>
+        <p>Este es un mensaje estándar de seguridad de Google para cualquier aplicación instalada fuera de la Play Store oficial. Nuestra app está libre de virus y solo contiene el recetario profesional que ya conoces.</p>
+        <p>Para continuar, pulsa <strong>"Descargar de todos modos"</strong> y activa <strong>"Permitir desde esta fuente"</strong> en los ajustes de tu móvil si te lo solicita.</p>
         <a id="final-download-link" href="#" class="btn" style="width:100%; justify-content:center;">ENTENDIDO, DESCARGAR</a>
     </div>
 </div>
@@ -96,13 +106,13 @@
     <div class="container">
         <img src="recetas-removebg-preview.png" alt="CocinaREcetas Logo" class="logo-img">
         <h1>CocinaREcetas</h1>
-        <p class="hero-text">Explora más de 1300 recetas de la cocina española, italiana y francesa. Tu guía inteligente para comer rico y saludable todos los días.</p>
+        <p class="hero-text">Explora más de 1300 recetas de la cocina mediterránea e internacional. La guía definitiva de JOSEMAN para cocinar con ciencia y sabor.</p>
         <button class="btn" onclick="showSafetyModal('https://github.com/asurpan/Cocinarecetas/releases/download/v1.0.0/app-release.apk')">
             <i data-lucide="download"></i>
             DESCARGAR APP ANDROID
         </button>
-        <p style="margin-top:20px; font-size: 0.9rem;">
-            <a href="webapp/index.html" style="color: #B2DFDB; text-decoration: none; font-weight: bold;">¿Usas iPhone? Abre la Web App Pro</a>
+        <p style="margin-top:20px; font-size: 0.95rem;">
+            <a href="webapp/index.html" style="color: #B2DFDB; text-decoration: none; font-weight: 800;">¿Usas iPhone? Prueba la Web App Avanzada</a>
         </p>
     </div>
 </header>
@@ -111,18 +121,18 @@
     <div class="features">
         <div class="feature-card">
             <div class="icon-circle"><i data-lucide="globe"></i></div>
-            <h3>Cocina Internacional</h3>
-            <p>Desde la pasta italiana auténtica hasta los clásicos franceses y el sabor tradicional de España.</p>
+            <h3>Sabor de España y el Mundo</h3>
+            <p>Desde la paella valenciana hasta pastas italianas y salsas francesas gourmet.</p>
         </div>
         <div class="feature-card">
-            <div class="icon-circle"><i data-lucide="heart-pulse"></i></div>
-            <h3>Salud & Ciencia</h3>
-            <p>Tips nutricionales avanzados para convertir tus platos favoritos en superalimentos.</p>
+            <div class="icon-circle"><i data-lucide="sparkles"></i></div>
+            <h3>Superalimentos</h3>
+            <p>Tips científicos para multiplicar la nutrición y el sabor en cada uno de tus platos.</p>
         </div>
         <div class="feature-card">
             <div class="icon-circle"><i data-lucide="smartphone"></i></div>
             <h3>Instalador Directo</h3>
-            <p>Descarga nuestra APK oficial de forma segura y disfruta de la experiencia nativa completa.</p>
+            <p>Disfruta de la experiencia nativa completa descargando nuestra APK oficial segura.</p>
         </div>
     </div>
 </div>
@@ -131,23 +141,20 @@
     <div class="footer-links">
         <a href="privacy.html">Privacidad</a>
         <a href="terms.html">Términos</a>
-        <a href="mailto:appsaiber@gmail.com">Soporte</a>
+        <a href="mailto:appsaiber@gmail.com">Contacto</a>
     </div>
     <p>&copy; 2026 CocinaREcetas. By <strong>JOSEMAN</strong>.</p>
 </footer>
 
 <script>
     lucide.createIcons();
-
     function showSafetyModal(url) {
         document.getElementById('final-download-link').href = url;
         document.getElementById('safety-modal').style.display = 'flex';
     }
-
     function closeSafetyModal() {
         document.getElementById('safety-modal').style.display = 'none';
     }
-
     function trackDownload() {
         let count = parseInt(localStorage.getItem('dl_count') || '0') + 1;
         localStorage.setItem('dl_count', count);

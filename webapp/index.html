@@ -70,9 +70,10 @@
         .search-box input { border: none; outline: none; width: 100%; margin-left: 10px; font-size: 1rem; }
 
         .filter-row { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 10px; scrollbar-width: none; }
+        .filter-row::-webkit-scrollbar { display: none; }
         .chip { white-space: nowrap; background: white; padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; border: 1px solid #eee; }
         .chip.active { background: var(--primary); color: white; border-color: var(--primary); }
-        .chip.secondary.active { background: var(--secondary); border-color: var(--secondary); }
+        .chip.secondary.active { background: var(--secondary); color: white; border-color: var(--secondary); }
 
         .recipe-card { background: white; border-radius: 16px; padding: 18px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); display: flex; justify-content: space-between; align-items: center; }
         .recipe-info h3 { margin: 0 0 4px; font-size: 1rem; text-transform: uppercase; font-weight: 800; }
@@ -83,8 +84,7 @@
         .menu-day { background: white; border-radius: 20px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .day-title { color: var(--primary); font-weight: 900; margin-bottom: 15px; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 8px; }
         .meal-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 10px; }
-        .meal { flex: 1; font-size: 0.9rem; font-weight: 700; color: var(--text); transition: opacity 0.2s; }
-        .meal:active { opacity: 0.6; }
+        .meal { flex: 1; font-size: 0.9rem; font-weight: 700; color: var(--text); }
         .meal b { color: #666; font-size: 0.7rem; display: block; margin-bottom: 3px; font-weight: 800; text-transform: uppercase; }
         .refresh-btn { color: var(--primary-light); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
 
@@ -189,7 +189,7 @@
 
     async function init() {
         try {
-            const snapshot = await db.collection('recipes').limit(2000).get();
+            const snapshot = await db.collection('recipes').limit(3000).get();
             allRecipes = snapshot.docs.map(doc => {
                 const d = doc.data();
                 return { id: doc.id, ...d, title: cleanText(d.title), category: cleanText(d.category), ingredients: (d.ingredients || []).map(cleanText).filter(x=>x), instructions: (d.instructions || []).map(cleanText).filter(x=>x) };
@@ -222,26 +222,41 @@
     function renderList() {
         const div = document.getElementById('recipe-list');
         const q = searchQuery.toLowerCase();
-        const filtered = allRecipes.filter(r => {
-            const mS = r.title.toLowerCase().includes(q) || r.ingredients.some(i => i.toLowerCase().includes(q));
-            let mT = true;
-            const cat = (r.category || "").toLowerCase();
-            if (activeTag === "Sana") mT = ["ensaladas", "verduras", "pescados", "legumbres", "frutas"].some(c => cat.includes(c));
-            else if (activeTag === "Perder peso") mT = ["ensaladas", "verduras", "sopas", "pescados"].some(c => cat.includes(c));
-            else if (activeTag === "Músculo") mT = ["carnes", "pescados", "legumbres", "pastas", "arroces"].some(c => cat.includes(c));
-            else if (activeTag === "Diabéticos") mT = !["postres", "pastas", "arroces", "dulces"].some(c => cat.includes(c));
 
-            const actCat = activeCategory.toLowerCase();
-            const mC = !activeCategory || cat.includes(actCat.substring(0, 4)) || actCat.includes(cat.substring(0, 4));
-            const mF = currentView !== 'favs' || favorites.includes(r.id || r.title);
-            return mS && mT && mC && mF;
+        if (allRecipes.length === 0) {
+            div.innerHTML = `<p style="text-align:center; padding:40px;">Cargando base de datos...</p>`;
+            return;
+        }
+
+        const filtered = allRecipes.filter(r => {
+            const t = (r.title || "").toLowerCase();
+            const c = (r.category || "").toLowerCase();
+
+            const matchSearch = !searchQuery || t.includes(q) || r.ingredients.some(i => i.toLowerCase().includes(q));
+
+            let matchTag = true;
+            if (activeTag === "Sana") matchTag = ["ensalada", "verdura", "pescado", "legumbre", "fruta"].some(x => c.includes(x));
+            else if (activeTag === "Perder peso") matchTag = ["ensalada", "verdura", "sopa", "pescado"].some(x => c.includes(x));
+            else if (activeTag === "Músculo") matchTag = ["carne", "pescado", "legumbre", "pasta", "arroz"].some(x => c.includes(x));
+            else if (activeTag === "Diabéticos") matchTag = !["postre", "pasta", "arroz", "dulce", "bolleria", "reposteria"].some(x => c.includes(x));
+
+            let matchCat = true;
+            if (activeCategory) {
+                const target = activeCategory.toLowerCase();
+                const root = target.substring(0, 4); // "arro" para "Arroces"
+                matchCat = c.includes(root) || target.includes(c);
+            }
+
+            const matchFav = currentView !== 'favs' || favorites.includes(r.id || r.title);
+            return matchSearch && matchTag && matchCat && matchFav;
         });
+
         div.innerHTML = filtered.length === 0 ? `<p style="text-align:center; padding:40px;">No hay resultados.</p>` : filtered.map(r => `<div class="recipe-card" onclick="openRecipe('${r.id || r.title}')"><div class="recipe-info"><h3>${r.title}</h3><p>${r.category || 'Varios'}</p></div><div class="fav-icon ${favorites.includes(r.id || r.title) ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav('${r.id || r.title}')"><i data-lucide="heart" fill="${favorites.includes(r.id || r.title) ? 'currentColor' : 'none'}"></i></div></div>`).join('');
         lucide.createIcons();
     }
 
     function renderMenu(c) {
-        c.innerHTML = `<div style="text-align:center; margin-bottom:20px;"><h2 style="color:var(--primary); margin:0;">Plan Semanal Científico</h2><p style="font-size:0.75rem; margin-top:5px; color:#666;">Optimizado para perfil: <b>${activeTag || 'Estándar'}</b></p><button class="chip active" style="margin-top:10px;" onclick="generateMenu()">GENERAR NUEVO</button></div><div id="weekly-days"></div>`;
+        c.innerHTML = `<div style="text-align:center; margin-bottom:20px;"><h2 style="color:var(--primary); margin:0;">Plan Semanal Científico</h2><p style="font-size:0.75rem; margin-top:5px; color:#666;">Optimizado para: <b>${activeTag || 'Estándar'}</b></p><button class="chip active" style="margin-top:10px;" onclick="generateMenu()">GENERAR NUEVO</button></div><div id="weekly-days"></div>`;
         const menu = JSON.parse(localStorage.getItem('web_menu') || '[]');
         if (menu.length === 0) { generateMenu(); return; }
         const days = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
@@ -251,7 +266,6 @@
                 <div class="meal-container"><div class="meal" onclick="openRecipeByName('${d.breakfast}')"><b>DESAYUNO</b> ${d.breakfast}</div><div class="refresh-btn" onclick="refreshMeal(${i}, 'breakfast')"><i data-lucide="refresh-cw" size="18"></i></div></div>
                 <div class="meal-container"><div class="meal" onclick="openRecipeByName('${d.lunch}')"><b>ALMUERZO</b> ${d.lunch}</div><div class="refresh-btn" onclick="refreshMeal(${i}, 'lunch')"><i data-lucide="refresh-cw" size="18"></i></div></div>
                 <div class="meal-container"><div class="meal" onclick="openRecipeByName('${d.dinner}')"><b>CENA</b> ${d.dinner}</div><div class="refresh-btn" onclick="refreshMeal(${i}, 'dinner')"><i data-lucide="refresh-cw" size="18"></i></div></div>
-                <div class="tip-card"><i data-lucide="sparkles" size="18"></i><div class="tip-text">${superTips[i%5]}</div></div>
             </div>`).join('');
         lucide.createIcons();
     }
@@ -261,8 +275,7 @@
     function getRandomMeal(type, used, dayIndex = 0) {
         if (type === 'breakfast') {
             const list = predefinedBreakfasts[activeTag] || predefinedBreakfasts["Default"];
-            let res = list[Math.floor(Math.random() * list.length)];
-            return res;
+            return list[Math.floor(Math.random() * list.length)];
         }
 
         const profile = activeTag;
@@ -270,38 +283,32 @@
             const t = r.title.toLowerCase();
             const c = (r.category||"").toLowerCase();
             if (bannedWords.some(w => t.includes(w))) return false;
-            // No permitir postres/salsas/aperitivos en almuerzo si no es pérdida peso
-            if (type === 'lunch' && ["postre", "salsa", "aperitivo"].some(x => c.includes(x))) return false;
+            // No permitir salsas ni acompañamientos como plato principal
+            if (["salsa", "base", "tecnica", "acompañamiento"].some(x => c.includes(x))) return false;
             return true;
         });
 
-        // REGLAS POR PERFIL
-        if (profile === "Sana") {
-            pool = pool.filter(r => !["postre", "aperitivo"].some(x => (r.category||"").toLowerCase().includes(x)));
+        if (profile === "Diabéticos") {
+            pool = pool.filter(r => !["postre", "pasta", "arroz", "dulce", "bolleria"].some(x => (r.category||"").toLowerCase().includes(x)));
         } else if (profile === "Perder peso") {
-            pool = pool.filter(r => ["ensalada", "verdura", "sopa", "pescado"].some(x => (r.category||"").toLowerCase().includes(x)));
-        } else if (profile === "Músculo") {
-            pool = pool.filter(r => ["carne", "pescado", "legumbre", "pasta", "arroz"].some(x => (r.category||"").toLowerCase().includes(x)));
-        } else if (profile === "Diabéticos") {
-            pool = pool.filter(r => !["postre", "pasta", "arroz", "dulce"].some(x => (r.category||"").toLowerCase().includes(x)));
+            pool = pool.filter(r => ["ensalada", "verdura", "sopa", "pescado", "ave"].some(x => (r.category||"").toLowerCase().includes(x)));
         }
 
-        // REGLAS POR MOMENTO
         if (type === 'lunch') {
-            const lunchPattern = ["legumbre", "carne", "pasta", "pescado", "legumbre", "carne", "arroz"];
-            const target = lunchPattern[dayIndex % 7];
-            let subPool = pool.filter(r => (r.category||"").toLowerCase().includes(target));
-            if (subPool.length > 5) pool = subPool;
+            const pattern = ["legumbre", "carne", "pasta", "pescado", "legumbre", "carne", "arroz"];
+            const target = pattern[dayIndex % 7];
+            let sub = pool.filter(r => (r.category||"").toLowerCase().includes(target));
+            if (sub.length > 5) pool = sub;
             if (profile !== "Perder peso") pool = pool.filter(r => !(r.category||"").toLowerCase().includes("ensalada"));
         } else if (type === 'dinner') {
             pool = pool.filter(r => ["verdura", "ensalada", "sopa", "pescado", "ave"].some(x => (r.category||"").toLowerCase().includes(x)));
             pool = pool.filter(r => !["pasta", "arroz", "legumbre", "guiso"].some(x => (r.category||"").toLowerCase().includes(x)));
         }
 
-        let finalPool = pool.filter(r => !used.has(r.title));
-        if (finalPool.length === 0) finalPool = pool.length > 0 ? pool : allRecipes.filter(r => !bannedWords.some(w => r.title.toLowerCase().includes(w)));
+        let final = pool.filter(r => !used.has(r.title));
+        if (final.length === 0) final = pool.length > 0 ? pool : allRecipes.filter(r => !bannedWords.some(w => r.title.toLowerCase().includes(w)));
 
-        const recipe = finalPool[Math.floor(Math.random() * finalPool.length)];
+        const recipe = final[Math.floor(Math.random() * final.length)];
         used.add(recipe.title);
         return recipe.title;
     }
@@ -334,7 +341,7 @@
         const r = allRecipes.find(rec => (rec.id || rec.title) === id);
         if (!r) {
             document.getElementById('m-title').innerText = id;
-            document.getElementById('m-content-area').innerHTML = `<div style="padding:30px; text-align:center;"><h3>Sugerencia de Desayuno</h3><p>Esta es una opción nutritiva diseñada para tu perfil nutricional activo.</p></div>`;
+            document.getElementById('m-content-area').innerHTML = `<div style="padding:30px; text-align:center;"><h3>Sugerencia Nutritiva</h3><p>Este plato está seleccionado específicamente para tu perfil <b>${activeTag || 'Estándar'}</b>.</p></div>`;
             document.getElementById('recipe-modal').style.display = 'block';
             return;
         }

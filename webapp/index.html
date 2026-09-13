@@ -146,9 +146,9 @@
                 <div id="m-timer" class="timer-display">20:00</div>
             </div>
             <div style="display:flex; gap:8px;">
-                <button class="timer-btn" onclick="adjustTimer(-60)"><i data-lucide="minus" size="18"></i></button>
-                <button id="timer-toggle" class="timer-btn" onclick="toggleTimer()"><i data-lucide="play" size="18"></i></button>
-                <button class="timer-btn" onclick="adjustTimer(60)"><i data-lucide="plus" size="18"></i></button>
+                <button class="timer-btn" onclick="adjustTimer(-60)"><i data-lucide="minus"></i></button>
+                <button id="timer-toggle" class="timer-btn" onclick="toggleTimer()"><i data-lucide="play"></i></button>
+                <button class="timer-btn" onclick="adjustTimer(60)"><i data-lucide="plus"></i></button>
             </div>
         </div>
 
@@ -203,11 +203,14 @@
     ];
 
     const spiceGuide = [
-        { name: "Cúrcuma", use: "Antinflamatorio natural potente. Tip: Actívala con pimienta negra.", health: "Antinflamatorio" },
-        { name: "Comino", use: "Digestivo estrella. Imprescindible en legumbres para evitar gases.", health: "Digestivo" },
+        { name: "Cúrcuma", use: "Antinflamatorio natural potente. Arroces, legumbres y cremas. Tip: Actívala con pimienta negra.", health: "Antinflamatorio" },
+        { name: "Comino", use: "Digestivo estrella. Imprescindible en legumbres y carnes pesadas para evitar gases.", health: "Digestivo" },
         { name: "Jengibre", use: "Fresco y picante. Excelente en pescados y tés. Acelera el metabolismo.", health: "Inmunidad" },
         { name: "Canela", use: "Regula el azúcar en sangre. Úsala en avena o café.", health: "Glucosa" },
-        { name: "Pimentón de la Vera", use: "Sabor ahumado antioxidante. Perfecto en pulpo y guisos.", health: "Antioxidante" }
+        { name: "Pimentón de la Vera", use: "Sabor ahumado antioxidante. Perfecto en pulpo, patatas y guisos tradicionales.", health: "Antioxidante" },
+        { name: "Orégano", use: "Antiséptico natural. Potencia salsas de tomate y carnes. Combate bacterias.", health: "Antibiótico" },
+        { name: "Pimienta Negra", use: "La piperina ayuda a absorber mejor los beneficios de otros alimentos.", health: "Potenciador" },
+        { name: "Azafrán", use: "Antioxidante de lujo que mejora el ánimo. Ideal en arroces y guisos marineros.", health: "Bienestar" }
     ];
 
     async function init() {
@@ -249,18 +252,14 @@
             const mS = r.title.toLowerCase().includes(q) || r.ingredients.some(i => i.toLowerCase().includes(q));
             let mT = true;
             const cat = (r.category || "").toLowerCase();
+            if (activeTag === "Sana") mT = ["ensaladas", "verduras", "pescados", "legumbres"].some(c => cat.includes(c));
+            else if (activeTag === "Perder peso") mT = ["ensaladas", "verduras", "sopas", "pescados"].some(c => cat.includes(c));
+            else if (activeTag === "Músculo") mT = ["carnes", "pescados", "legumbres", "pastas"].some(c => cat.includes(c));
+            else if (activeTag === "Diabéticos") mT = !["postres", "pastas", "arroces"].some(c => cat.includes(c));
+
             const actCat = activeCategory.toLowerCase();
-
-            // Búsqueda flexible de categoría:
-            // 1. Coincidencia exacta
-            // 2. La categoría de la receta contiene el filtro (ej: "Arroces caldosos" contiene "Arroces")
-            // 3. El filtro contiene la categoría de la receta (ej: "Arroces" contiene "Arroz")
-            const mC = !activeCategory ||
-                       cat.includes(actCat) ||
-                       actCat.includes(cat) ||
-                       (actCat.endsWith('es') && cat.includes(actCat.slice(0, -2))) || // Arroces -> Arroz
-                       (actCat.endsWith('s') && cat.includes(actCat.slice(0, -1)));   // Carnes -> Carne
-
+            // Búsqueda flexible mejorada: 4 letras coinciden (ej: arroc/arroz, carn/carne)
+            const mC = !activeCategory || cat.includes(actCat.substring(0, 4)) || actCat.includes(cat.substring(0, 4));
             const mF = currentView !== 'favs' || favorites.includes(r.id || r.title);
             return mS && mT && mC && mF;
         });
@@ -269,52 +268,44 @@
     }
 
     function renderMenu(c) {
-        c.innerHTML = `<div style="text-align:center; margin-bottom:20px;"><h2 style="color:var(--primary); margin:0;">Plan Semanal Equilibrado</h2><p style="font-size:0.8rem; margin:5px 0;">Perfil: <b>${activeTag || 'Estándar'}</b></p><button class="chip active" style="margin-top:5px;" onclick="generateMenu()">GENERAR NUEVO</button></div><div id="weekly-days"></div>`;
+        c.innerHTML = `<div style="text-align:center; margin-bottom:20px;"><h2 style="color:var(--primary); margin:0;">Plan Semanal Inteligente</h2><button class="chip active" style="margin-top:10px;" onclick="generateMenu()">GENERAR NUEVO</button></div><div id="weekly-days"></div>`;
         const menu = JSON.parse(localStorage.getItem('web_menu') || '[]');
         if (menu.length === 0) { generateMenu(); return; }
         const days = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
         document.getElementById('weekly-days').innerHTML = menu.map((d, i) => `
             <div class="menu-day">
                 <div class="day-title">${days[i]}</div>
-                <div class="meal-container"><div class="meal"><b>DESAYUNO</b> ${d.breakfast}</div><div class="refresh-btn" onclick="refreshMeal(${i}, 'breakfast')"><i data-lucide="refresh-cw" size="18"></i></div></div>
-                <div class="meal-container"><div class="meal"><b>ALMUERZO</b> ${d.lunch}</div><div class="refresh-btn" onclick="refreshMeal(${i}, 'lunch')"><i data-lucide="refresh-cw" size="18"></i></div></div>
-                <div class="meal-container"><div class="meal"><b>CENA</b> ${d.dinner}</div><div class="refresh-btn" onclick="refreshMeal(${i}, 'dinner')"><i data-lucide="refresh-cw" size="16"></i></div></div>
+                <div class="meal-container"><div class="meal" onclick="openRecipeByName('${d.breakfast}')"><b>DESAYUNO</b> ${d.breakfast}</div><div class="refresh-btn" onclick="refreshMeal(${i}, 'breakfast')"><i data-lucide="refresh-cw" size="18"></i></div></div>
+                <div class="meal-container"><div class="meal" onclick="openRecipeByName('${d.lunch}')"><b>ALMUERZO</b> ${d.lunch}</div><div class="refresh-btn" onclick="refreshMeal(${i}, 'lunch')"><i data-lucide="refresh-cw" size="18"></i></div></div>
+                <div class="meal-container"><div class="meal" onclick="openRecipeByName('${d.dinner}')"><b>CENA</b> ${d.dinner}</div><div class="refresh-btn" onclick="refreshMeal(${i}, 'dinner')"><i data-lucide="refresh-cw" size="18"></i></div></div>
                 <div class="tip-card"><i data-lucide="sparkles" size="18"></i><div class="tip-text">${superTips[i%5]}</div></div>
             </div>`).join('');
         lucide.createIcons();
-    }
-
-    function getLunchCategory(dayIndex) {
-        const pattern = ["legumbres", "carnes", "pastas", "pescados", "legumbres", "carnes", "arroces"];
-        return pattern[dayIndex];
     }
 
     function getRandomMeal(type, used, dayIndex = 0) {
         let pool = allRecipes;
         const profile = activeTag;
 
-        // 1. Filtrado por Perfil
+        // 1. Perfil Nutricional
         if (profile === "Sana") pool = pool.filter(r => !["salsas", "postres", "aperitivos"].some(x => (r.category||"").toLowerCase().includes(x)));
         else if (profile === "Perder peso") pool = pool.filter(r => ["ensaladas", "verduras", "sopas", "pescados"].some(x => (r.category||"").toLowerCase().includes(x)));
         else if (profile === "Músculo") pool = pool.filter(r => ["carnes", "pescados", "legumbres", "pastas", "arroces"].some(x => (r.category||"").toLowerCase().includes(x)));
         else if (profile === "Diabéticos") pool = pool.filter(r => !["postres", "pastas", "arroces", "dulces"].some(x => (r.category||"").toLowerCase().includes(x)));
 
-        // 2. Filtrado por Momento (Equilibrado)
+        // 2. Momento del Día - Pool de Categorías
         if (type === 'breakfast') {
-            pool = pool.filter(r => ["postres", "varios", "frutas"].some(x => (r.category||"").toLowerCase().includes(x)));
+            pool = pool.filter(r => ["postres", "varios", "frutas", "repostería"].some(x => (r.category||"").toLowerCase().includes(x)) && !["salsas", "pescado", "carne", "guiso"].some(x => (r.category||"").toLowerCase().includes(x)));
         } else if (type === 'lunch') {
-            const targetCat = getLunchCategory(dayIndex);
-            let subPool = pool.filter(r => (r.category||"").toLowerCase().includes(targetCat));
-            if (subPool.length > 0) pool = subPool;
+            const lunchPattern = ["legumbres", "carnes", "pastas", "pescados", "legumbres", "carnes", "arroces"];
+            const target = lunchPattern[dayIndex % 7];
+            let subPool = pool.filter(r => (r.category||"").toLowerCase().includes(target));
+            if (subPool.length > 5) pool = subPool;
         } else if (type === 'dinner') {
-            pool = pool.filter(r => ["verduras", "ensaladas", "sopas", "pescados"].some(x => (r.category||"").toLowerCase().includes(x)));
+            pool = pool.filter(r => ["verduras", "ensaladas", "sopas", "pescados", "aperitivos"].some(x => (r.category||"").toLowerCase().includes(x)));
         }
 
-        // 3. Sin Repetir Ensaladas en almuerzo (salvo perfil peso)
-        if (type === 'lunch' && profile !== "Perder peso") {
-            pool = pool.filter(r => !(r.category||"").toLowerCase().includes("ensaladas"));
-        }
-
+        // 3. Rotación y Sin Repetir
         let finalPool = pool.filter(r => !used.has(r.title));
         if (finalPool.length === 0) finalPool = pool.length > 0 ? pool : allRecipes;
 

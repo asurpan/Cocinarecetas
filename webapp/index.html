@@ -70,6 +70,7 @@
         .search-box input { border: none; outline: none; width: 100%; margin-left: 10px; font-size: 1rem; }
 
         .filter-row { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 10px; scrollbar-width: none; }
+        .filter-row::-webkit-scrollbar { display: none; }
         .chip { white-space: nowrap; background: white; padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; border: 1px solid #eee; }
         .chip.active { background: var(--primary); color: white; border-color: var(--primary); }
         .chip.secondary.active { background: var(--secondary); border-color: var(--secondary); }
@@ -89,10 +90,6 @@
 
         .tip-card { background: var(--tip-bg); border-radius: 15px; padding: 12px; margin-top: 10px; border-left: 5px solid var(--secondary); display: flex; gap: 10px; align-items: flex-start; }
         .tip-text { font-size: 0.8rem; color: #2E7D32; font-style: italic; }
-
-        .spice-card { background: var(--spice-bg); border-radius: 18px; padding: 18px; margin-bottom: 12px; border-left: 6px solid #9C27B0; }
-        .spice-title { font-weight: 900; color: #7B1FA2; font-size: 1rem; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
-        .spice-benefit { background: white; color: #9C27B0; font-size: 0.65rem; padding: 3px 8px; border-radius: 10px; font-weight: 800; }
 
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; display: none; overflow-y: auto; }
         .modal-header { background: white; padding: 50px 20px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
@@ -144,9 +141,9 @@
                 <div id="m-timer" class="timer-display">20:00</div>
             </div>
             <div style="display:flex; gap:8px;">
-                <button class="timer-btn" onclick="adjustTimer(-60)"><i data-lucide="minus"></i></button>
-                <button id="timer-toggle" class="timer-btn" onclick="toggleTimer()"><i data-lucide="play"></i></button>
-                <button class="timer-btn" onclick="adjustTimer(60)"><i data-lucide="plus"></i></button>
+                <button class="timer-btn" onclick="adjustTimer(-60)"><i data-lucide="minus" size="18"></i></button>
+                <button id="timer-toggle" class="timer-btn" onclick="toggleTimer()"><i data-lucide="play" size="18"></i></button>
+                <button class="timer-btn" onclick="adjustTimer(60)"><i data-lucide="plus" size="18"></i></button>
             </div>
         </div>
 
@@ -200,14 +197,6 @@
         "💡 Tip Salud: Ajo picado reposando 10 min activa alicina."
     ];
 
-    const spiceGuide = [
-        { name: "Cúrcuma", use: "Antinflamatorio natural potente. Arroces, legumbres y cremas. Tip: Actívala con pimienta negra.", health: "Antinflamatorio" },
-        { name: "Comino", use: "Digestivo estrella. Imprescindible en legumbres y carnes pesadas para evitar gases.", health: "Digestivo" },
-        { name: "Jengibre", use: "Fresco y picante. Excelente en pescados y tés. Acelera el metabolismo.", health: "Inmunidad" },
-        { name: "Canela", use: "Regula el azúcar en sangre. Úsala en avena o café.", health: "Glucosa" },
-        { name: "Pimentón de la Vera", use: "Sabor ahumado antioxidante. Perfecto en pulpo, patatas y guisos tradicionales.", health: "Antioxidante" }
-    ];
-
     async function init() {
         try {
             const snapshot = await db.collection('recipes').limit(2000).get();
@@ -247,10 +236,10 @@
             const mS = r.title.toLowerCase().includes(q) || r.ingredients.some(i => i.toLowerCase().includes(q));
             let mT = true;
             const cat = (r.category || "").toLowerCase();
-            if (activeTag === "Sana") mT = ["ensaladas", "verduras", "pescados", "legumbres"].some(c => cat.includes(c));
+            if (activeTag === "Sana") mT = ["ensaladas", "verduras", "pescados", "legumbres", "frutas"].some(c => cat.includes(c));
             else if (activeTag === "Perder peso") mT = ["ensaladas", "verduras", "sopas", "pescados"].some(c => cat.includes(c));
-            else if (activeTag === "Músculo") mT = ["carnes", "pescados", "legumbres", "pastas"].some(c => cat.includes(c));
-            else if (activeTag === "Diabéticos") mT = !["postres", "pastas", "arroces"].some(c => cat.includes(c));
+            else if (activeTag === "Músculo") mT = ["carnes", "pescados", "legumbres", "pastas", "arroces"].some(c => cat.includes(c));
+            else if (activeTag === "Diabéticos") mT = !["postres", "pastas", "arroces", "dulces"].some(c => cat.includes(c));
 
             const actCat = activeCategory.toLowerCase();
             const mC = !activeCategory || cat.includes(actCat.substring(0, 4)) || actCat.includes(cat.substring(0, 4));
@@ -262,7 +251,7 @@
     }
 
     function renderMenu(c) {
-        c.innerHTML = `<div style="text-align:center; margin-bottom:20px;"><h2 style="color:var(--primary); margin:0;">Plan Semanal Inteligente</h2><button class="chip active" style="margin-top:10px;" onclick="generateMenu()">GENERAR NUEVO</button></div><div id="weekly-days"></div>`;
+        c.innerHTML = `<div style="text-align:center; margin-bottom:20px;"><h2 style="color:var(--primary); margin:0;">Plan Semanal Inteligente</h2><p style="font-size:0.75rem; margin-top:5px; color:#666;">Basado en perfil: <b>${activeTag || 'Estándar'}</b></p><button class="chip active" style="margin-top:10px;" onclick="generateMenu()">GENERAR NUEVO</button></div><div id="weekly-days"></div>`;
         const menu = JSON.parse(localStorage.getItem('web_menu') || '[]');
         if (menu.length === 0) { generateMenu(); return; }
         const days = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
@@ -277,17 +266,31 @@
         lucide.createIcons();
     }
 
-    const bannedWords = ["macerar", "marinar", "desalar", "salsa", "aliño", "base", "técnica", "relleno", "truco", "masa", "caldo", "sofrito", "limpieza", "preparación"];
+    const bannedWords = ["macerar", "marinar", "desalar", "salsa", "aliño", "base", "técnica", "relleno", "truco", "masa", "caldo", "sofrito", "limpieza", "preparación", "decoración"];
 
     function getRandomMeal(type, used, dayIndex = 0) {
-        let pool = allRecipes.filter(r => !bannedWords.some(w => r.title.toLowerCase().includes(w)));
         const profile = activeTag;
+        let pool = allRecipes.filter(r => {
+            const lowTitle = r.title.toLowerCase();
+            const lowCat = (r.category || "").toLowerCase();
 
-        if (profile === "Sana") pool = pool.filter(r => !["postres", "aperitivos", "pastas"].some(x => (r.category||"").toLowerCase().includes(x)));
-        else if (profile === "Perder peso") pool = pool.filter(r => ["ensaladas", "verduras", "sopas", "pescados"].some(x => (r.category||"").toLowerCase().includes(x)));
-        else if (profile === "Músculo") pool = pool.filter(r => ["carnes", "pescados", "legumbres", "pastas", "arroces"].some(x => (r.category||"").toLowerCase().includes(x)));
-        else if (profile === "Diabéticos") pool = pool.filter(r => !["postres", "pastas", "arroces", "dulces"].some(x => (r.category||"").toLowerCase().includes(x)));
+            // Filtro 1: Lista Negra
+            if (bannedWords.some(w => lowTitle.includes(w))) return false;
 
+            // Filtro 2: Perfil Nutricional (SI está seleccionado)
+            if (profile === "Sana") {
+                if (["postres", "aperitivos", "pastas"].some(x => lowCat.includes(x))) return false;
+            } else if (profile === "Perder peso") {
+                if (!["ensaladas", "verduras", "sopas", "pescados", "frutas"].some(x => lowCat.includes(x))) return false;
+            } else if (profile === "Músculo") {
+                if (!["carnes", "pescados", "legumbres", "pastas", "arroces"].some(x => lowCat.includes(x))) return false;
+            } else if (profile === "Diabéticos") {
+                if (["postres", "pastas", "arroces", "dulces"].some(x => lowCat.includes(x))) return false;
+            }
+            return true;
+        });
+
+        // Filtro 3: Momento del Día (Equilibrio)
         if (type === 'breakfast') {
             pool = pool.filter(r => ["postres", "varios", "frutas", "repostería"].some(x => (r.category||"").toLowerCase().includes(x)) && !["pescado", "carne", "guiso", "legumbres"].some(x => (r.category||"").toLowerCase().includes(x)));
         } else if (type === 'lunch') {
@@ -295,7 +298,8 @@
             const target = lunchPattern[dayIndex % 7];
             let subPool = pool.filter(r => (r.category||"").toLowerCase().includes(target));
             if (subPool.length > 5) pool = subPool;
-            pool = pool.filter(r => !(r.category||"").toLowerCase().includes("ensaladas"));
+            // No repetir ensaladas como plato principal de almuerzo salvo en pérdida de peso
+            if (profile !== "Perder peso") pool = pool.filter(r => !(r.category||"").toLowerCase().includes("ensaladas"));
         } else if (type === 'dinner') {
             pool = pool.filter(r => ["verduras", "ensaladas", "sopas", "pescados", "aperitivos"].some(x => (r.category||"").toLowerCase().includes(x)));
         }
@@ -387,6 +391,13 @@
     }
 
     function renderSpices(c) {
+        const spiceGuide = [
+            { name: "Cúrcuma", use: "Antinflamatorio natural potente. Arroces, legumbres y cremas. Tip: Actívala con pimienta negra.", health: "Antinflamatorio" },
+            { name: "Comino", use: "Digestivo estrella. Imprescindible en legumbres y carnes pesadas para evitar gases.", health: "Digestivo" },
+            { name: "Jengibre", use: "Fresco y picante. Excelente en pescados y tés. Acelera el metabolismo.", health: "Inmunidad" },
+            { name: "Canela", use: "Regula el azúcar en sangre. Úsala en avena o café.", health: "Glucosa" },
+            { name: "Pimentón de la Vera", use: "Sabor ahumado antioxidante. Perfecto en pulpo y guisos.", health: "Antioxidante" }
+        ];
         c.innerHTML = `<div style="text-align:center; margin-bottom: 25px;"><h2 style="color:var(--primary);">Guía de Especias</h2></div>${spiceGuide.map(s => `<div class="spice-card"><div class="spice-title">${s.name} <span class="spice-benefit">${s.health}</span></div><p style="font-size:0.9rem; margin:0;">${s.use}</p></div>`).join('')}<div class="legal-footer"><a href="../privacy.html">Privacidad</a> | <a href="../terms.html">Términos</a></div>`;
         lucide.createIcons();
     }

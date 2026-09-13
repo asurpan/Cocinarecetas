@@ -18,18 +18,15 @@
 
     <style>
         :root {
-            --primary: #00838F;
-            --primary-light: #00ACC1;
-            --secondary: #43A047;
+            --primary: #00ACC1; /* PoolBlue Original */
+            --primary-dark: #00838F;
+            --secondary: #43A047; /* NatureGreen */
             --accent: #D32F2F;
             --bg: #F0F7F8;
             --surface: #FFFFFF;
-            --text: #00363A;
+            --text: #002B2E; /* Texto muy oscuro (Máxima Visibilidad) */
             --tip-bg: #E8F5E9;
-            --shopping-bg: #FFF8E1;
             --timer-bg: #E1F5FE;
-            --spice-bg: #F3E5F5;
-            --salt-tip-bg: #E1F5FE;
         }
 
         body {
@@ -44,15 +41,15 @@
 
         .app-container { display: flex; flex-direction: column; height: 100vh; }
         .header {
-            background: var(--primary); color: white; padding: 25px 20px 15px;
+            background: var(--primary); color: white; padding: 35px 20px 15px;
             text-align: center; position: sticky; top: 0; z-index: 100;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             display: flex; flex-direction: column; align-items: center; gap: 5px;
         }
 
         .header-logo { width: 100px; height: auto; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.2)); }
-        .header h1 { margin: 0; font-size: 1.5rem; font-weight: 900; letter-spacing: 1px; line-height: 1; }
-        .brand { font-size: 0.65rem; font-weight: 800; letter-spacing: 2.5px; opacity: 0.85; text-transform: uppercase; }
+        .header h1 { margin: 0; font-size: 1.5rem; font-weight: 900; letter-spacing: 1px; color: white !important; }
+        .brand { font-size: 0.65rem; font-weight: 800; letter-spacing: 2.5px; opacity: 1; color: white !important; text-transform: uppercase; }
 
         .content { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 120px; }
 
@@ -66,48 +63,42 @@
         .nav-item.active { color: var(--primary); }
         .nav-item i { margin-bottom: 4px; }
 
-        .search-box { background: white; border-radius: 12px; padding: 10px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; align-items: center; }
-        .search-box input { border: none; outline: none; width: 100%; margin-left: 10px; font-size: 1rem; }
+        .search-box { background: white; border-radius: 12px; padding: 10px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; align-items: center; border: 1px solid #eee; }
+        .search-box input { border: none; outline: none; width: 100%; margin-left: 10px; font-size: 1rem; color: #000000; background: transparent; }
 
         .filter-row { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 10px; scrollbar-width: none; }
-        .filter-row::-webkit-scrollbar { display: none; }
-        .chip { white-space: nowrap; background: white; padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; border: 1px solid #eee; }
-        .chip.active { background: var(--primary); color: white; border-color: var(--primary); }
-        .chip.secondary.active { background: var(--secondary); border-color: var(--secondary); }
+        .chip { white-space: nowrap; background: white; padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; border: 1px solid #ddd; color: #333; }
+        .chip.active { background: var(--primary); color: white !important; border-color: var(--primary); }
+        .chip.secondary.active { background: var(--secondary); color: white !important; border-color: var(--secondary); }
 
-        .recipe-card { background: white; border-radius: 16px; padding: 18px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); display: flex; justify-content: space-between; align-items: center; }
-        .recipe-info h3 { margin: 0 0 4px; font-size: 1rem; text-transform: uppercase; font-weight: 800; }
-        .recipe-info p { margin: 0; font-size: 0.75rem; color: var(--secondary); font-weight: bold; }
+        .recipe-card { background: white; border-radius: 16px; padding: 18px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); display: flex; justify-content: space-between; align-items: center; border-left: 6px solid var(--primary); }
+        .recipe-info h3 { margin: 0 0 4px; font-size: 1.1rem; text-transform: uppercase; font-weight: 800; color: #000000 !important; }
+        .recipe-info p { margin: 0; font-size: 0.8rem; color: var(--secondary); font-weight: 800; }
         .fav-icon { color: #ddd; }
         .fav-icon.active { color: var(--accent); }
 
         .menu-day { background: white; border-radius: 20px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .day-title { color: var(--primary); font-weight: 900; margin-bottom: 15px; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        .day-title { color: var(--primary-dark); font-weight: 900; margin-bottom: 15px; font-size: 1.2rem; border-bottom: 2px solid var(--bg); padding-bottom: 8px; }
         .meal-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 10px; }
-        .meal { flex: 1; font-size: 0.9rem; font-weight: 700; color: var(--text); }
-        .meal b { color: #666; font-size: 0.7rem; display: block; margin-bottom: 3px; font-weight: 800; text-transform: uppercase; }
-        .refresh-btn { color: var(--primary-light); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
-
-        .tip-card { background: var(--tip-bg); border-radius: 15px; padding: 12px; margin-top: 10px; border-left: 5px solid var(--secondary); display: flex; gap: 10px; align-items: flex-start; }
-        .tip-text { font-size: 0.8rem; color: #2E7D32; font-style: italic; }
+        .meal { flex: 1; font-size: 1rem; font-weight: 700; color: #000000; }
+        .meal b { color: #666; font-size: 0.75rem; display: block; margin-bottom: 3px; font-weight: 900; text-transform: uppercase; }
+        .refresh-btn { color: var(--primary); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
 
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; display: none; overflow-y: auto; }
-        .modal-header { background: white; padding: 50px 20px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
-        .modal-title { font-size: 1.1rem; font-weight: 900; color: var(--primary); flex: 1; margin: 0 10px; }
+        .modal-header { background: white; padding: 50px 20px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .modal-title { font-size: 1.2rem; font-weight: 900; color: var(--primary-dark); flex: 1; margin: 0 10px; text-transform: uppercase; }
         .modal-content { padding: 20px; padding-bottom: 120px; }
 
-        .section-h { margin-top: 20px; color: var(--primary); font-weight: 900; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-bottom: 12px; }
-        .list-item { margin-bottom: 10px; display: flex; gap: 10px; align-items: flex-start; }
-        .ing-check { min-width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; color: white; margin-top: 2px; }
+        .section-h { margin-top: 25px; color: var(--primary-dark); font-weight: 900; border-bottom: 2px solid #eee; padding-bottom: 6px; margin-bottom: 15px; font-size: 1.1rem; }
+        .list-item { margin-bottom: 12px; display: flex; gap: 12px; align-items: flex-start; line-height: 1.5; font-size: 1rem; color: #000000; }
+        .ing-check { min-width: 26px; height: 26px; border-radius: 8px; border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; color: white; margin-top: 2px; }
         .ing-check.active { background: var(--primary); }
-        .ing-text { font-size: 0.95rem; }
-        .ing-text.active { text-decoration: line-through; opacity: 0.5; }
 
-        .timer-card { background: var(--timer-bg); border-radius: 15px; padding: 15px; margin-top: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .timer-display { font-size: 2rem; font-weight: 900; color: var(--primary); }
-        .timer-btn { background: var(--primary); color: white; border: none; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .timer-card { background: var(--timer-bg); border-radius: 15px; padding: 20px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .timer-display { font-size: 2.5rem; font-weight: 900; color: var(--primary-dark); font-variant-numeric: tabular-nums; }
+        .timer-btn { background: var(--primary); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
-        .legal-footer { text-align: center; margin-top: 40px; padding-bottom: 20px; font-size: 0.75rem; color: #90A4AE; }
+        .legal-footer { text-align: center; margin-top: 40px; padding-bottom: 20px; font-size: 0.85rem; color: #90A4AE; }
         .legal-footer a { color: var(--primary); text-decoration: none; margin: 0 8px; font-weight: bold; }
     </style>
 </head>
@@ -157,8 +148,7 @@
             const gain = audioCtx.createGain();
             osc.connect(gain); gain.connect(audioCtx.destination);
             osc.type = 'sine'; osc.frequency.setValueAtTime(880, audioCtx.currentTime);
-            gain.gain.setValueAtTime(0, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
             osc.start();
             gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.5);
             osc.stop(audioCtx.currentTime + 1.5);
@@ -170,20 +160,12 @@
         return String(text).replace(/\uFFFD/g, "Ó").replace(/Ã±/g, "ñ").replace(/Ã‘/g, "Ñ").replace(/Ã³/g, "ó").replace(/Ã¡/g, "á").replace(/Ã©/g, "é").replace(/Ã­/g, "í").replace(/Ãº/g, "ú").replace(/Ã“/g, "Ó").replace(/Ã /g, "Á").replace(/Ã‰/g, "É").replace(/Â½/g, "½").replace(/Âº/g, "º").replace(/Â/g, "").replace(/Ã/g, "í").replace(/%%/g, "É").replace(/FRÃDO/g, "FRÍO").replace(/FRÃ/g, "FRÍO").replace(/PURÃ/g, "PURÉ").replace(/CARIÃ/g, "CARIÑOSA").replace(/CARIÃ‘OSA/g, "CARIÑOSA").replace(/ALIÃ‘O/g, "ALIÑO");
     }
 
-    const superTips = [
-        "🌟 Superalimento: Limón a las legumbres = Hierro x3.",
-        "🌟 Proteína Completa: Legumbres + Arroz/Quinoa.",
-        "🌟 Omega-3: Lino molido o chía en ensaladas.",
-        "💡 Ciencia Glucosa: Enfría arroz/pasta para almidón resistente.",
-        "💡 Tip Salud: Ajo picado reposando 10 min activa alicina."
-    ];
-
     const predefinedBreakfasts = {
-        "Default": ["Tostada con AOVE y Tomate", "Yogur con Nueces y Fruta", "Café solo y pieza de Fruta", "Leche con Avena y Canela", "Tostada con Jamón Serrano"],
-        "Sana": ["Tostada Integral con Aguacate", "Bol de Frutas Tropicales", "Kéfir con Semillas de Chía", "Té Verde y Tostada de Centeno", "Tortilla de Claras con Pavo"],
-        "Perder peso": ["Tortilla Francesa de 2 claras", "Yogur Desnatado con Frutos Rojos", "Batido Verde Detox", "Infusión y Manzana", "Queso Fresco con Rodajas de Tomate"],
-        "Músculo": ["Tortilla de 3 huevos y Queso", "Batido de Proteína y Plátano", "Gachas de Avena con Crema de Cacahuete", "Tostada con Salmón y Huevo", "Yogur Griego con Almendras"],
-        "Diabéticos": ["Tostada de Pan Alemán con Aguacate", "Tortilla con Champiñones", "Café con Stevia y Nueces", "Yogur Natural sin azúcar", "Tostada Integral con Queso Cottage"]
+        "Default": ["Tostada con AOVE y Tomate", "Yogur con Nueces y Fruta", "Café solo y pieza de Fruta", "Tostada con Jamón Serrano"],
+        "Sana": ["Tostada Integral con Aguacate", "Bol de Frutas Tropicales", "Kéfir con Semillas de Chía", "Tortilla de Claras con Pavo"],
+        "Perder peso": ["Tortilla Francesa de 2 claras", "Yogur Desnatado con Frutos Rojos", "Batido Verde Detox", "Infusión y Manzana"],
+        "Músculo": ["Tortilla de 3 huevos y Queso", "Batido de Proteína y Plátano", "Tostada con Salmón y Huevo", "Yogur Griego con Almendras"],
+        "Diabéticos": ["Tostada de Pan Alemán con Aguacate", "Tortilla con Champiñones", "Café con Stevia y Nueces", "Yogur Natural sin azúcar"]
     };
 
     async function init() {
@@ -191,23 +173,22 @@
             const snapshot = await db.collection('recipes').limit(3000).get();
             allRecipes = snapshot.docs.map(doc => {
                 const d = doc.data();
-                let cat = cleanText(d.category || "").trim();
-                const title = cleanText(d.title || "").toLowerCase();
-
-                // Inteligencia de auto-categorización
+                const title = cleanText(d.title || "");
+                let cat = cleanText(d.category || "");
                 if (!cat || cat === "Varios" || cat === "undefined") {
-                    if (title.includes("arroz")) cat = "Arroces";
-                    else if (title.includes("pasta") || title.includes("macarrones")) cat = "Pastas";
-                    else if (title.includes("ensalada")) cat = "Ensaladas";
-                    else if (title.includes("carne") || title.includes("pollo") || title.includes("ternera")) cat = "Carnes";
-                    else if (title.includes("pescado") || title.includes("bacalao") || title.includes("atun")) cat = "Pescados";
-                    else if (title.includes("verdura") || title.includes("espinaca") || title.includes("judía")) cat = "Verduras";
-                    else if (title.includes("lentejas") || title.includes("garbanzos") || title.includes("alubias")) cat = "Legumbres";
-                    else if (title.includes("sopa") || title.includes("crema") || title.includes("caldo")) cat = "Sopas";
-                    else if (title.includes("postre") || title.includes("tarta") || title.includes("dulce")) cat = "Postres";
-                    else if (title.includes("aperitivo") || title.includes("tapa")) cat = "Aperitivos";
+                    const t = title.toLowerCase();
+                    if (t.includes("arroz")) cat = "Arroces";
+                    else if (t.includes("pasta") || t.includes("macarron")) cat = "Pastas";
+                    else if (t.includes("ensalada")) cat = "Ensaladas";
+                    else if (t.includes("carne") || t.includes("pollo")) cat = "Carnes";
+                    else if (t.includes("pescado") || t.includes("bacalao")) cat = "Pescados";
+                    else if (t.includes("verdura") || t.includes("espinaca")) cat = "Verduras";
+                    else if (t.includes("lenteja") || t.includes("garbanzo")) cat = "Legumbres";
+                    else if (t.includes("sopa") || t.includes("crema")) cat = "Sopas";
+                    else if (t.includes("postre") || t.includes("tarta")) cat = "Postres";
+                    else if (t.includes("aperitivo")) cat = "Aperitivos";
                 }
-                return { id: doc.id, ...d, title: cleanText(d.title), category: cat || "Varios", ingredients: (d.ingredients || []).map(cleanText), instructions: (d.instructions || []).map(cleanText) };
+                return { id: doc.id, ...d, title: title, category: cat || "Varios", ingredients: (d.ingredients || []).map(cleanText), instructions: (d.instructions || []).map(cleanText) };
             });
             switchView('list');
         } catch (e) { document.getElementById('main-content').innerHTML = "<p>Error de conexión.</p>"; }
@@ -225,7 +206,7 @@
         container.innerHTML = '';
         if (currentView === 'list' || currentView === 'favs') {
             const ui = document.createElement('div');
-            ui.innerHTML = `<div class="search-box"><i data-lucide="search"></i><input type="text" id="search-input" placeholder="Buscar receta..." value="${searchQuery}"></div><div class="filter-row">${["Sana", "Perder peso", "Músculo", "Diabéticos"].map(t => `<div class="chip ${activeTag === t ? 'active' : ''}" onclick="toggleTag('${t}')">${t}</div>`).join('')}</div><div class="filter-row">${["Aperitivos", "Ensaladas", "Legumbres", "Sopas", "Arroces", "Pastas", "Verduras", "Pescados", "Carnes", "Postres"].map(f => `<div class="chip secondary ${activeCategory === f ? 'active' : ''}" onclick="toggleCat('${f}')">${f}</div>`).join('')}</div><div id="recipe-list"></div><div class="legal-footer"><a href="../privacy.html">Privacidad</a> | <a href="../terms.html">Términos</a><br>By JOSEMAN &copy; 2026</div>`;
+            ui.innerHTML = `<div class="search-box"><i data-lucide="search"></i><input type="text" id="search-input" placeholder="Buscar receta o ingrediente..." value="${searchQuery}"></div><div class="filter-row">${["Sana", "Perder peso", "Músculo", "Diabéticos"].map(t => `<div class="chip ${activeTag === t ? 'active' : ''}" onclick="toggleTag('${t}')">${t}</div>`).join('')}</div><div class="filter-row">${["Aperitivos", "Ensaladas", "Legumbres", "Sopas", "Arroces", "Pastas", "Verduras", "Pescados", "Carnes", "Postres"].map(f => `<div class="chip secondary ${activeCategory === f ? 'active' : ''}" onclick="toggleCat('${f}')">${f}</div>`).join('')}</div><div id="recipe-list"></div><div class="legal-footer"><a href="../privacy.html">Privacidad</a> | <a href="../terms.html">Términos</a><br>By JOSEMAN &copy; 2026</div>`;
             container.appendChild(ui);
             document.getElementById('search-input').addEventListener('input', (e) => { searchQuery = e.target.value; renderList(); });
             renderList();
@@ -236,8 +217,9 @@
 
     function renderList() {
         const div = document.getElementById('recipe-list');
-        if (allRecipes.length === 0) { div.innerHTML = "<p style='text-align:center; padding:40px;'>Cargando base de datos...</p>"; return; }
         const q = searchQuery.toLowerCase();
+        if (allRecipes.length === 0) { div.innerHTML = "<p style='text-align:center; padding:40px; color:#666;'>Cargando base de datos...</p>"; return; }
+
         const filtered = allRecipes.filter(r => {
             const t = r.title.toLowerCase();
             const c = r.category.toLowerCase();
@@ -247,24 +229,21 @@
             if (activeTag) {
                 const tag = activeTag.toLowerCase();
                 if (tag === "sana") matchTag = ["ensalada", "verdura", "pescado", "legumbre", "fruta"].some(x => c.includes(x) || t.includes(x));
-                else if (tag === "perder peso") matchTag = ["ensalada", "verdura", "sopa", "pescado"].some(x => c.includes(x) || t.includes(x));
+                else if (tag === "perder peso") matchTag = ["ensalada", "verdura", "sopa", "pescado", "fruta"].some(x => c.includes(x) || t.includes(x));
                 else if (tag === "músculo") matchTag = ["carne", "pescado", "legumbre", "pasta", "arroz"].some(x => c.includes(x) || t.includes(x));
-                else if (tag === "diabéticos") matchTag = !["postre", "tarta", "dulce", "azucar", "bolleria", "reposteria", "nata"].some(x => c.includes(x) || t.includes(x));
+                else if (tag === "diabéticos") matchTag = !["postre", "tarta", "dulce", "bolleria", "reposteria", "nata"].some(x => c.includes(x) || t.includes(x));
             }
 
-            let matchCat = true;
-            if (activeCategory) {
-                const target = activeCategory.toLowerCase().substring(0, 4);
-                matchCat = c.includes(target) || t.includes(target);
-            }
-            return matchSearch && matchTag && matchCat && (currentView !== 'favs' || favorites.includes(r.id || r.title));
+            let matchCat = !activeCategory || c.includes(activeCategory.toLowerCase().substring(0, 4)) || t.includes(activeCategory.toLowerCase().substring(0, 4));
+            const matchFav = currentView !== 'favs' || favorites.includes(r.id || r.title);
+            return matchSearch && matchTag && matchCat && matchFav;
         });
-        div.innerHTML = filtered.length === 0 ? `<p style="text-align:center; padding:40px;">No hay resultados.</p>` : filtered.map(r => `<div class="recipe-card" onclick="openRecipe('${r.id || r.title}')"><div class="recipe-info"><h3>${r.title}</h3><p>${r.category}</p></div><div class="fav-icon ${favorites.includes(r.id || r.title) ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav('${r.id || r.title}')"><i data-lucide="heart" fill="${favorites.includes(r.id || r.title) ? 'currentColor' : 'none'}"></i></div></div>`).join('');
+        div.innerHTML = filtered.length === 0 ? `<p style="text-align:center; padding:40px; color:#666;">No hay resultados.</p>` : filtered.map(r => `<div class="recipe-card" onclick="openRecipe('${r.id || r.title}')"><div class="recipe-info"><h3>${r.title}</h3><p>${r.category}</p></div><div class="fav-icon ${favorites.includes(r.id || r.title) ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav('${r.id || r.title}')"><i data-lucide="heart" fill="${favorites.includes(r.id || r.title) ? 'currentColor' : 'none'}"></i></div></div>`).join('');
         lucide.createIcons();
     }
 
     function renderMenu(c) {
-        c.innerHTML = `<div style="text-align:center; margin-bottom:20px;"><h2 style="color:var(--primary); margin:0;">Plan Semanal Inteligente</h2><p style="font-size:0.75rem; margin-top:5px; color:#666;">Optimizado para perfil: <b>${activeTag || 'Estándar'}</b></p><button class="chip active" style="margin-top:10px;" onclick="generateMenu()">GENERAR NUEVO</button></div><div id="weekly-days"></div>`;
+        c.innerHTML = `<div style="text-align:center; margin-bottom:20px;"><h2 style="color:var(--primary-dark); margin:0;">Plan Semanal Inteligente</h2><p style="font-size:0.75rem; margin-top:5px; color:#666;">Basado en perfil: <b>${activeTag || 'Estándar'}</b></p><button class="chip active" style="margin-top:10px;" onclick="generateMenu()">GENERAR NUEVO</button></div><div id="weekly-days"></div>`;
         const menu = JSON.parse(localStorage.getItem('web_menu') || '[]');
         if (menu.length === 0) { generateMenu(); return; }
         const days = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
@@ -278,7 +257,7 @@
         lucide.createIcons();
     }
 
-    const bannedWords = ["macerar", "marinar", "desalar", "salsa", "aliño", "base", "técnica", "relleno", "truco", "masa", "caldo", "sofrito", "limpieza", "preparación", "nata", "crema", "decoración"];
+    const bannedWords = ["macerar", "marinar", "desalar", "salsa", "aliño", "base", "técnica", "relleno", "truco", "masa", "caldo", "sofrito", "preparación", "nata", "crema", "decoración"];
 
     function getRandomMeal(type, used, dayIndex = 0) {
         if (type === 'breakfast') {
@@ -291,15 +270,15 @@
             const c = r.category.toLowerCase();
             if (bannedWords.some(w => t.includes(w))) return false;
             if (["salsa", "base", "tecnica"].some(x => c.includes(x))) return false;
-            if (profile === "Diabéticos" && ["postre", "dulce", "azucar", "nata"].some(x => t.includes(x) || c.includes(x))) return false;
+            if (profile === "Diabéticos" && ["postre", "dulce", "nata"].some(x => t.includes(x) || c.includes(x))) return false;
             return true;
         });
 
         if (type === 'lunch') {
             const pattern = ["legumbre", "carne", "pasta", "pescado", "legumbre", "carne", "arroz"];
-            const target = pattern[dayIndex % 7];
-            let sub = pool.filter(r => r.category.toLowerCase().includes(target));
+            let sub = pool.filter(r => r.category.toLowerCase().includes(pattern[dayIndex % 7]));
             if (sub.length > 5) pool = sub;
+            if (profile !== "Perder peso") pool = pool.filter(r => !r.category.toLowerCase().includes("ensalada"));
         } else {
             pool = pool.filter(r => ["verdura", "ensalada", "sopa", "pescado", "ave"].some(x => r.category.toLowerCase().includes(x)));
         }
@@ -323,20 +302,18 @@
 
     function openRecipe(id) {
         const r = allRecipes.find(rec => (rec.id || rec.title) === id);
-        if (!r) {
-            document.getElementById('m-title').innerText = id;
-            document.getElementById('m-content-area').innerHTML = `<div style="padding:30px; text-align:center;"><h3>Sugerencia Nutritiva</h3><p>Este plato está seleccionado específicamente para tu perfil activo.</p></div>`;
-            document.getElementById('recipe-modal').style.display = 'block'; return;
-        }
         currentOpenId = id;
-        document.getElementById('m-title').innerText = r.title;
-        document.getElementById('m-content-area').innerHTML = `<div class="timer-card"><div><div style="font-size: 0.6rem; font-weight: bold; color: var(--primary-light);">TEMPORIZADOR</div><div id="m-timer" class="timer-display">20:00</div></div><div style="display:flex; gap:8px;"><button class="timer-btn" onclick="adjustTimer(-60)"><i data-lucide="minus"></i></button><button id="timer-toggle" class="timer-btn" onclick="toggleTimer()"><i data-lucide="play"></i></button><button class="timer-btn" onclick="adjustTimer(60)"><i data-lucide="plus"></i></button></div></div><div class="section-h">INGREDIENTES</div><div id="m-ingredients"></div><div id="m-shopping-section"></div><div class="section-h">PREPARACIÓN</div><div id="m-instructions"></div><div class="section-h">MIS NOTAS</div><textarea id="m-notes" style="width:100%; min-height:80px; padding:10px; border-radius:10px; border:1px solid #ddd; font-family: inherit;" placeholder="Tus notas..."></textarea><button class="btn" style="width:100%; margin-top:10px; background:var(--primary); color:white; border:none; padding:15px; border-radius:12px; font-weight:bold;" onclick="saveNote()">GUARDAR NOTA</button>`;
-        document.getElementById('m-notes').value = userNotes[id] || "";
-        renderIngredients(r);
-        document.getElementById('m-instructions').innerHTML = r.instructions.map((inst, i) => `<div class="list-item"><span style="font-weight:bold; color:var(--primary); min-width:20px;">${i+1}.</span><span>${inst}</span></div>`).join('');
-        const timeMatch = (r.cookingTime || "").match(/\d+/);
-        timerSeconds = (timeMatch ? parseInt(timeMatch[0]) : 20) * 60;
-        updateTimerDisplay(); document.getElementById('recipe-modal').style.display = 'block'; lucide.createIcons();
+        document.getElementById('m-title').innerText = r ? r.title : id;
+        let html = "";
+        if (r) {
+            html = `<div class="timer-card"><div><div style="font-size: 0.6rem; font-weight: bold; color: var(--primary-light);">TEMPORIZADOR</div><div id="m-timer" class="timer-display">20:00</div></div><div style="display:flex; gap:8px;"><button class="timer-btn" onclick="adjustTimer(-60)"><i data-lucide="minus"></i></button><button id="timer-toggle" class="timer-btn" onclick="toggleTimer()"><i data-lucide="play"></i></button><button class="timer-btn" onclick="adjustTimer(60)"><i data-lucide="plus"></i></button></div></div><div class="section-h">INGREDIENTES</div><div id="m-ingredients">${r.ingredients.map(i => `<div class="list-item"><div class="ing-check"><i data-lucide="check" size="14"></i></div><span style="color:#000000 !important;">${i}</span></div>`).join('')}</div><div class="section-h">PREPARACIÓN</div><div id="m-instructions">${r.instructions.map((ins, idx) => `<div class="list-item"><b style="color:#000;">${idx+1}.</b> <span style="color:#000;">${ins}</span></div>`).join('')}</div><div class="section-h">MIS NOTAS</div><textarea id="m-notes" style="width:100%; min-height:80px; padding:10px; border-radius:10px; border:1px solid #ddd; font-family: inherit; color:#000;" placeholder="Añade tus trucos..."></textarea><button class="btn" style="width:100%; margin-top:10px; background:var(--primary); color:white; border:none; padding:15px; border-radius:12px; font-weight:bold;" onclick="saveNote()">GUARDAR NOTA</button>`;
+        } else {
+            html = `<div style="padding:30px; text-align:center; color:var(--text);"><p>Sugerencia de desayuno para tu perfil nutricional.</p></div>`;
+        }
+        document.getElementById('m-content-area').innerHTML = html;
+        document.getElementById('recipe-modal').style.display = 'block';
+        if (r) document.getElementById('m-notes').value = userNotes[id] || "";
+        lucide.createIcons();
     }
 
     function toggleTimer() {
@@ -348,34 +325,19 @@
     function updateTimerDisplay() { const m = Math.floor(timerSeconds/60), s = timerSeconds%60; const el = document.getElementById('m-timer'); if (el) el.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`; }
     function adjustTimer(s) { timerSeconds = Math.max(0, timerSeconds + s); updateTimerDisplay(); }
 
-    function renderIngredients(r) {
-        const checks = JSON.parse(localStorage.getItem('web_checked')||'{}')[currentOpenId] || [];
-        document.getElementById('m-ingredients').innerHTML = r.ingredients.map(ing => `<div class="list-item" onclick="toggleIng('${ing}')"><div class="ing-check ${checks.includes(ing) ? 'active' : ''}"><i data-lucide="check" size="14"></i></div><span class="ing-text ${checks.includes(ing) ? 'active' : ''}">${ing}</span></div>`).join('');
-        const missing = r.ingredients.filter(i => !checks.includes(i));
-        document.getElementById('m-shopping-section').innerHTML = missing.length > 0 ? `<div class="shopping-card"><strong style="color:var(--primary); font-size:0.9rem;"><i data-lucide="shopping-cart" size="16"></i> COMPRA</strong>${missing.map(m => `<div style="font-size:0.85rem; margin:4px 0;">• ${m}</div>`).join('')}</div>` : `<div class="shopping-card" style="background:#E8F5E9; border-color:#81C784; text-align:center; color:#2E7D32;">🎉 ¡Listo!</div>`;
-        lucide.createIcons();
-    }
-
-    function toggleIng(ing) {
-        let all = JSON.parse(localStorage.getItem('web_checked')||'{}'); let c = all[currentOpenId] || [];
-        c = c.includes(ing) ? c.filter(x => x !== ing) : [...c, ing];
-        all[currentOpenId] = c; localStorage.setItem('web_checked', JSON.stringify(all));
-        renderIngredients(allRecipes.find(x => (x.id||x.title) === currentOpenId));
-    }
-
-    function renderSpices(c) {
-        const spiceGuide = [{ name: "Cúrcuma", use: "Antinflamatorio.", health: "Top" },{ name: "Comino", use: "Digestivo.", health: "Alta" }];
-        c.innerHTML = `<div style="text-align:center; margin-bottom: 25px;"><h2 style="color:var(--primary);">Guía de Especias</h2></div>${spiceGuide.map(s => `<div class="spice-card"><div class="spice-title">${s.name} <span class="spice-benefit">${s.health}</span></div><p style="font-size:0.9rem; margin:0;">${s.use}</p></div>`).join('')}`;
-        lucide.createIcons();
-    }
-
-    function saveNote() { userNotes[currentOpenId] = document.getElementById('m-notes').value; localStorage.setItem('web_notes', JSON.stringify(userNotes)); alert("¡Guardada!"); }
-    function shareRecipe() { const r = allRecipes.find(x => (x.id||x.title) === currentOpenId); const text = r ? `Receta: ${r.title}\n\nIngredientes:\n${r.ingredients.join('\n')}` : `Sugerencia: ${currentOpenId}`; if (navigator.share) navigator.share({ title: 'Receta', text: text }); }
-    function toggleTag(t) { activeTag = activeTag === t ? '' : t; render(); }
-    function toggleCat(c) { activeCategory = activeCategory === c ? '' : c; render(); }
     function toggleFav(id) { if (favorites.includes(id)) favorites = favorites.filter(f => f !== id); else favorites.push(id); localStorage.setItem('web_favs', JSON.stringify(favorites)); renderList(); }
     function openRecipeByName(n) { openRecipe(n); }
     function closeModal() { document.getElementById('recipe-modal').style.display = 'none'; clearInterval(timerInterval); timerRunning = false; }
+    function toggleTag(t) { activeTag = activeTag === t ? '' : t; render(); }
+    function toggleCat(c) { activeCategory = activeCategory === c ? '' : c; render(); }
+
+    function saveNote() { userNotes[currentOpenId] = document.getElementById('m-notes').value; localStorage.setItem('web_notes', JSON.stringify(userNotes)); alert("¡Guardada!"); }
+    function shareRecipe() { const r = allRecipes.find(x => (x.id||x.title) === currentOpenId); const text = r ? `Receta: ${r.title}\n\nIngredientes:\n${r.ingredients.join('\n')}` : `Sugerencia: ${currentOpenId}`; if (navigator.share) navigator.share({ title: 'Receta', text: text }); }
+
+    function renderSpices(c) {
+        c.innerHTML = `<div style="text-align:center; margin-bottom: 25px;"><h2 style="color:var(--primary-dark);">Guía de Especias</h2></div><div class="spice-card"><div class="spice-title">Cúrcuma</div><p>Antinflamatorio natural potente.</p></div><div class="spice-card"><div class="spice-title">Comino</div><p>Digestivo estrella, ideal para legumbres.</p></div>`;
+        lucide.createIcons();
+    }
 
     init();
 </script>

@@ -249,13 +249,18 @@
             const mS = r.title.toLowerCase().includes(q) || r.ingredients.some(i => i.toLowerCase().includes(q));
             let mT = true;
             const cat = (r.category || "").toLowerCase();
-            if (activeTag === "Sana") mT = ["ensaladas", "verduras", "pescados", "legumbres"].some(c => cat.includes(c));
-            else if (activeTag === "Perder peso") mT = ["ensaladas", "verduras", "sopas", "pescados"].some(c => cat.includes(c));
-            else if (activeTag === "Músculo") mT = ["carnes", "pescados", "legumbres", "pastas"].some(c => cat.includes(c));
-            else if (activeTag === "Diabéticos") mT = !["postres", "pastas", "arroces"].some(c => cat.includes(c));
-
             const actCat = activeCategory.toLowerCase();
-            const mC = !activeCategory || cat.includes(actCat.substring(0, 4)) || actCat.includes(cat.substring(0, 4));
+
+            // Búsqueda flexible de categoría:
+            // 1. Coincidencia exacta
+            // 2. La categoría de la receta contiene el filtro (ej: "Arroces caldosos" contiene "Arroces")
+            // 3. El filtro contiene la categoría de la receta (ej: "Arroces" contiene "Arroz")
+            const mC = !activeCategory ||
+                       cat.includes(actCat) ||
+                       actCat.includes(cat) ||
+                       (actCat.endsWith('es') && cat.includes(actCat.slice(0, -2))) || // Arroces -> Arroz
+                       (actCat.endsWith('s') && cat.includes(actCat.slice(0, -1)));   // Carnes -> Carne
+
             const mF = currentView !== 'favs' || favorites.includes(r.id || r.title);
             return mS && mT && mC && mF;
         });

@@ -252,13 +252,10 @@
             const mS = r.title.toLowerCase().includes(q) || r.ingredients.some(i => i.toLowerCase().includes(q));
             let mT = true;
             const cat = (r.category || "").toLowerCase();
-            if (activeTag === "Sana") mT = ["ensaladas", "verduras", "pescados"].some(c => cat.includes(c));
-            else if (activeTag === "Perder peso") mT = ["ensaladas", "verduras"].some(c => cat.includes(c));
-            else if (activeTag === "Músculo") mT = ["carnes", "pescados", "legumbres"].some(c => cat.includes(c));
-            else if (activeTag === "Diabéticos") mT = !["postres", "pastas", "arroces"].some(c => cat.includes(c));
-
             const actCat = activeCategory.toLowerCase();
-            const mC = !activeCategory || cat.includes(actCat.substring(0, 4)) || actCat.includes(cat.substring(0, 4));
+            // Comprobación más robusta:
+            const mC = !activeCategory || cat.includes(actCat) || actCat.includes(cat) ||
+                       cat.includes(actCat.substring(0, 4)) || actCat.substring(0, 4).includes(cat);
             const mF = currentView !== 'favs' || favorites.includes(r.id || r.title);
             return mS && mT && mC && mF;
         });

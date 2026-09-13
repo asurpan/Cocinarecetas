@@ -8,10 +8,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="CocinaREcetas">
-    <link rel="apple-touch-icon" href="../assets/icon-192.png">
+    <link rel="apple-touch-icon" href="../recetas-removebg-preview.png">
 
     <link rel="manifest" href="../manifest.json">
-    <title>CocinaREcetas Sevilla | Web App</title>
+    <title>CocinaREcetas Pro | Web App</title>
 
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -29,8 +29,7 @@
             --surface: #FFFFFF;
             --text: #00363A;
             --tip-bg: #E8F5E9;
-            --shopping-bg: #FFF8E1;
-            --salt-tip-bg: #E1F5FE;
+            --timer-bg: #E1F5FE;
         }
 
         body {
@@ -41,7 +40,7 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        .recipe-card, .nav-item, .chip, .btn, .meal, .close-btn, .refresh-btn, .back-btn, .action-btn {
+        .recipe-card, .nav-item, .chip, .btn, .meal, .close-btn, .refresh-btn, .timer-btn {
             cursor: pointer !important;
         }
 
@@ -51,8 +50,10 @@
             text-align: center; position: sticky; top: 0; z-index: 100;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        .header h1 { margin: 0; font-size: 1.35rem; font-weight: 900; letter-spacing: 1.5px; line-height: 1; }
-        .brand { font-size: 0.65rem; font-weight: 800; letter-spacing: 3px; opacity: 0.8; margin-top: 4px; text-transform: uppercase; }
+
+        .header-logo { width: 42px; vertical-align: middle; margin-right: 12px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
+        .header h1 { margin: 0; display: inline-block; vertical-align: middle; font-size: 1.3rem; font-weight: 900; letter-spacing: 1px; }
+        .brand { font-size: 0.6rem; font-weight: 800; letter-spacing: 2px; opacity: 0.8; margin-top: 2px; }
 
         .content { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 120px; }
 
@@ -62,7 +63,7 @@
             align-items: center; border-top: 1px solid #eee; z-index: 150;
             padding-bottom: env(safe-area-inset-bottom);
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #90A4AE; font-size: 0.7rem; font-weight: bold; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #90A4AE; font-size: 0.65rem; font-weight: bold; }
         .nav-item.active { color: var(--primary); }
         .nav-item i { margin-bottom: 4px; }
 
@@ -80,43 +81,30 @@
         .fav-icon { color: #ddd; }
         .fav-icon.active { color: var(--accent); }
 
-        .menu-day { background: white; border-radius: 20px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .day-title { color: var(--primary); font-weight: 900; margin-bottom: 15px; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 8px; }
-        .meal-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-        .meal { flex: 1; font-size: 0.95rem; font-weight: 700; }
-        .meal b { color: #666; font-size: 0.72rem; display: block; margin-bottom: 3px; }
-
-        .tip-card { background: var(--tip-bg); border-radius: 15px; padding: 15px; margin-top: 10px; border-left: 5px solid var(--secondary); display: flex; gap: 10px; }
-        .tip-text { font-size: 0.85rem; color: #2E7D32; font-style: italic; }
-
-        .salt-tip-card { background: var(--salt-tip-bg); border-radius: 15px; padding: 15px; margin-top: 10px; border-left: 5px solid var(--primary-light); display: flex; gap: 10px; }
-        .salt-text { font-size: 0.85rem; color: #01579B; font-weight: 600; }
-
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; display: none; overflow-y: auto; animation: slideIn 0.3s ease-out; }
-        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        @keyframes slideIn { from { transform: translateY(100%); } to { transform: translateY(0); } }
         .modal-header { background: white; padding: 50px 20px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .modal-title { font-size: 1.1rem; font-weight: 900; color: var(--primary); flex: 1; margin: 0 10px; }
         .modal-content { padding: 20px; padding-bottom: 120px; }
 
-        .section-h { margin-top: 25px; color: var(--primary); font-weight: 900; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .section-h { margin-top: 25px; color: var(--primary); font-weight: 900; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-bottom: 15px; }
         .list-item { margin-bottom: 12px; display: flex; gap: 10px; align-items: center; }
-        .ing-check { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; color: white; transition: all 0.2s; }
+        .ing-check { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; color: white; }
         .ing-check.active { background: var(--primary); }
-        .ing-text.active { text-decoration: line-through; opacity: 0.5; }
 
-        .shopping-card { background: var(--shopping-bg); border-radius: 20px; padding: 20px; margin-top: 20px; border: 1px dashed #FFD54F; }
-        .notes-area { width: 100%; min-height: 100px; padding: 15px; border-radius: 12px; border: 1px solid #ddd; font-family: inherit; font-size: 0.9rem; margin-top: 10px; box-sizing: border-box; }
+        .timer-card { background: var(--timer-bg); border-radius: 15px; padding: 15px; margin-top: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .timer-display { font-size: 2rem; font-weight: 900; color: var(--primary); }
+        .timer-btn { background: var(--primary); color: white; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
         .science-tip { background: #FFF3E0; border-radius: 15px; padding: 15px; margin-top: 20px; border-left: 5px solid #F57C00; }
         .science-tip h4 { margin: 0 0 5px; color: #E65100; font-size: 0.85rem; }
-
-        #install-overlay { position: fixed; bottom: 85px; left: 20px; right: 20px; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 -5px 25px rgba(0,0,0,0.2); z-index: 2500; display: none; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
     <div class="header">
+        <img src="../recetas-removebg-preview.png" alt="Logo" class="header-logo">
         <h1>COCINARECETAS</h1>
         <div class="brand">JOSEMAN</div>
     </div>
@@ -125,6 +113,7 @@
         <div class="nav-item active" onclick="switchView('list', this)"><i data-lucide="book-open"></i><span>RECETAS</span></div>
         <div class="nav-item" onclick="switchView('favs', this)"><i data-lucide="heart"></i><span>FAVORITOS</span></div>
         <div class="nav-item" onclick="switchView('menu', this)"><i data-lucide="calendar"></i><span>MENÚ</span></div>
+        <div class="nav-item" onclick="switchView('spices', this)"><i data-lucide="leaf"></i><span>ESPECIAS</span></div>
     </div>
 </div>
 
@@ -138,17 +127,26 @@
     <div class="modal-content">
         <div id="m-science-tip"></div>
 
+        <div class="timer-card">
+            <div>
+                <div style="font-size: 0.6rem; font-weight: bold; color: var(--primary-light);">TEMPORIZADOR</div>
+                <div id="m-timer" class="timer-display">20:00</div>
+            </div>
+            <div style="display:flex; gap:8px;">
+                <button class="timer-btn" onclick="adjustTimer(-60)"><i data-lucide="minus" size="16"></i></button>
+                <button id="timer-toggle" class="timer-btn" onclick="toggleTimer()"><i data-lucide="play" size="16"></i></button>
+                <button class="timer-btn" onclick="adjustTimer(60)"><i data-lucide="plus" size="16"></i></button>
+            </div>
+        </div>
+
         <div class="section-h">INGREDIENTES</div>
         <div id="m-ingredients"></div>
-
         <div id="m-shopping-section"></div>
-
         <div class="section-h">PREPARACIÓN</div>
         <div id="m-instructions"></div>
-
         <div class="section-h">MIS NOTAS</div>
-        <textarea id="m-notes" class="notes-area" placeholder="Añade tus trucos para esta receta..."></textarea>
-        <button class="btn" style="width:100%; margin-top:10px; background:var(--primary); color:white; border:none; padding:15px; border-radius:12px; font-weight:bold;" onclick="saveNote()">GUARDAR NOTA</button>
+        <textarea id="m-notes" style="width:100%; min-height:80px; padding:10px; border-radius:10px; border:1px solid #ddd;" placeholder="Añade tus notas..."></textarea>
+        <button class="btn" style="width:100%; margin-top:10px; background:var(--primary); color:white; border:none; padding:12px; border-radius:12px; font-weight:bold;" onclick="saveNote()">GUARDAR NOTA</button>
     </div>
 </div>
 
@@ -160,27 +158,19 @@
     let allRecipes = [], currentView = 'list', searchQuery = '', activeTag = '', activeCategory = '';
     let favorites = JSON.parse(localStorage.getItem('web_favs') || '[]');
     let userNotes = JSON.parse(localStorage.getItem('web_notes') || '{}');
-    let checkedIngs = JSON.parse(localStorage.getItem('web_checked') || '{}');
-    let currentOpenId = null;
+    let timerSeconds = 1200, timerInterval = null, timerRunning = false;
 
     function cleanText(text) {
-        if (text === undefined || text === null || text === "undefined" || text === "null") return "";
-        return String(text).replace(/\uFFFD/g, "Ó").replace(/Ã³/g, "ó").replace(/Ã¡/g, "á").replace(/Ã©/g, "é").replace(/Ã­/g, "í").replace(/Ãº/g, "ú").replace(/Ã±/g, "ñ").replace(/Ã“/g, "Ó").replace(/Ã /g, "Á").replace(/Ã‰/g, "É").replace(/Â½/g, "½").replace(/Âº/g, "º").replace(/Â/g, "").replace(/Ã/g, "í").replace(/%%/g, "É").replace(/FRÃDO/g, "FRÍO").replace(/FRÃ/g, "FRÍO");
+        if (!text || text === "undefined") return "";
+        return String(text).replace(/\uFFFD/g, "Ó").replace(/Ã±/g, "ñ").replace(/Ã‘/g, "Ñ").replace(/Ã³/g, "ó").replace(/Ã¡/g, "á").replace(/Ã©/g, "é").replace(/Ã­/g, "í").replace(/Ãº/g, "ú").replace(/Ã“/g, "Ó").replace(/Ã‰/g, "É").replace(/Â½/g, "½").replace(/Âº/g, "º").replace(/Â/g, "").replace(/Ã/g, "í").replace(/%%/g, "É").replace(/FRÃDO/g, "FRÍO");
     }
 
-    const superTips = [
-        "🌟 Superalimento: Añade zumo de limón a las legumbres para triplicar la absorción del hierro vegetal.",
-        "🌟 Proteína Completa: Combina legumbres con arroz o quinoa para obtener todos los aminoácidos esenciales.",
-        "🌟 Omega-3: Agrega lino molido o chía a tus platos para un corazón de hierro y una salud cardiovascular óptima.",
-        "🌟 Almidón Resistente: Deja enfriar el arroz o pasta cocida para alimentar tu microbiota y reducir el índice glucémico.",
-        "🌟 Salud Natural: Pica el ajo y déjalo reposar 10 min antes de cocinarlo para activar toda su alicina protectora."
-    ];
-
-    const saltTips = [
-        "🧂 Cálculo de Sal: Para 1 litro de agua o caldo, usa 10g de sal (aprox. 2 cucharaditas de café rasas).",
-        "🧂 Proporción: Si cocinas por vasos, calcula 2.5g de sal por cada vaso de agua estándar (250ml).",
-        "🧂 Precaución: Si usas caldos comprados o ingredientes ya salados, no añadas sal extra; solo al final al gusto.",
-        "🧂 Tip Chef: Es mejor añadir la sal siempre al final para controlar el sabor real una vez reducido el líquido."
+    const spiceGuide = [
+        { name: "Cúrcuma", use: "Antinflamatorio. Arroces, legumbres y cremas. Mézclala con pimienta negra.", health: "Top" },
+        { name: "Comino", use: "Digestivo. Carnes y legumbres para evitar gases.", health: "Alta" },
+        { name: "Orégano", use: "Antiséptico natural. Tomate, pizzas y carnes.", health: "Alta" },
+        { name: "Jengibre", use: "Digestivo y activador. Pescados y comida asiática.", health: "Muy Alta" },
+        { name: "Canela", use: "Regula el azúcar. Postres y tés.", health: "Excelente" }
     ];
 
     async function init() {
@@ -188,10 +178,10 @@
             const snapshot = await db.collection('recipes').limit(500).get();
             allRecipes = snapshot.docs.map(doc => {
                 const d = doc.data();
-                return { id: doc.id, ...d, title: cleanText(d.title), category: cleanText(d.category), ingredients: (d.ingredients || []).map(cleanText).filter(x=>x), instructions: (d.instructions || []).map(cleanText).filter(x=>x) };
+                return { id: doc.id, ...d, title: cleanText(d.title), category: cleanText(d.category), ingredients: (d.ingredients || []).map(cleanText), instructions: (d.instructions || []).map(cleanText) };
             });
             switchView('list');
-        } catch (e) { document.getElementById('main-content').innerHTML = "<p>Error de conexión.</p>"; }
+        } catch (e) { console.error(e); }
         lucide.createIcons();
     }
 
@@ -206,12 +196,12 @@
         container.innerHTML = '';
         if (currentView === 'list' || currentView === 'favs') {
             const ui = document.createElement('div');
-            ui.innerHTML = `<div class="search-box"><i data-lucide="search"></i><input type="text" id="search-input" placeholder="Buscar receta o ingrediente..." value="${searchQuery}"></div><div class="filter-row">${["Sana", "Perder peso", "Músculo", "Diabéticos"].map(t => `<div class="chip ${activeTag === t ? 'active' : ''}" onclick="toggleTag('${t}')">${t}</div>`).join('')}</div><div class="filter-row">${["Aperitivos", "Ensaladas", "Legumbres", "Sopas", "Arroces", "Pastas", "Verduras", "Pescados", "Carnes", "Postres"].map(f => `<div class="chip secondary ${activeCategory === f ? 'active' : ''}" onclick="toggleCat('${f}')">${f}</div>`).join('')}</div>`;
+            ui.innerHTML = `<div class="search-box"><i data-lucide="search"></i><input type="text" id="search-input" placeholder="Buscar..." value="${searchQuery}"></div><div class="filter-row">${["Sana", "Perder peso", "Músculo", "Diabéticos"].map(t => `<div class="chip ${activeTag === t ? 'active' : ''}" onclick="toggleTag('${t}')">${t}</div>`).join('')}</div><div class="filter-row">${["Aperitivos", "Ensaladas", "Legumbres", "Sopas", "Arroces", "Pastas", "Verduras", "Pescados", "Carnes", "Postres"].map(f => `<div class="chip secondary ${activeCategory === f ? 'active' : ''}" onclick="toggleCat('${f}')">${f}</div>`).join('')}</div><div id="recipe-list"></div>`;
             container.appendChild(ui);
             document.getElementById('search-input').addEventListener('input', (e) => { searchQuery = e.target.value; renderList(); });
-            const list = document.createElement('div'); list.id = "recipe-list"; container.appendChild(list);
             renderList();
         } else if (currentView === 'menu') renderMenu(container);
+        else if (currentView === 'spices') renderSpices(container);
         lucide.createIcons();
     }
 
@@ -225,47 +215,27 @@
             const mF = currentView !== 'favs' || favorites.includes(r.id || r.title);
             return mS && mT && mC && mF;
         });
-        div.innerHTML = filtered.length === 0 ? `<p style="text-align:center; padding:40px;">No hay resultados.</p>` : filtered.map(r => `<div class="recipe-card" onclick="openRecipe('${r.id || r.title}')"><div class="recipe-info"><h3>${r.title}</h3><p>${r.category || 'Varios'}</p></div><div class="fav-icon ${favorites.includes(r.id || r.title) ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav('${r.id || r.title}')"><i data-lucide="heart" fill="${favorites.includes(r.id || r.title) ? 'currentColor' : 'none'}"></i></div></div>`).join('');
+        div.innerHTML = filtered.map(r => `<div class="recipe-card" onclick="openRecipe('${r.id || r.title}')"><div class="recipe-info"><h3>${r.title}</h3><p>${r.category || 'Varios'}</p></div><div class="fav-icon ${favorites.includes(r.id || r.title) ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav('${r.id || r.title}')"><i data-lucide="heart" fill="${favorites.includes(r.id || r.title) ? 'currentColor' : 'none'}"></i></div></div>`).join('');
         lucide.createIcons();
     }
 
     function renderMenu(c) {
-        c.innerHTML = `<div style="text-align:center; margin-bottom:25px;"><h2 style="margin:0; color:var(--primary);">Plan Semanal de Sevilla</h2><button class="chip active" style="margin-top:10px; cursor:pointer;" onclick="generateMenu()">GENERAR NUEVO</button></div><div id="weekly-days"></div>`;
-        const menu = JSON.parse(localStorage.getItem('web_menu') || '[]');
-        if (menu.length === 0) { generateMenu(); return; }
+        const stored = JSON.parse(localStorage.getItem('web_menu') || '[]');
+        if (stored.length === 0) { generateMenu(); return; }
         const days = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
-        document.getElementById('weekly-days').innerHTML = menu.map((d, i) => `
-            <div class="menu-day">
-                <div class="day-title">${days[i]}</div>
-                <div class="meal-container"><div class="meal" onclick="openRecipeByName('${d.breakfast}')"><b>DESAYUNO</b> ${d.breakfast}</div><div class="refresh-btn" onclick="refreshMeal(${i}, 'breakfast')"><i data-lucide="refresh-cw" size="16"></i></div></div>
-                <div class="meal-container"><div class="meal" onclick="openRecipeByName('${d.lunch}')"><b>ALMUERZO</b> ${d.lunch}</div><div class="refresh-btn" onclick="refreshMeal(${i}, 'lunch')"><i data-lucide="refresh-cw" size="16"></i></div></div>
-                <div class="meal-container"><div class="meal" onclick="openRecipeByName('${d.dinner}')"><b>CENA</b> ${d.dinner}</div><div class="refresh-btn" onclick="refreshMeal(${i}, 'dinner')"><i data-lucide="refresh-cw" size="16"></i></div></div>
+        c.innerHTML = `<div style="text-align:center; margin-bottom:25px;"><h2 style="color:var(--primary);">Plan Semanal Inteligente</h2><button class="chip active" onclick="generateMenu()">NUEVO PLAN</button></div>${stored.map((d, i) => `<div class="menu-day"><div class="day-title">${days[i]}</div><div class="meal"><b>DESAYUNO</b> ${d.breakfast}</div><div class="meal"><b>ALMUERZO</b> ${d.lunch}</div><div class="meal"><b>CENA</b> ${d.dinner}</div></div>`).join('')}`;
+    }
 
-                <div class="tip-card"><i data-lucide="sparkles" size="18"></i><div class="tip-text">${d.superTip}</div></div>
-                <div class="salt-tip-card"><i data-lucide="droplet" size="18"></i><div class="salt-text">${d.saltTip}</div></div>
-            </div>`).join('');
-        lucide.createIcons();
+    function renderSpices(c) {
+        c.innerHTML = `<div style="text-align:center; margin-bottom: 25px;"><h2 style="color:var(--primary);">Guía de Especias</h2></div>${spiceGuide.map(s => `<div class="spice-card"><div class="spice-title">${s.name} <span style="font-size:0.7rem; float:right;">Salud: ${s.health}</span></div><p style="font-size:0.85rem;">${s.use}</p></div>`).join('')}`;
     }
 
     function generateMenu() {
         const m = [];
         const p = allRecipes.length > 20 ? allRecipes : [{title: "Cargando..."}];
-        for (let i = 0; i < 7; i++) {
-            m.push({
-                breakfast: p[Math.floor(Math.random()*p.length)].title,
-                lunch: p[Math.floor(Math.random()*p.length)].title,
-                dinner: p[Math.floor(Math.random()*p.length)].title,
-                superTip: superTips[i % superTips.length],
-                saltTip: saltTips[i % saltTips.length]
-            });
-        }
+        for (let i = 0; i < 7; i++) m.push({ breakfast: p[Math.floor(Math.random()*p.length)].title, lunch: p[Math.floor(Math.random()*p.length)].title, dinner: p[Math.floor(Math.random()*p.length)].title });
         localStorage.setItem('web_menu', JSON.stringify(m));
         if (currentView === 'menu') render();
-    }
-
-    function refreshMeal(day, type) {
-        const m = JSON.parse(localStorage.getItem('web_menu') || '[]');
-        if (m[day]) { m[day][type] = allRecipes[Math.floor(Math.random()*allRecipes.length)].title; localStorage.setItem('web_menu', JSON.stringify(m)); render(); }
     }
 
     function openRecipe(id) {
@@ -273,40 +243,28 @@
         const r = allRecipes.find(rec => (rec.id || rec.title) === id);
         if (!r) return;
         document.getElementById('m-title').innerText = r.title;
-        document.getElementById('m-notes').value = userNotes[id] || "";
-        renderIngredients(r);
-        document.getElementById('m-instructions').innerHTML = r.instructions.map((inst, i) => `<div class="list-item"><span class="num">${i+1}</span><span>${inst}</span></div>`).join('');
+        document.getElementById('m-ingredients').innerHTML = r.ingredients.map(i => `<div class="list-item"><span>•</span><span>${i}</span></div>`).join('');
+        document.getElementById('m-instructions').innerHTML = r.instructions.map((inst, i) => `<div class="list-item"><span>${i+1}.</span><span>${inst}</span></div>`).join('');
         document.getElementById('recipe-modal').style.display = 'block';
-        document.getElementById('recipe-modal').scrollTop = 0;
         lucide.createIcons();
     }
 
-    function renderIngredients(r) {
-        const checks = checkedIngs[currentOpenId] || [];
-        document.getElementById('m-ingredients').innerHTML = r.ingredients.map(ing => `
-            <div class="list-item" onclick="toggleIng('${ing}')">
-                <div class="ing-check ${checks.includes(ing) ? 'active' : ''}"><i data-lucide="check" size="14"></i></div>
-                <span class="ing-text ${checks.includes(ing) ? 'active' : ''}">${ing}</span>
-            </div>`).join('');
-
-        const missing = r.ingredients.filter(i => !checks.includes(i));
-        const shop = document.getElementById('m-shopping-section');
-        shop.innerHTML = missing.length > 0 ? `<div class="shopping-card"><div style="display:flex; justify-content:space-between; align-items:center;"><strong style="color:var(--primary);"><i data-lucide="shopping-cart" size="16"></i> LISTA DE LA COMPRA</strong><button class="close-btn" onclick="shareShoppingList()"><i data-lucide="share" size="16"></i></button></div><p style="font-size:0.8rem; margin:10px 0 5px;">Te faltan:</p>${missing.map(m => `<div style="font-size:0.9rem; margin:4px 0;">• ${m}</div>`).join('')}</div>` : `<div class="shopping-card" style="background:#E8F5E9; border-color:#81C784; text-align:center; color:#2E7D32;">🎉 ¡Tienes todo listo!</div>`;
+    function toggleTimer() {
+        if (timerRunning) { clearInterval(timerInterval); timerRunning = false; }
+        else {
+            timerInterval = setInterval(() => { if (timerSeconds > 0) { timerSeconds--; updateTimerDisplay(); } else { clearInterval(timerInterval); timerRunning = false; alert("¡Listo!"); } }, 1000);
+            timerRunning = true;
+        }
+        document.getElementById('timer-toggle').innerHTML = `<i data-lucide="${timerRunning ? 'pause' : 'play'}" size="16"></i>`;
         lucide.createIcons();
     }
 
-    function toggleIng(ing) {
-        let checks = checkedIngs[currentOpenId] || [];
-        checks = checks.includes(ing) ? checks.filter(c => c !== ing) : [...checks, ing];
-        checkedIngs[currentOpenId] = checks;
-        localStorage.setItem('web_checked', JSON.stringify(checkedIngs));
-        renderIngredients(allRecipes.find(rec => (rec.id || rec.title) === currentOpenId));
+    function updateTimerDisplay() {
+        const m = Math.floor(timerSeconds / 60), s = timerSeconds % 60;
+        document.getElementById('m-timer').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
     }
 
-    function saveNote() { userNotes[currentOpenId] = document.getElementById('m-notes').value; localStorage.setItem('web_notes', JSON.stringify(userNotes)); alert("¡Nota guardada!"); }
-    function shareRecipe() { const r = allRecipes.find(rec => (rec.id || rec.title) === currentOpenId); const text = `🍳 Receta: ${r.title}\n\nIngredientes:\n${r.ingredients.join('\n')}\n\nPreparación:\n${r.instructions.join('\n')}`; if (navigator.share) navigator.share({ title: r.title, text: text }); else alert("Copiado al portapapeles:\n" + text); }
-    function shareShoppingList() { const r = allRecipes.find(rec => (rec.id || rec.title) === currentOpenId); const missing = r.ingredients.filter(i => !(checkedIngs[currentOpenId] || []).includes(i)); const text = `🛒 Lista de la Compra: ${r.title}\n\n${missing.map(m => "- " + m).join('\n')}`; if (navigator.share) navigator.share({ title: 'Lista de la Compra', text: text }); else alert("Copiado al portapapeles:\n" + text); }
-
+    function adjustTimer(s) { timerSeconds = Math.max(0, timerSeconds + s); updateTimerDisplay(); }
     function toggleTag(t) { activeTag = activeTag === t ? '' : t; render(); }
     function toggleCat(c) { activeCategory = activeCategory === c ? '' : c; render(); }
     function toggleFav(id) {
@@ -315,8 +273,7 @@
         localStorage.setItem('web_favs', JSON.stringify(favorites));
         renderList();
     }
-    function openRecipeByName(n) { const r = allRecipes.find(x => x.title === n); if (r) openRecipe(r.id || r.title); }
-    function closeModal() { document.getElementById('recipe-modal').style.display = 'none'; }
+    function closeModal() { document.getElementById('recipe-modal').style.display = 'none'; clearInterval(timerInterval); timerRunning = false; }
 
     init();
 </script>

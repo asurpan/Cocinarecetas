@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CocinaREcetas | Recetas de Sevilla y Cocina Tradicional</title>
+    <title>CocinaREcetas | Recetas de España, Italia, Francia y más</title>
 
-    <!-- SEO Meta Tags Sevilla Profesional -->
-    <meta name="description" content="Descubre CocinaREcetas, la mejor app de cocina en Sevilla. Más de 1300 recetas tradicionales: Solomillo al Whisky, Papas Aliñás, Chipirones y más.">
-    <meta name="keywords" content="recetas sevilla, cocina tradicional andaluza, tapas sevilla, solomillo al whisky sevilla, papas aliñas cadiz, app cocina gratis, joseman recetas">
+    <!-- SEO Meta Tags Globales -->
+    <meta name="description" content="Descubre CocinaREcetas, el recetario inteligente con más de 1300 platos. Recetas españolas, italianas, francesas y tradicionales. Cocina saludable y fácil.">
+    <meta name="keywords" content="recetas fáciles, cocina española, recetas italianas, cocina francesa, recetas tradicionales, app de cocina, menús saludables, joseman recetas">
     <meta name="author" content="JOSEMAN">
-    <meta name="geo.region" content="ES-AN" />
-    <meta name="geo.placename" content="Sevilla" />
+    <link rel="icon" href="recetas-removebg-preview.png" type="image/png">
     <link rel="canonical" href="https://asurpan.github.io/Cocinarecetas/">
 
     <!-- Social Media (Open Graph) -->
-    <meta property="og:title" content="CocinaREcetas - Tu Recetario de Sevilla">
-    <meta property="og:description" content="El recetario inteligente de Sevilla. 1300+ recetas tradicionales y saludables.">
+    <meta property="og:title" content="CocinaREcetas - Tu Recetario Inteligente Global">
+    <meta property="og:description" content="Domina la cocina internacional y tradicional con más de 1300 recetas paso a paso.">
+    <meta property="og:image" content="https://asurpan.github.io/Cocinarecetas/recetas-removebg-preview.png">
     <meta property="og:url" content="https://asurpan.github.io/Cocinarecetas/">
     <meta property="og:type" content="website">
 
@@ -24,279 +24,132 @@
 
     <style>
         :root {
-            --primary: #00838F; /* PoolBlueDark */
-            --primary-light: #00ACC1; /* PoolBlue */
-            --secondary: #43A047; /* NatureGreen */
-            --accent: #D32F2F; /* FoodRed */
-            --bg: #F0F7F8; /* SoftBlueBackground */
-            --text: #00363A; /* FoodTextNavy */
-            --white: #FFFFFF;
+            --primary: #00838F;
+            --primary-light: #00ACC1;
+            --secondary: #43A047;
+            --accent: #D32F2F;
+            --bg: #F0F7F8;
+            --surface: #FFFFFF;
+            --text: #00363A;
         }
 
         * { box-sizing: border-box; }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            margin: 0;
-            color: var(--text);
-            line-height: 1.6;
-            background-color: var(--bg);
-            overflow-x: hidden;
-        }
-
-        #smart-banner {
-            display: none;
-            background: var(--white);
-            padding: 12px 20px;
-            border-bottom: 2px solid var(--primary);
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            font-size: 0.9rem;
-        }
+        body { font-family: 'Inter', sans-serif; margin: 0; color: var(--text); background-color: var(--bg); overflow-x: hidden; }
 
         header {
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            color: var(--white);
-            padding: 120px 20px;
-            text-align: center;
-            position: relative;
+            color: white; padding: 60px 20px 100px; text-align: center;
             clip-path: polygon(0 0, 100% 0, 100% 85%, 0% 100%);
         }
 
-        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
-
-        h1 {
-            font-size: 4rem;
-            margin: 0;
-            font-weight: 900;
-            letter-spacing: -2px;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        .hero-text {
-            font-size: 1.5rem;
-            opacity: 0.95;
-            margin: 20px 0 50px;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
+        .logo-img { width: 100px; height: auto; margin-bottom: 20px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); }
+        h1 { font-size: 3.5rem; margin: 0; font-weight: 900; letter-spacing: -2px; }
+        .hero-text { font-size: 1.2rem; opacity: 0.95; margin: 20px auto 40px; max-width: 800px; }
 
         .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: var(--secondary);
-            color: var(--white);
-            padding: 20px 45px;
-            text-decoration: none;
-            border-radius: 16px;
-            font-weight: 800;
-            font-size: 1.2rem;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 25px rgba(67, 160, 71, 0.3);
-            border: none;
+            display: inline-flex; align-items: center; gap: 10px;
+            background: var(--secondary); color: white; padding: 18px 40px;
+            text-decoration: none; border-radius: 16px; font-weight: 800; font-size: 1.1rem;
+            transition: all 0.3s; box-shadow: 0 10px 25px rgba(67, 160, 71, 0.3); border: none; cursor: pointer;
         }
+        .btn:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(67, 160, 71, 0.4); }
 
-        .btn:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 15px 35px rgba(67, 160, 71, 0.4);
-            background: #388E3C;
+        /* Modal de Seguridad */
+        #safety-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 2000;
         }
-
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px;
-            margin-top: -60px;
-            position: relative;
-            z-index: 10;
+        .modal-content {
+            background: white; padding: 40px; border-radius: 24px; max-width: 500px; text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3); position: relative;
         }
+        .modal-content h3 { color: var(--primary); margin-top: 0; }
+        .modal-content p { color: #546E7A; font-size: 0.95rem; line-height: 1.5; }
+        .safety-icon { color: var(--secondary); width: 60px; height: 60px; margin-bottom: 20px; }
+        .close-modal { position: absolute; top: 20px; right: 20px; cursor: pointer; color: #999; }
 
-        .feature-card {
-            background: var(--white);
-            padding: 40px;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.04);
-            text-align: center;
-            transition: transform 0.3s;
-            border: 1px solid rgba(0, 131, 143, 0.05);
-        }
+        .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
+        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: -60px; position: relative; z-index: 10; }
+        .feature-card { background: white; padding: 35px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.04); text-align: center; }
+        .icon-circle { width: 60px; height: 60px; background: var(--bg); border-radius: 18px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--primary); }
 
-        .feature-card:hover { transform: translateY(-10px); }
-
-        .icon-circle {
-            width: 70px;
-            height: 70px;
-            background: var(--bg);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 25px;
-            color: var(--primary);
-        }
-
-        .feature-card h3 {
-            color: var(--primary);
-            margin: 0 0 15px;
-            font-size: 1.4rem;
-            font-weight: 800;
-        }
-
-        .feature-card p { font-size: 1rem; color: #546E7A; }
-
-        .seccion-especial {
-            margin: 100px 0;
-            text-align: center;
-            background: var(--white);
-            padding: 60px;
-            border-radius: 30px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.03);
-        }
-
-        .seccion-especial h2 {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 20px;
-            font-weight: 900;
-        }
-
-        footer {
-            background: var(--text);
-            color: #CFD8DC;
-            text-align: center;
-            padding: 80px 20px;
-            margin-top: 100px;
-        }
-
-        .footer-links { margin-bottom: 30px; }
-        .footer-links a {
-            color: var(--white);
-            text-decoration: none;
-            margin: 0 15px;
-            font-weight: 600;
-            transition: opacity 0.2s;
-        }
-        .footer-links a:hover { opacity: 0.7; }
-
-        #dl-counter {
-            color: var(--text);
-            font-size: 12px;
-            margin-top: 40px;
-            opacity: 0.01; /* Casi invisible, pero detectable al seleccionar */
-        }
-
-        @media (max-width: 768px) {
-            h1 { font-size: 2.8rem; }
-            .hero-text { font-size: 1.2rem; }
-            .seccion-especial { padding: 40px 20px; }
-        }
+        footer { background: var(--text); color: #CFD8DC; text-align: center; padding: 60px 20px; margin-top: 40px; }
+        .footer-links a { color: white; text-decoration: none; margin: 0 10px; font-weight: 600; }
     </style>
 </head>
 <body>
 
-<div id="smart-banner">
-    <div id="banner-content"></div>
+<div id="safety-modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeSafetyModal()"><i data-lucide="x"></i></span>
+        <i data-lucide="shield-check" class="safety-icon"></i>
+        <h3>Instalación Segura</h3>
+        <p>Al descargar la APK, Android podría mostrarte un aviso de "Archivo dañino" o "Desconocido".</p>
+        <p><strong>¡No te preocupes!</strong> Este es un mensaje estándar de Google para cualquier aplicación descargada fuera de la Play Store oficial. Nuestra app es 100% segura y libre de virus.</p>
+        <p>Para instalar, simplemente pulsa en "Descargar de todos modos" y activa la opción "Permitir desde esta fuente" si tu móvil te lo solicita.</p>
+        <a id="final-download-link" href="#" class="btn" style="width:100%; justify-content:center;">ENTENDIDO, DESCARGAR</a>
+    </div>
 </div>
 
 <header>
     <div class="container">
+        <img src="recetas-removebg-preview.png" alt="CocinaREcetas Logo" class="logo-img">
         <h1>CocinaREcetas</h1>
-        <p class="hero-text">El recetario inteligente de Sevilla. Más de 1300 recetas tradicionales y modernas para cocinar como un chef profesional.</p>
-        <div id="main-action">
-            <a href="CocinaREcetas.apk" class="btn" onclick="trackDownload()">
-                <i data-lucide="download"></i>
-                DESCARGAR APP ANDROID
-            </a>
-        </div>
+        <p class="hero-text">Explora más de 1300 recetas de la cocina española, italiana y francesa. Tu guía inteligente para comer rico y saludable todos los días.</p>
+        <button class="btn" onclick="showSafetyModal('https://github.com/asurpan/Cocinarecetas/releases/download/v1.0/app-release.apk')">
+            <i data-lucide="download"></i>
+            DESCARGAR APP ANDROID
+        </button>
+        <p style="margin-top:20px; font-size: 0.9rem;">
+            <a href="webapp/index.html" style="color: #B2DFDB; text-decoration: none; font-weight: bold;">¿Usas iPhone? Abre la Web App Pro</a>
+        </p>
     </div>
 </header>
 
 <div class="container">
     <div class="features">
         <div class="feature-card">
-            <div class="icon-circle"><i data-lucide="utensils-crosses"></i></div>
-            <h3>Tradición de Sevilla</h3>
-            <p>Especialidad en recetas de Sevilla. Del Solomillo al Whisky a las Papas Aliñás, explicados paso a paso.</p>
+            <div class="icon-circle"><i data-lucide="globe"></i></div>
+            <h3>Cocina Internacional</h3>
+            <p>Desde la pasta italiana auténtica hasta los clásicos franceses y el sabor tradicional de España.</p>
         </div>
         <div class="feature-card">
-            <div class="icon-circle"><i data-lucide="bell"></i></div>
-            <h3>Avisos Semanales</h3>
-            <p>Cada semana te sugerimos un plato nuevo de nuestra gastronomía para que nunca te falte inspiración.</p>
+            <div class="icon-circle"><i data-lucide="heart-pulse"></i></div>
+            <h3>Salud & Ciencia</h3>
+            <p>Tips nutricionales avanzados para convertir tus platos favoritos en superalimentos.</p>
         </div>
         <div class="feature-card">
             <div class="icon-circle"><i data-lucide="smartphone"></i></div>
-            <h3>Multiplataforma</h3>
-            <p>Android nativo o Web App avanzada para iPhone. Sincroniza tus favoritos en cualquier dispositivo.</p>
+            <h3>Instalador Directo</h3>
+            <p>Descarga nuestra APK oficial de forma segura y disfruta de la experiencia nativa completa.</p>
         </div>
-    </div>
-
-    <div class="seccion-especial">
-        <i data-lucide="chef-hat" style="width: 50px; height: 50px; color: var(--accent); margin-bottom: 20px;"></i>
-        <h2>Gastronomía del Sur en tu mano</h2>
-        <p style="max-width: 800px; margin: 0 auto; font-size: 1.1rem; color: #455A64;">
-            Nuestra aplicación recopila el saber culinario de Sevilla y Andalucía. Optimizada para ofrecerte una experiencia de usuario rápida, sin fallos y con un buscador inteligente que entiende lo que quieres cocinar hoy.
-        </p>
     </div>
 </div>
 
 <footer>
     <div class="footer-links">
         <a href="privacy.html">Privacidad</a>
-        <a href="webapp/index.html">iPhone (Web App)</a>
-        <a href="mailto:appsaiber@gmail.com">Contacto</a>
+        <a href="terms.html">Términos</a>
+        <a href="mailto:appsaiber@gmail.com">Soporte</a>
     </div>
-    <p>&copy; 2026 CocinaREcetas Sevilla. Desarrollado por <strong>JOSEMAN</strong>.</p>
-
-    <div id="dl-counter">
-        Verified: <span id="count-value">0</span>
-    </div>
+    <p>&copy; 2026 CocinaREcetas. By <strong>JOSEMAN</strong>.</p>
 </footer>
 
 <script>
-    // Inicializar Iconos
     lucide.createIcons();
 
-    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-    const isAndroid = /android/i.test(userAgent);
-    const isIos = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
-
-    const banner = document.getElementById('smart-banner');
-    const bannerContent = document.getElementById('banner-content');
-    const mainAction = document.getElementById('main-action');
-
-    if (isAndroid) {
-        banner.style.display = 'block';
-        bannerContent.innerHTML = `<strong>¡Instala la App oficial!</strong> Mejor rendimiento y notificaciones de Sevilla. <a href="CocinaREcetas.apk" onclick="trackDownload()" style="color:var(--primary); font-weight:bold; text-decoration:none;">DESCARGAR AQUÍ</a>`;
-    } else if (isIos) {
-        banner.style.display = 'block';
-        bannerContent.innerHTML = `<strong>¿Usas iPhone?</strong> Accede a la <a href="webapp/index.html" style="color:var(--primary); font-weight:bold; text-decoration:none;">Versión Web Optimizada aquí</a>`;
-        mainAction.innerHTML = `
-            <a href="webapp/index.html" class="btn">
-                <i data-lucide="external-link"></i>
-                ABRIR APP PARA IPHONE
-            </a>
-        `;
-        lucide.createIcons();
+    function showSafetyModal(url) {
+        document.getElementById('final-download-link').href = url;
+        document.getElementById('safety-modal').style.display = 'flex';
     }
 
-    // Lógica del contador
-    let count = parseInt(localStorage.getItem('dl_count') || '0');
-    document.getElementById('count-value').innerText = count;
+    function closeSafetyModal() {
+        document.getElementById('safety-modal').style.display = 'none';
+    }
 
     function trackDownload() {
-        count++;
+        let count = parseInt(localStorage.getItem('dl_count') || '0') + 1;
         localStorage.setItem('dl_count', count);
-        document.getElementById('count-value').innerText = count;
-
-        if (count >= 10 && !localStorage.getItem('alerted')) {
-            localStorage.setItem('alerted', 'true');
-            alert("Aviso: Has alcanzado la meta de 10 descargas. ¡Excelente trabajo!");
-        }
     }
 </script>
 </body>

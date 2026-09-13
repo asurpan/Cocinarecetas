@@ -1,20 +1,16 @@
 {
   "name": "CocinaREcetas Sevilla",
   "short_name": "CocinaREcetas",
-  "start_url": "webapp/index.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#00796B",
   "theme_color": "#00796B",
   "icons": [
     {
-      "src": "assets/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "assets/icon-512.png",
+      "src": "recetas-removebg-preview.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }

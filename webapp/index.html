@@ -39,14 +39,20 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* Cursor pointer global para elementos interactivos */
+        .recipe-card, .nav-item, .chip, .btn, .meal, .close-btn, .refresh-btn, .back-btn {
+            cursor: pointer !important;
+        }
+
         /* Layout */
         .app-container { display: flex; flex-direction: column; height: 100vh; }
         .header {
-            background: var(--primary); color: white; padding: 50px 20px 15px;
+            background: var(--primary); color: white; padding: 45px 20px 12px;
             text-align: center; position: sticky; top: 0; z-index: 100;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        .header h1 { margin: 0; font-size: 1.3rem; font-weight: 900; letter-spacing: 1px; }
+        .header h1 { margin: 0; font-size: 1.35rem; font-weight: 900; letter-spacing: 1.5px; line-height: 1; }
+        .brand { font-size: 0.65rem; font-weight: 800; letter-spacing: 3px; opacity: 0.8; margin-top: 4px; text-transform: uppercase; }
 
         .content { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 100px; }
 
@@ -59,7 +65,7 @@
         }
         .nav-item {
             display: flex; flex-direction: column; align-items: center;
-            color: #90A4AE; font-size: 0.7rem; font-weight: bold; cursor: pointer;
+            color: #90A4AE; font-size: 0.7rem; font-weight: bold;
         }
         .nav-item.active { color: var(--primary); }
         .nav-item i { margin-bottom: 4px; }
@@ -80,7 +86,7 @@
         .filter-row::-webkit-scrollbar { display: none; }
         .chip {
             white-space: nowrap; background: white; padding: 8px 16px; border-radius: 20px;
-            font-size: 0.85rem; font-weight: 600; border: 1px solid #eee; cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; border: 1px solid #eee;
         }
         .chip.active { background: var(--primary); color: white; border-color: var(--primary); }
         .chip.secondary.active { background: var(--secondary); border-color: var(--secondary); }
@@ -99,8 +105,11 @@
         /* Menú Semanal y Tips */
         .menu-day { background: white; border-radius: 20px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .day-title { color: var(--primary); font-weight: 900; margin-bottom: 15px; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 8px; }
-        .meal { margin-bottom: 10px; font-size: 0.95rem; cursor: pointer; }
-        .meal b { color: #666; font-size: 0.75rem; display: block; margin-bottom: 2px; }
+        .meal-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .meal { flex: 1; font-size: 0.95rem; font-weight: 700; color: var(--text); }
+        .meal b { color: #666; font-size: 0.72rem; display: block; margin-bottom: 3px; font-weight: 800; letter-spacing: 0.5px; }
+        .refresh-btn { color: var(--primary-light); padding: 8px; opacity: 0.5; transition: all 0.2s; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .refresh-btn:hover { opacity: 1; background: var(--bg); }
 
         .tip-card {
             background: var(--tip-bg); border-radius: 15px; padding: 15px; margin-top: 10px;
@@ -124,7 +133,7 @@
         .num { color: var(--primary); font-weight: 800; min-width: 20px; }
 
         .science-tip {
-            background: #FFF3E0; border-radius: 15px; padding: 15px; margin-top: 25px;
+            background: #FFF3E0; border-radius: 15px; padding: 15px; margin-top: 20px;
             border-left: 5px solid #F57C00;
         }
         .science-tip h4 { margin: 0 0 5px; color: #E65100; font-size: 0.9rem; }
@@ -142,7 +151,8 @@
 
 <div class="app-container">
     <div class="header">
-        <h1 id="app-title">COCINARECETAS</h1>
+        <h1>COCINARECETAS</h1>
+        <div class="brand">JOSEMAN</div>
     </div>
 
     <div class="content" id="main-content">
@@ -210,10 +220,42 @@
     const healthTags = ["Sana", "Perder peso", "Músculo", "Diabéticos"];
     const families = ["Aperitivos", "Ensaladas", "Legumbres", "Sopas", "Arroces", "Pastas", "Verduras", "Pescados", "Carnes", "Postres"];
 
+    // Función para limpiar caracteres corruptos (mojibake) detectados en el JSON
+    function cleanText(text) {
+        if (!text) return "";
+        return text
+            .replace(/Ã³/g, "ó")
+            .replace(/Ã¡/g, "á")
+            .replace(/Ã©/g, "é")
+            .replace(/Ã­/g, "í")
+            .replace(/Ãº/g, "ú")
+            .replace(/Ã±/g, "ñ")
+            .replace(/Ã/g, "Í") // Casos como "FRÃDO" o "Ã" suelto
+            .replace(/Â½/g, "½")
+            .replace(/Âº/g, "º")
+            .replace(/Â/g, "")
+            .replace(/Ã‰/g, "É")
+            .replace(/Ã“/g, "Ó")
+            .replace(/PURÃ%%/g, "PURÉ")
+            .replace(/%%/g, "É")
+            .replace(/FRÃDO/g, "FRÍO");
+    }
+
     async function init() {
         try {
-            const snapshot = await db.collection('recipes').limit(300).get();
-            allRecipes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            const snapshot = await db.collection('recipes').limit(500).get();
+            allRecipes = snapshot.docs.map(doc => {
+                const data = doc.data();
+                return {
+                    id: doc.id,
+                    ...data,
+                    title: cleanText(data.title),
+                    category: cleanText(data.category),
+                    ingredients: (data.ingredients || []).map(cleanText),
+                    instructions: (data.instructions || []).map(cleanText),
+                    notes: cleanText(data.notes)
+                };
+            });
             switchView('list');
         } catch (e) {
             console.error(e);
@@ -312,15 +354,29 @@
         daysDiv.innerHTML = storedMenu.map((day, idx) => `
             <div class="menu-day">
                 <div class="day-title">${days[idx]}</div>
-                <div class="meal" onclick="openRecipeByName('${day.breakfast}')"><b>DESAYUNO</b> ${day.breakfast}</div>
-                <div class="meal" onclick="openRecipeByName('${day.lunch}')"><b>ALMUERZO</b> ${day.lunch}</div>
-                <div class="meal" onclick="openRecipeByName('${day.dinner}')"><b>CENA</b> ${day.dinner}</div>
+
+                <div class="meal-container">
+                    <div class="meal" onclick="openRecipeByName('${day.breakfast}')"><b>DESAYUNO</b> ${day.breakfast}</div>
+                    <div class="refresh-btn" onclick="refreshMeal(${idx}, 'breakfast')"><i data-lucide="refresh-cw" size="16"></i></div>
+                </div>
+
+                <div class="meal-container">
+                    <div class="meal" onclick="openRecipeByName('${day.lunch}')"><b>ALMUERZO</b> ${day.lunch}</div>
+                    <div class="refresh-btn" onclick="refreshMeal(${idx}, 'lunch')"><i data-lucide="refresh-cw" size="16"></i></div>
+                </div>
+
+                <div class="meal-container">
+                    <div class="meal" onclick="openRecipeByName('${day.dinner}')"><b>CENA</b> ${day.dinner}</div>
+                    <div class="refresh-btn" onclick="refreshMeal(${idx}, 'dinner')"><i data-lucide="refresh-cw" size="16"></i></div>
+                </div>
+
                 <div class="tip-card">
                     <i data-lucide="lightbulb" size="18" style="color:var(--secondary);"></i>
                     <div class="tip-text">${day.tip}</div>
                 </div>
             </div>
         `).join('');
+        lucide.createIcons();
     }
 
     const dailyTips = [
@@ -348,13 +404,23 @@
         if (currentView === 'menu') render();
     }
 
+    function refreshMeal(dayIdx, mealType) {
+        const storedMenu = JSON.parse(localStorage.getItem('web_menu') || '[]');
+        if (storedMenu[dayIdx]) {
+            const pool = allRecipes.length > 20 ? allRecipes : [{title: "Cargando..."}];
+            storedMenu[dayIdx][mealType] = pool[Math.floor(Math.random()*pool.length)].title;
+            localStorage.setItem('web_menu', JSON.stringify(storedMenu));
+            render();
+        }
+    }
+
     function getScienceTip(recipe) {
         const cat = recipe.category;
         const title = recipe.title.toLowerCase();
         if (cat === "Verduras") return "🥦 Al vapor: 5-8 min para mantener el 90% de las vitaminas. Hervido: máximo 10 min.";
         if (cat === "Arroces") return "🌾 Integral: 20-30 min. Blanco: 15-18 min. Reposo: 5 min clave.";
         if (cat === "Pescados") return "🐟 Vapor/Plancha: 3-5 min. Cocina justa para preservar el Omega-3.";
-        if (title.contains("lomo") || title.contains("filete")) return "🥩 Atemperar: Saca la carne 20 min antes. Sal AL FINAL para retener jugos.";
+        if (title.includes("lomo") || title.includes("filete")) return "🥩 Atemperar: Saca la carne 20 min antes. Sal AL FINAL para retener jugos.";
         return "⏱️ Cocina a fuego medio para evitar toxinas y preservar nutrientes.";
     }
 

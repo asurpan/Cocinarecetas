@@ -73,7 +73,7 @@
         .filter-row::-webkit-scrollbar { display: none; }
         .chip { white-space: nowrap; background: white; padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; border: 1px solid #eee; }
         .chip.active { background: var(--primary); color: white; border-color: var(--primary); }
-        .chip.secondary.active { background: var(--secondary); color: white; border-color: var(--secondary); }
+        .chip.secondary.active { background: var(--secondary); border-color: var(--secondary); }
 
         .recipe-card { background: white; border-radius: 16px; padding: 18px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); display: flex; justify-content: space-between; align-items: center; }
         .recipe-info h3 { margin: 0 0 4px; font-size: 1rem; text-transform: uppercase; font-weight: 800; }
@@ -149,7 +149,6 @@
     let userNotes = JSON.parse(localStorage.getItem('web_notes') || '{}');
     let timerSeconds = 1200, timerInterval = null, timerRunning = false;
 
-    // Sonido Alarma
     let audioCtx = null;
     function playAlarm() {
         try {
@@ -192,7 +191,23 @@
             const snapshot = await db.collection('recipes').limit(3000).get();
             allRecipes = snapshot.docs.map(doc => {
                 const d = doc.data();
-                return { id: doc.id, ...d, title: cleanText(d.title), category: cleanText(d.category), ingredients: (d.ingredients || []).map(cleanText).filter(x=>x), instructions: (d.instructions || []).map(cleanText).filter(x=>x) };
+                let cat = cleanText(d.category || "").trim();
+                const title = cleanText(d.title || "").toLowerCase();
+
+                // Inteligencia de auto-categorización
+                if (!cat || cat === "Varios" || cat === "undefined") {
+                    if (title.includes("arroz")) cat = "Arroces";
+                    else if (title.includes("pasta") || title.includes("macarrones")) cat = "Pastas";
+                    else if (title.includes("ensalada")) cat = "Ensaladas";
+                    else if (title.includes("carne") || title.includes("pollo") || title.includes("ternera")) cat = "Carnes";
+                    else if (title.includes("pescado") || title.includes("bacalao") || title.includes("atun")) cat = "Pescados";
+                    else if (title.includes("verdura") || title.includes("espinaca") || title.includes("judía")) cat = "Verduras";
+                    else if (title.includes("lentejas") || title.includes("garbanzos") || title.includes("alubias")) cat = "Legumbres";
+                    else if (title.includes("sopa") || title.includes("crema") || title.includes("caldo")) cat = "Sopas";
+                    else if (title.includes("postre") || title.includes("tarta") || title.includes("dulce")) cat = "Postres";
+                    else if (title.includes("aperitivo") || title.includes("tapa")) cat = "Aperitivos";
+                }
+                return { id: doc.id, ...d, title: cleanText(d.title), category: cat || "Varios", ingredients: (d.ingredients || []).map(cleanText), instructions: (d.instructions || []).map(cleanText) };
             });
             switchView('list');
         } catch (e) { document.getElementById('main-content').innerHTML = "<p>Error de conexión.</p>"; }
@@ -221,42 +236,35 @@
 
     function renderList() {
         const div = document.getElementById('recipe-list');
+        if (allRecipes.length === 0) { div.innerHTML = "<p style='text-align:center; padding:40px;'>Cargando base de datos...</p>"; return; }
         const q = searchQuery.toLowerCase();
-
-        if (allRecipes.length === 0) {
-            div.innerHTML = `<p style="text-align:center; padding:40px;">Cargando base de datos...</p>`;
-            return;
-        }
-
         const filtered = allRecipes.filter(r => {
-            const t = (r.title || "").toLowerCase();
-            const c = (r.category || "").toLowerCase();
-
+            const t = r.title.toLowerCase();
+            const c = r.category.toLowerCase();
             const matchSearch = !searchQuery || t.includes(q) || r.ingredients.some(i => i.toLowerCase().includes(q));
 
             let matchTag = true;
-            if (activeTag === "Sana") matchTag = ["ensalada", "verdura", "pescado", "legumbre", "fruta"].some(x => c.includes(x));
-            else if (activeTag === "Perder peso") matchTag = ["ensalada", "verdura", "sopa", "pescado"].some(x => c.includes(x));
-            else if (activeTag === "Músculo") matchTag = ["carne", "pescado", "legumbre", "pasta", "arroz"].some(x => c.includes(x));
-            else if (activeTag === "Diabéticos") matchTag = !["postre", "pasta", "arroz", "dulce", "bolleria", "reposteria"].some(x => c.includes(x));
+            if (activeTag) {
+                const tag = activeTag.toLowerCase();
+                if (tag === "sana") matchTag = ["ensalada", "verdura", "pescado", "legumbre", "fruta"].some(x => c.includes(x) || t.includes(x));
+                else if (tag === "perder peso") matchTag = ["ensalada", "verdura", "sopa", "pescado"].some(x => c.includes(x) || t.includes(x));
+                else if (tag === "músculo") matchTag = ["carne", "pescado", "legumbre", "pasta", "arroz"].some(x => c.includes(x) || t.includes(x));
+                else if (tag === "diabéticos") matchTag = !["postre", "tarta", "dulce", "azucar", "bolleria", "reposteria", "nata"].some(x => c.includes(x) || t.includes(x));
+            }
 
             let matchCat = true;
             if (activeCategory) {
-                const target = activeCategory.toLowerCase();
-                const root = target.substring(0, 4); // "arro" para "Arroces"
-                matchCat = c.includes(root) || target.includes(c);
+                const target = activeCategory.toLowerCase().substring(0, 4);
+                matchCat = c.includes(target) || t.includes(target);
             }
-
-            const matchFav = currentView !== 'favs' || favorites.includes(r.id || r.title);
-            return matchSearch && matchTag && matchCat && matchFav;
+            return matchSearch && matchTag && matchCat && (currentView !== 'favs' || favorites.includes(r.id || r.title));
         });
-
-        div.innerHTML = filtered.length === 0 ? `<p style="text-align:center; padding:40px;">No hay resultados.</p>` : filtered.map(r => `<div class="recipe-card" onclick="openRecipe('${r.id || r.title}')"><div class="recipe-info"><h3>${r.title}</h3><p>${r.category || 'Varios'}</p></div><div class="fav-icon ${favorites.includes(r.id || r.title) ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav('${r.id || r.title}')"><i data-lucide="heart" fill="${favorites.includes(r.id || r.title) ? 'currentColor' : 'none'}"></i></div></div>`).join('');
+        div.innerHTML = filtered.length === 0 ? `<p style="text-align:center; padding:40px;">No hay resultados.</p>` : filtered.map(r => `<div class="recipe-card" onclick="openRecipe('${r.id || r.title}')"><div class="recipe-info"><h3>${r.title}</h3><p>${r.category}</p></div><div class="fav-icon ${favorites.includes(r.id || r.title) ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav('${r.id || r.title}')"><i data-lucide="heart" fill="${favorites.includes(r.id || r.title) ? 'currentColor' : 'none'}"></i></div></div>`).join('');
         lucide.createIcons();
     }
 
     function renderMenu(c) {
-        c.innerHTML = `<div style="text-align:center; margin-bottom:20px;"><h2 style="color:var(--primary); margin:0;">Plan Semanal Científico</h2><p style="font-size:0.75rem; margin-top:5px; color:#666;">Optimizado para: <b>${activeTag || 'Estándar'}</b></p><button class="chip active" style="margin-top:10px;" onclick="generateMenu()">GENERAR NUEVO</button></div><div id="weekly-days"></div>`;
+        c.innerHTML = `<div style="text-align:center; margin-bottom:20px;"><h2 style="color:var(--primary); margin:0;">Plan Semanal Inteligente</h2><p style="font-size:0.75rem; margin-top:5px; color:#666;">Optimizado para perfil: <b>${activeTag || 'Estándar'}</b></p><button class="chip active" style="margin-top:10px;" onclick="generateMenu()">GENERAR NUEVO</button></div><div id="weekly-days"></div>`;
         const menu = JSON.parse(localStorage.getItem('web_menu') || '[]');
         if (menu.length === 0) { generateMenu(); return; }
         const days = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
@@ -277,166 +285,95 @@
             const list = predefinedBreakfasts[activeTag] || predefinedBreakfasts["Default"];
             return list[Math.floor(Math.random() * list.length)];
         }
-
         const profile = activeTag;
         let pool = allRecipes.filter(r => {
             const t = r.title.toLowerCase();
-            const c = (r.category||"").toLowerCase();
+            const c = r.category.toLowerCase();
             if (bannedWords.some(w => t.includes(w))) return false;
-            // No permitir salsas ni acompañamientos como plato principal
-            if (["salsa", "base", "tecnica", "acompañamiento"].some(x => c.includes(x))) return false;
+            if (["salsa", "base", "tecnica"].some(x => c.includes(x))) return false;
+            if (profile === "Diabéticos" && ["postre", "dulce", "azucar", "nata"].some(x => t.includes(x) || c.includes(x))) return false;
             return true;
         });
-
-        if (profile === "Diabéticos") {
-            pool = pool.filter(r => !["postre", "pasta", "arroz", "dulce", "bolleria"].some(x => (r.category||"").toLowerCase().includes(x)));
-        } else if (profile === "Perder peso") {
-            pool = pool.filter(r => ["ensalada", "verdura", "sopa", "pescado", "ave"].some(x => (r.category||"").toLowerCase().includes(x)));
-        }
 
         if (type === 'lunch') {
             const pattern = ["legumbre", "carne", "pasta", "pescado", "legumbre", "carne", "arroz"];
             const target = pattern[dayIndex % 7];
-            let sub = pool.filter(r => (r.category||"").toLowerCase().includes(target));
+            let sub = pool.filter(r => r.category.toLowerCase().includes(target));
             if (sub.length > 5) pool = sub;
-            if (profile !== "Perder peso") pool = pool.filter(r => !(r.category||"").toLowerCase().includes("ensalada"));
-        } else if (type === 'dinner') {
-            pool = pool.filter(r => ["verdura", "ensalada", "sopa", "pescado", "ave"].some(x => (r.category||"").toLowerCase().includes(x)));
-            pool = pool.filter(r => !["pasta", "arroz", "legumbre", "guiso"].some(x => (r.category||"").toLowerCase().includes(x)));
+        } else {
+            pool = pool.filter(r => ["verdura", "ensalada", "sopa", "pescado", "ave"].some(x => r.category.toLowerCase().includes(x)));
         }
 
         let final = pool.filter(r => !used.has(r.title));
         if (final.length === 0) final = pool.length > 0 ? pool : allRecipes.filter(r => !bannedWords.some(w => r.title.toLowerCase().includes(w)));
-
         const recipe = final[Math.floor(Math.random() * final.length)];
-        used.add(recipe.title);
-        return recipe.title;
+        used.add(recipe.title); return recipe.title;
     }
 
     function generateMenu() {
-        const m = [];
-        const used = new Set();
-        for (let i = 0; i < 7; i++) {
-            m.push({
-                breakfast: getRandomMeal('breakfast', used, i),
-                lunch: getRandomMeal('lunch', used, i),
-                dinner: getRandomMeal('dinner', used, i)
-            });
-        }
-        localStorage.setItem('web_menu', JSON.stringify(m));
-        if (currentView === 'menu') render();
+        const m = []; const used = new Set();
+        for (let i = 0; i < 7; i++) m.push({ breakfast: getRandomMeal('breakfast', used, i), lunch: getRandomMeal('lunch', used, i), dinner: getRandomMeal('dinner', used, i) });
+        localStorage.setItem('web_menu', JSON.stringify(m)); render();
     }
 
     function refreshMeal(day, type) {
         const m = JSON.parse(localStorage.getItem('web_menu') || '[]');
-        if (m[day]) {
-            const used = new Set(m.map(d => [d.breakfast, d.lunch, d.dinner]).flat());
-            m[day][type] = getRandomMeal(type, used, day);
-            localStorage.setItem('web_menu', JSON.stringify(m));
-            render();
-        }
+        if (m[day]) { m[day][type] = getRandomMeal(type, new Set(), day); localStorage.setItem('web_menu', JSON.stringify(m)); render(); }
     }
 
     function openRecipe(id) {
         const r = allRecipes.find(rec => (rec.id || rec.title) === id);
         if (!r) {
             document.getElementById('m-title').innerText = id;
-            document.getElementById('m-content-area').innerHTML = `<div style="padding:30px; text-align:center;"><h3>Sugerencia Nutritiva</h3><p>Este plato está seleccionado específicamente para tu perfil <b>${activeTag || 'Estándar'}</b>.</p></div>`;
-            document.getElementById('recipe-modal').style.display = 'block';
-            return;
+            document.getElementById('m-content-area').innerHTML = `<div style="padding:30px; text-align:center;"><h3>Sugerencia Nutritiva</h3><p>Este plato está seleccionado específicamente para tu perfil activo.</p></div>`;
+            document.getElementById('recipe-modal').style.display = 'block'; return;
         }
         currentOpenId = id;
         document.getElementById('m-title').innerText = r.title;
-        let html = `
-            <div class="timer-card">
-                <div><div style="font-size: 0.6rem; font-weight: bold; color: var(--primary-light);">TEMPORIZADOR</div><div id="m-timer" class="timer-display">20:00</div></div>
-                <div style="display:flex; gap:8px;">
-                    <button class="timer-btn" onclick="adjustTimer(-60)"><i data-lucide="minus"></i></button>
-                    <button id="timer-toggle" class="timer-btn" onclick="toggleTimer()"><i data-lucide="play"></i></button>
-                    <button class="timer-btn" onclick="adjustTimer(60)"><i data-lucide="plus"></i></button>
-                </div>
-            </div>
-            <div class="section-h">INGREDIENTES</div>
-            <div id="m-ingredients"></div>
-            <div id="m-shopping-section"></div>
-            <div class="section-h">PREPARACIÓN</div>
-            <div id="m-instructions"></div>
-            <div class="section-h">MIS NOTAS</div>
-            <textarea id="m-notes" style="width:100%; min-height:80px; padding:10px; border-radius:10px; border:1px solid #ddd; font-family: inherit;" placeholder="Añade tus trucos..."></textarea>
-            <button class="btn" style="width:100%; margin-top:10px; background:var(--primary); color:white; border:none; padding:15px; border-radius:12px; font-weight:bold;" onclick="saveNote()">GUARDAR NOTA</button>
-        `;
-        document.getElementById('m-content-area').innerHTML = html;
+        document.getElementById('m-content-area').innerHTML = `<div class="timer-card"><div><div style="font-size: 0.6rem; font-weight: bold; color: var(--primary-light);">TEMPORIZADOR</div><div id="m-timer" class="timer-display">20:00</div></div><div style="display:flex; gap:8px;"><button class="timer-btn" onclick="adjustTimer(-60)"><i data-lucide="minus"></i></button><button id="timer-toggle" class="timer-btn" onclick="toggleTimer()"><i data-lucide="play"></i></button><button class="timer-btn" onclick="adjustTimer(60)"><i data-lucide="plus"></i></button></div></div><div class="section-h">INGREDIENTES</div><div id="m-ingredients"></div><div id="m-shopping-section"></div><div class="section-h">PREPARACIÓN</div><div id="m-instructions"></div><div class="section-h">MIS NOTAS</div><textarea id="m-notes" style="width:100%; min-height:80px; padding:10px; border-radius:10px; border:1px solid #ddd; font-family: inherit;" placeholder="Tus notas..."></textarea><button class="btn" style="width:100%; margin-top:10px; background:var(--primary); color:white; border:none; padding:15px; border-radius:12px; font-weight:bold;" onclick="saveNote()">GUARDAR NOTA</button>`;
         document.getElementById('m-notes').value = userNotes[id] || "";
         renderIngredients(r);
         document.getElementById('m-instructions').innerHTML = r.instructions.map((inst, i) => `<div class="list-item"><span style="font-weight:bold; color:var(--primary); min-width:20px;">${i+1}.</span><span>${inst}</span></div>`).join('');
         const timeMatch = (r.cookingTime || "").match(/\d+/);
         timerSeconds = (timeMatch ? parseInt(timeMatch[0]) : 20) * 60;
-        updateTimerDisplay();
-        document.getElementById('recipe-modal').style.display = 'block';
-        document.getElementById('recipe-modal').scrollTop = 0;
-        lucide.createIcons();
+        updateTimerDisplay(); document.getElementById('recipe-modal').style.display = 'block'; lucide.createIcons();
     }
 
     function toggleTimer() {
         if (timerRunning) { clearInterval(timerInterval); timerRunning = false; }
-        else {
-            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-            timerInterval = setInterval(() => { if (timerSeconds > 0) { timerSeconds--; updateTimerDisplay(); } else { clearInterval(timerInterval); timerRunning = false; updateTimerDisplay(); playAlarm(); alert("¡Listo!"); } }, 1000);
-            timerRunning = true;
-        }
-        document.getElementById('timer-toggle').innerHTML = `<i data-lucide="${timerRunning ? 'pause' : 'play'}" size="18"></i>`;
-        lucide.createIcons();
+        else { if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); timerInterval = setInterval(() => { if (timerSeconds > 0) { timerSeconds--; updateTimerDisplay(); } else { clearInterval(timerInterval); timerRunning = false; updateTimerDisplay(); playAlarm(); alert("¡Listo!"); } }, 1000); timerRunning = true; }
+        document.getElementById('timer-toggle').innerHTML = `<i data-lucide="${timerRunning ? 'pause' : 'play'}" size="18"></i>`; lucide.createIcons();
     }
 
-    function updateTimerDisplay() {
-        const m = Math.floor(timerSeconds / 60), s = timerSeconds % 60;
-        const el = document.getElementById('m-timer');
-        if (el) el.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-    }
-
+    function updateTimerDisplay() { const m = Math.floor(timerSeconds/60), s = timerSeconds%60; const el = document.getElementById('m-timer'); if (el) el.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`; }
     function adjustTimer(s) { timerSeconds = Math.max(0, timerSeconds + s); updateTimerDisplay(); }
 
     function renderIngredients(r) {
-        const cIngs = JSON.parse(localStorage.getItem('web_checked') || '{}');
-        const checks = cIngs[currentOpenId] || [];
+        const checks = JSON.parse(localStorage.getItem('web_checked')||'{}')[currentOpenId] || [];
         document.getElementById('m-ingredients').innerHTML = r.ingredients.map(ing => `<div class="list-item" onclick="toggleIng('${ing}')"><div class="ing-check ${checks.includes(ing) ? 'active' : ''}"><i data-lucide="check" size="14"></i></div><span class="ing-text ${checks.includes(ing) ? 'active' : ''}">${ing}</span></div>`).join('');
         const missing = r.ingredients.filter(i => !checks.includes(i));
-        const shop = document.getElementById('m-shopping-section');
-        shop.innerHTML = missing.length > 0 ? `<div class="shopping-card"><strong style="color:var(--primary); font-size:0.9rem;"><i data-lucide="shopping-cart" size="16"></i> COMPRA</strong>${missing.map(m => `<div style="font-size:0.85rem; margin:4px 0;">• ${m}</div>`).join('')}</div>` : `<div class="shopping-card" style="background:#E8F5E9; border-color:#81C784; text-align:center; color:#2E7D32;">🎉 ¡Listo!</div>`;
+        document.getElementById('m-shopping-section').innerHTML = missing.length > 0 ? `<div class="shopping-card"><strong style="color:var(--primary); font-size:0.9rem;"><i data-lucide="shopping-cart" size="16"></i> COMPRA</strong>${missing.map(m => `<div style="font-size:0.85rem; margin:4px 0;">• ${m}</div>`).join('')}</div>` : `<div class="shopping-card" style="background:#E8F5E9; border-color:#81C784; text-align:center; color:#2E7D32;">🎉 ¡Listo!</div>`;
         lucide.createIcons();
     }
 
     function toggleIng(ing) {
-        let allChecks = JSON.parse(localStorage.getItem('web_checked') || '{}');
-        let checks = allChecks[currentOpenId] || [];
-        checks = checks.includes(ing) ? checks.filter(c => c !== ing) : [...checks, ing];
-        allChecks[currentOpenId] = checks;
-        localStorage.setItem('web_checked', JSON.stringify(allChecks));
-        renderIngredients(allRecipes.find(rec => (rec.id || rec.title) === currentOpenId));
+        let all = JSON.parse(localStorage.getItem('web_checked')||'{}'); let c = all[currentOpenId] || [];
+        c = c.includes(ing) ? c.filter(x => x !== ing) : [...c, ing];
+        all[currentOpenId] = c; localStorage.setItem('web_checked', JSON.stringify(all));
+        renderIngredients(allRecipes.find(x => (x.id||x.title) === currentOpenId));
     }
 
     function renderSpices(c) {
-        const spiceGuide = [
-            { name: "Cúrcuma", use: "Antinflamatorio. Actívala con pimienta negra.", health: "Antinflamatorio" },
-            { name: "Comino", use: "Digestivo estrella. Evita gases en legumbres.", health: "Digestivo" },
-            { name: "Jengibre", use: "Fresco y picante. Acelera el metabolismo.", health: "Inmunidad" },
-            { name: "Canela", use: "Regula el azúcar en sangre. Úsala en café o avena.", health: "Glucosa" },
-            { name: "Pimentón", use: "Sabor ahumado antioxidante.", health: "Antioxidante" }
-        ];
-        c.innerHTML = `<div style="text-align:center; margin-bottom: 25px;"><h2 style="color:var(--primary);">Guía de Especias</h2></div>${spiceGuide.map(s => `<div class="spice-card"><div class="spice-title">${s.name} <span class="spice-benefit">${s.health}</span></div><p style="font-size:0.9rem; margin:0;">${s.use}</p></div>`).join('')}<div class="legal-footer"><a href="../privacy.html">Privacidad</a> | <a href="../terms.html">Términos</a></div>`;
+        const spiceGuide = [{ name: "Cúrcuma", use: "Antinflamatorio.", health: "Top" },{ name: "Comino", use: "Digestivo.", health: "Alta" }];
+        c.innerHTML = `<div style="text-align:center; margin-bottom: 25px;"><h2 style="color:var(--primary);">Guía de Especias</h2></div>${spiceGuide.map(s => `<div class="spice-card"><div class="spice-title">${s.name} <span class="spice-benefit">${s.health}</span></div><p style="font-size:0.9rem; margin:0;">${s.use}</p></div>`).join('')}`;
         lucide.createIcons();
     }
 
-    function saveNote() { userNotes[currentOpenId] = document.getElementById('m-notes').value; localStorage.setItem('web_notes', JSON.stringify(userNotes)); alert("¡Nota guardada!"); }
-    function shareRecipe() { const r = allRecipes.find(rec => (rec.id || rec.title) === currentOpenId); const text = r ? `🍳 ${r.title}\n\nIngredientes:\n${r.ingredients.join('\n')}\n\nPreparación:\n${r.instructions.join('\n')}` : `Sugerencia: ${currentOpenId}`; if (navigator.share) navigator.share({ title: 'Receta', text: text }); else alert("Copiado."); }
+    function saveNote() { userNotes[currentOpenId] = document.getElementById('m-notes').value; localStorage.setItem('web_notes', JSON.stringify(userNotes)); alert("¡Guardada!"); }
+    function shareRecipe() { const r = allRecipes.find(x => (x.id||x.title) === currentOpenId); const text = r ? `Receta: ${r.title}\n\nIngredientes:\n${r.ingredients.join('\n')}` : `Sugerencia: ${currentOpenId}`; if (navigator.share) navigator.share({ title: 'Receta', text: text }); }
     function toggleTag(t) { activeTag = activeTag === t ? '' : t; render(); }
     function toggleCat(c) { activeCategory = activeCategory === c ? '' : c; render(); }
-    function toggleFav(id) {
-        if (favorites.includes(id)) favorites = favorites.filter(f => f !== id);
-        else favorites.push(id);
-        localStorage.setItem('web_favs', JSON.stringify(favorites));
-        renderList();
-    }
+    function toggleFav(id) { if (favorites.includes(id)) favorites = favorites.filter(f => f !== id); else favorites.push(id); localStorage.setItem('web_favs', JSON.stringify(favorites)); renderList(); }
     function openRecipeByName(n) { openRecipe(n); }
     function closeModal() { document.getElementById('recipe-modal').style.display = 'none'; clearInterval(timerInterval); timerRunning = false; }
 

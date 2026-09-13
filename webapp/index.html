@@ -50,8 +50,8 @@
             display: flex; flex-direction: column; align-items: center; gap: 5px;
         }
 
-        .header-logo { width: 105px; height: auto; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.2)); }
-        .header h1 { margin: 0; font-size: 1.5rem; font-weight: 900; letter-spacing: 1px; line-height: 1; }
+        .header-logo { width: 110px; height: auto; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.2)); }
+        .header h1 { margin: 0; font-size: 1.6rem; font-weight: 900; letter-spacing: 1px; line-height: 1; }
         .brand { font-size: 0.65rem; font-weight: 800; letter-spacing: 2.5px; opacity: 0.85; text-transform: uppercase; }
 
         .content { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 120px; }
@@ -146,9 +146,9 @@
                 <div id="m-timer" class="timer-display">20:00</div>
             </div>
             <div style="display:flex; gap:8px;">
-                <button class="timer-btn" onclick="adjustTimer(-60)"><i data-lucide="minus" size="18"></i></button>
-                <button id="timer-toggle" class="timer-btn" onclick="toggleTimer()"><i data-lucide="play" size="18"></i></button>
-                <button class="timer-btn" onclick="adjustTimer(60)"><i data-lucide="plus" size="18"></i></button>
+                <button class="timer-btn" onclick="adjustTimer(-60)"><i data-lucide="minus"></i></button>
+                <button id="timer-toggle" class="timer-btn" onclick="toggleTimer()"><i data-lucide="play"></i></button>
+                <button class="timer-btn" onclick="adjustTimer(60)"><i data-lucide="plus"></i></button>
             </div>
         </div>
 
@@ -158,7 +158,7 @@
         <div class="section-h">PREPARACIÓN</div>
         <div id="m-instructions"></div>
         <div class="section-h">MIS NOTAS</div>
-        <textarea id="m-notes" class="notes-area" placeholder="Añade tus trucos..."></textarea>
+        <textarea id="m-notes" style="width:100%; min-height:80px; padding:10px; border-radius:10px; border:1px solid #ddd; font-family: inherit;" placeholder="Añade tus trucos..."></textarea>
         <button class="btn" style="width:100%; margin-top:10px; background:var(--primary); color:white; border:none; padding:15px; border-radius:12px; font-weight:bold;" onclick="saveNote()">GUARDAR NOTA</button>
     </div>
 </div>
@@ -209,13 +209,13 @@
         { name: "Canela", use: "Regula el azúcar en sangre. Úsala en avena o café para reducir picos de glucosa.", health: "Glucosa" },
         { name: "Pimentón de la Vera", use: "Sabor ahumado antioxidante. Perfecto en pulpo, patatas y guisos tradicionales.", health: "Antioxidante" },
         { name: "Orégano", use: "Antiséptico natural. Potencia salsas de tomate y carnes. Combate bacterias.", health: "Antibiótico" },
-        { name: "Pimienta Negra", use: "La piperina ayuda a absorber mejor los nutrientes de otros alimentos.", health: "Potenciador" },
+        { name: "Pimienta Negra", use: "La piperina ayuda a absorber mejor los beneficios de otros alimentos.", health: "Potenciador" },
         { name: "Azafrán", use: "Antioxidante de lujo que mejora el ánimo. Ideal en arroces y guisos marineros.", health: "Bienestar" }
     ];
 
     async function init() {
         try {
-            const snapshot = await db.collection('recipes').limit(800).get();
+            const snapshot = await db.collection('recipes').limit(2000).get();
             allRecipes = snapshot.docs.map(doc => {
                 const d = doc.data();
                 return { id: doc.id, ...d, title: cleanText(d.title), category: cleanText(d.category), ingredients: (d.ingredients || []).map(cleanText).filter(x=>x), instructions: (d.instructions || []).map(cleanText).filter(x=>x) };
@@ -252,11 +252,13 @@
             const mS = r.title.toLowerCase().includes(q) || r.ingredients.some(i => i.toLowerCase().includes(q));
             let mT = true;
             const cat = (r.category || "").toLowerCase();
-            if (activeTag === "Sana") mT = ["ensaladas", "verduras", "pescados"].includes(cat);
-            else if (activeTag === "Perder peso") mT = ["ensaladas", "verduras"].includes(cat);
-            else if (activeTag === "Músculo") mT = ["carnes", "pescados", "legumbres"].includes(cat);
-            else if (activeTag === "Diabéticos") mT = !["postres", "pastas", "arroces"].includes(cat);
-            const mC = !activeCategory || (r.category || "").toLowerCase() === activeCategory.toLowerCase();
+            if (activeTag === "Sana") mT = ["ensaladas", "verduras", "pescados"].some(c => cat.includes(c));
+            else if (activeTag === "Perder peso") mT = ["ensaladas", "verduras"].some(c => cat.includes(c));
+            else if (activeTag === "Músculo") mT = ["carnes", "pescados", "legumbres"].some(c => cat.includes(c));
+            else if (activeTag === "Diabéticos") mT = !["postres", "pastas", "arroces"].some(c => cat.includes(c));
+
+            const actCat = activeCategory.toLowerCase();
+            const mC = !activeCategory || cat.includes(actCat.substring(0, 4)) || actCat.includes(cat.substring(0, 4));
             const mF = currentView !== 'favs' || favorites.includes(r.id || r.title);
             return mS && mT && mC && mF;
         });
@@ -265,7 +267,7 @@
     }
 
     function renderMenu(c) {
-        c.innerHTML = `<div style="text-align:center; margin-bottom:20px;"><h2 style="color:var(--primary); margin:0;">Plan Semanal</h2><button class="chip active" style="margin-top:10px;" onclick="generateMenu()">GENERAR NUEVO</button></div><div id="weekly-days"></div>`;
+        c.innerHTML = `<div style="text-align:center; margin-bottom:20px;"><h2 style="color:var(--primary); margin:0;">Plan Semanal Inteligente</h2><button class="chip active" style="margin-top:10px;" onclick="generateMenu()">GENERAR NUEVO</button></div><div id="weekly-days"></div>`;
         const menu = JSON.parse(localStorage.getItem('web_menu') || '[]');
         if (menu.length === 0) { generateMenu(); return; }
         const days = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
@@ -274,23 +276,55 @@
                 <div class="day-title">${days[i]}</div>
                 <div class="meal-container"><div class="meal" onclick="openRecipeByName('${d.breakfast}')"><b>DESAYUNO</b> ${d.breakfast}</div><div class="refresh-btn" onclick="refreshMeal(${i}, 'breakfast')"><i data-lucide="refresh-cw" size="18"></i></div></div>
                 <div class="meal-container"><div class="meal" onclick="openRecipeByName('${d.lunch}')"><b>ALMUERZO</b> ${d.lunch}</div><div class="refresh-btn" onclick="refreshMeal(${i}, 'lunch')"><i data-lucide="refresh-cw" size="18"></i></div></div>
-                <div class="meal-container"><div class="meal" onclick="openRecipeByName('${d.dinner}')"><b>CENA</b> ${d.dinner}</div><div class="refresh-btn" onclick="refreshMeal(${i}, 'dinner')"><i data-lucide="refresh-cw" size="18"></i></div></div>
+                <div class="meal-container"><div class="meal" onclick="openRecipeByName('${d.dinner}')"><b>CENA</b> ${d.dinner}</div><div class="refresh-btn" onclick="refreshMeal(${i}, 'dinner')"><i data-lucide="refresh-cw" size="16"></i></div></div>
                 <div class="tip-card"><i data-lucide="sparkles" size="18"></i><div class="tip-text">${superTips[i%5]}</div></div>
             </div>`).join('');
         lucide.createIcons();
     }
 
+    function getRandomMeal(type) {
+        let pool = allRecipes;
+        if (type === 'breakfast') {
+            pool = allRecipes.filter(r => {
+                const c = (r.category || "").toLowerCase();
+                return !["salsas", "carnes", "pescados", "legumbres", "sopas", "guisos"].some(x => c.includes(x));
+            });
+        } else if (type === 'lunch') {
+            pool = allRecipes.filter(r => {
+                const c = (r.category || "").toLowerCase();
+                return !["postres", "salsas", "aperitivos"].some(x => c.includes(x));
+            });
+        } else if (type === 'dinner') {
+            pool = allRecipes.filter(r => {
+                const c = (r.category || "").toLowerCase();
+                return ["ensaladas", "verduras", "pescados", "sopas", "aperitivos"].some(x => c.includes(x));
+            });
+        }
+        if (pool.length === 0) pool = allRecipes;
+        return pool[Math.floor(Math.random() * pool.length)].title;
+    }
+
     function generateMenu() {
         const m = [];
-        const p = allRecipes.length > 20 ? allRecipes : [{title: "Cargando..."}];
-        for (let i = 0; i < 7; i++) m.push({ breakfast: p[Math.floor(Math.random()*p.length)].title, lunch: p[Math.floor(Math.random()*p.length)].title, dinner: p[Math.floor(Math.random()*p.length)].title });
+        if (allRecipes.length < 20) { alert("Cargando recetas..."); return; }
+        for (let i = 0; i < 7; i++) {
+            m.push({
+                breakfast: getRandomMeal('breakfast'),
+                lunch: getRandomMeal('lunch'),
+                dinner: getRandomMeal('dinner')
+            });
+        }
         localStorage.setItem('web_menu', JSON.stringify(m));
         if (currentView === 'menu') render();
     }
 
     function refreshMeal(day, type) {
         const m = JSON.parse(localStorage.getItem('web_menu') || '[]');
-        if (m[day]) { m[day][type] = allRecipes[Math.floor(Math.random()*allRecipes.length)].title; localStorage.setItem('web_menu', JSON.stringify(m)); render(); }
+        if (m[day]) {
+            m[day][type] = getRandomMeal(type);
+            localStorage.setItem('web_menu', JSON.stringify(m));
+            render();
+        }
     }
 
     function openRecipe(id) {
@@ -313,7 +347,7 @@
         if (timerRunning) { clearInterval(timerInterval); timerRunning = false; }
         else {
             if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-            timerInterval = setInterval(() => { if (timerSeconds > 0) { timerSeconds--; updateTimerDisplay(); } else { clearInterval(timerInterval); timerRunning = false; playAlarm(); alert("¡Tiempo terminado!"); } }, 1000);
+            timerInterval = setInterval(() => { if (timerSeconds > 0) { timerSeconds--; updateTimerDisplay(); } else { clearInterval(timerInterval); timerRunning = false; updateTimerDisplay(); playAlarm(); alert("¡Tiempo terminado!"); } }, 1000);
             timerRunning = true;
         }
         document.getElementById('timer-toggle').innerHTML = `<i data-lucide="${timerRunning ? 'pause' : 'play'}" size="18"></i>`;

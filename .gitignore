@@ -1,11 +1,16 @@
-# Ignorar TODO por defecto
+# Ignorar TODO por defecto para no subir el código fuente
 /*
 
-# Excepto estos archivos y carpetas necesarios para la Web y Verificación
+# Excepciones: Archivos que SÍ queremos en GitHub (Web y Verificación)
 !.gitignore
-!web/
+!index.html
+!privacy.html
+!manifest.json
 !google9312739a0adb99dd.html
+!webapp/
+!CocinaREcetas.apk
 
-# Ignorar archivos locales dentro de carpetas permitidas si los hubiera
+# Ignorar archivos temporales
 .DS_Store
 Thumbs.db
+/build

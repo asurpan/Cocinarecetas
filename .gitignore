@@ -1,0 +1,11 @@
+# Ignorar TODO por defecto
+/*
+
+# Excepto estos archivos y carpetas necesarios para la Web y Verificación
+!.gitignore
+!web/
+!google9312739a0adb99dd.html
+
+# Ignorar archivos locales dentro de carpetas permitidas si los hubiera
+.DS_Store
+Thumbs.db

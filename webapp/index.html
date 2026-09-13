@@ -28,6 +28,7 @@
             --bg: #F0F7F8;
             --surface: #FFFFFF;
             --text: #00363A;
+            --tip-bg: #E8F5E9;
         }
 
         body {
@@ -95,11 +96,17 @@
         .fav-icon { color: #ddd; }
         .fav-icon.active { color: var(--accent); }
 
-        /* Menú Semanal */
+        /* Menú Semanal y Tips */
         .menu-day { background: white; border-radius: 20px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .day-title { color: var(--primary); font-weight: 900; margin-bottom: 15px; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 8px; }
-        .meal { margin-bottom: 10px; font-size: 0.95rem; }
+        .meal { margin-bottom: 10px; font-size: 0.95rem; cursor: pointer; }
         .meal b { color: #666; font-size: 0.75rem; display: block; margin-bottom: 2px; }
+
+        .tip-card {
+            background: var(--tip-bg); border-radius: 15px; padding: 15px; margin-top: 10px;
+            border-left: 5px solid var(--secondary); display: flex; gap: 10px; align-items: flex-start;
+        }
+        .tip-text { font-size: 0.85rem; color: #2E7D32; font-style: italic; }
 
         /* Detail Modal */
         .modal {
@@ -115,6 +122,13 @@
         .section-h { margin-top: 25px; color: var(--primary); font-weight: 900; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-bottom: 15px; }
         .list-item { margin-bottom: 12px; display: flex; gap: 10px; line-height: 1.4; }
         .num { color: var(--primary); font-weight: 800; min-width: 20px; }
+
+        .science-tip {
+            background: #FFF3E0; border-radius: 15px; padding: 15px; margin-top: 25px;
+            border-left: 5px solid #F57C00;
+        }
+        .science-tip h4 { margin: 0 0 5px; color: #E65100; font-size: 0.9rem; }
+        .science-tip p { margin: 0; font-size: 0.85rem; }
 
         /* Overlay */
         #install-overlay {
@@ -132,7 +146,7 @@
     </div>
 
     <div class="content" id="main-content">
-        <!-- Vistas dinámicas aquí -->
+        <!-- Vistas dinámicas -->
     </div>
 
     <div class="bottom-nav">
@@ -158,10 +172,12 @@
         <div class="modal-title" id="m-title"></div>
     </div>
     <div class="modal-content">
+        <div id="m-science-tip"></div>
         <div class="section-h">INGREDIENTES</div>
         <div id="m-ingredients"></div>
         <div class="section-h">PREPARACIÓN</div>
         <div id="m-instructions"></div>
+        <div id="m-notes-section"></div>
     </div>
 </div>
 
@@ -196,15 +212,14 @@
 
     async function init() {
         try {
-            const snapshot = await db.collection('recipes').limit(200).get();
+            const snapshot = await db.collection('recipes').limit(300).get();
             allRecipes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             switchView('list');
         } catch (e) {
             console.error(e);
-            document.getElementById('main-content').innerHTML = "<p>Error de conexión con el recetario.</p>";
+            document.getElementById('main-content').innerHTML = "<p>Error de conexión.</p>";
         }
 
-        // iOS Check
         const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         if (isIos && !window.navigator.standalone) {
             document.getElementById('install-overlay').style.display = 'block';
@@ -226,12 +241,11 @@
         container.innerHTML = '';
 
         if (currentView === 'list' || currentView === 'favs') {
-            // Search & Filters
             const topUi = document.createElement('div');
             topUi.innerHTML = `
                 <div class="search-box">
                     <i data-lucide="search" size="20"></i>
-                    <input type="text" id="search-input" placeholder="Buscar en 1300+ recetas..." value="${searchQuery}">
+                    <input type="text" id="search-input" placeholder="Buscar receta o ingrediente..." value="${searchQuery}">
                 </div>
                 <div class="filter-row">
                     ${healthTags.map(t => `<div class="chip ${activeTag === t ? 'active' : ''}" onclick="toggleTag('${t}')">${t}</div>`).join('')}
@@ -241,12 +255,10 @@
                 </div>
             `;
             container.appendChild(topUi);
-
             document.getElementById('search-input').addEventListener('input', (e) => {
                 searchQuery = e.target.value;
                 renderList();
             });
-
             const listDiv = document.createElement('div');
             listDiv.id = "recipe-list";
             container.appendChild(listDiv);
@@ -260,29 +272,24 @@
     function renderList() {
         const listDiv = document.getElementById('recipe-list');
         const q = searchQuery.toLowerCase();
-
         const filtered = allRecipes.filter(r => {
-            const matchesSearch = r.title.toLowerCase().includes(q) ||
-                                (r.ingredients && r.ingredients.some(i => i.toLowerCase().includes(q)));
+            const matchesSearch = r.title.toLowerCase().includes(q) || (r.ingredients && r.ingredients.some(i => i.toLowerCase().includes(q)));
             const matchesTag = !activeTag || (r.healthTags && r.healthTags.includes(activeTag));
             const matchesCat = !activeCategory || r.category === activeCategory;
             const matchesFav = currentView !== 'favs' || favorites.includes(r.id || r.title);
             return matchesSearch && matchesTag && matchesCat && matchesFav;
         });
-
         if (filtered.length === 0) {
-            listDiv.innerHTML = `<p style="text-align:center; padding:40px; color:#999;">No hay recetas que coincidan.</p>`;
+            listDiv.innerHTML = `<p style="text-align:center; padding:40px; color:#999;">No hay resultados.</p>`;
             return;
         }
-
         listDiv.innerHTML = filtered.map(r => `
             <div class="recipe-card" onclick="openRecipe('${r.id || r.title}')">
                 <div class="recipe-info">
                     <h3>${r.title}</h3>
                     <p>${r.category || 'Varios'}</p>
                 </div>
-                <div class="fav-icon ${favorites.includes(r.id || r.title) ? 'active' : ''}"
-                     onclick="event.stopPropagation(); toggleFav('${r.id || r.title}')">
+                <div class="fav-icon ${favorites.includes(r.id || r.title) ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav('${r.id || r.title}')">
                     <i data-lucide="heart" fill="${favorites.includes(r.id || r.title) ? 'currentColor' : 'none'}"></i>
                 </div>
             </div>
@@ -293,19 +300,13 @@
     function renderMenu(container) {
         container.innerHTML = `
             <div style="text-align:center; margin-bottom: 25px;">
-                <h2 style="margin:0; color:var(--primary);">Tu Plan Semanal</h2>
-                <p style="font-size:0.8rem; color:#666;">Generado basado en el recetario de Sevilla</p>
-                <button class="btn" style="padding: 10px 20px; font-size: 0.9rem;" onclick="generateMenu()">GENERAR NUEVO</button>
+                <h2 style="margin:0; color:var(--primary);">Plan Semanal de Sevilla</h2>
+                <button class="chip active" style="margin-top:10px;" onclick="generateMenu()">GENERAR NUEVO</button>
             </div>
             <div id="weekly-days"></div>
         `;
-
         const storedMenu = JSON.parse(localStorage.getItem('web_menu') || '[]');
-        if (storedMenu.length === 0) {
-            generateMenu();
-            return;
-        }
-
+        if (storedMenu.length === 0) { generateMenu(); return; }
         const days = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
         const daysDiv = document.getElementById('weekly-days');
         daysDiv.innerHTML = storedMenu.map((day, idx) => `
@@ -314,9 +315,23 @@
                 <div class="meal" onclick="openRecipeByName('${day.breakfast}')"><b>DESAYUNO</b> ${day.breakfast}</div>
                 <div class="meal" onclick="openRecipeByName('${day.lunch}')"><b>ALMUERZO</b> ${day.lunch}</div>
                 <div class="meal" onclick="openRecipeByName('${day.dinner}')"><b>CENA</b> ${day.dinner}</div>
+                <div class="tip-card">
+                    <i data-lucide="lightbulb" size="18" style="color:var(--secondary);"></i>
+                    <div class="tip-text">${day.tip}</div>
+                </div>
             </div>
         `).join('');
     }
+
+    const dailyTips = [
+        "💡 Truco Hierro: Añade limón al almuerzo para triplicar la absorción del hierro.",
+        "💡 Ciencia Glucosa: Deja enfriar el arroz o pasta y caliéntalo después; crearás almidón resistente saludable.",
+        "💡 Potenciador: Añade una cucharadita de chía o lino molido para tu dosis de Omega-3.",
+        "💡 Tip Salud: Deja el ajo picado 10 min antes de cocinar para activar su alicina protectora.",
+        "💡 Pescado: Descongela 24h antes en nevera sobre rejilla para mantener firmeza y sabor.",
+        "💡 Carne: Saca el filete 20 min antes de la nevera para que no quede duro al cocinar.",
+        "💡 Hidratación: Un vaso de agua con limón antes de comer ayuda a la digestión."
+    ];
 
     function generateMenu() {
         const menu = [];
@@ -325,45 +340,60 @@
             menu.push({
                 breakfast: pool[Math.floor(Math.random()*pool.length)].title,
                 lunch: pool[Math.floor(Math.random()*pool.length)].title,
-                dinner: pool[Math.floor(Math.random()*pool.length)].title
+                dinner: pool[Math.floor(Math.random()*pool.length)].title,
+                tip: dailyTips[i]
             });
         }
         localStorage.setItem('web_menu', JSON.stringify(menu));
         if (currentView === 'menu') render();
     }
 
-    // Handlers
-    function toggleTag(t) { activeTag = activeTag === t ? '' : t; render(); }
-    function toggleCat(c) { activeCategory = activeCategory === c ? '' : c; render(); }
-
-    function toggleFav(id) {
-        if (favorites.includes(id)) { favorites = favorites.filter(f => f !== id); }
-        else { favorites.push(id); }
-        localStorage.setItem('web_favs', JSON.stringify(favorites));
-        renderList();
+    function getScienceTip(recipe) {
+        const cat = recipe.category;
+        const title = recipe.title.toLowerCase();
+        if (cat === "Verduras") return "🥦 Al vapor: 5-8 min para mantener el 90% de las vitaminas. Hervido: máximo 10 min.";
+        if (cat === "Arroces") return "🌾 Integral: 20-30 min. Blanco: 15-18 min. Reposo: 5 min clave.";
+        if (cat === "Pescados") return "🐟 Vapor/Plancha: 3-5 min. Cocina justa para preservar el Omega-3.";
+        if (title.contains("lomo") || title.contains("filete")) return "🥩 Atemperar: Saca la carne 20 min antes. Sal AL FINAL para retener jugos.";
+        return "⏱️ Cocina a fuego medio para evitar toxinas y preservar nutrientes.";
     }
 
     function openRecipe(id) {
         const r = allRecipes.find(rec => (rec.id || rec.title) === id);
         if (!r) return;
-
         document.getElementById('m-title').innerText = r.title;
+        document.getElementById('m-science-tip').innerHTML = `
+            <div class="science-tip">
+                <h4><i data-lucide="flask-conical" size="14" style="vertical-align:middle;"></i> CONSEJO CIENTÍFICO</h4>
+                <p>${getScienceTip(r)}</p>
+            </div>
+        `;
         document.getElementById('m-ingredients').innerHTML = (r.ingredients || []).map(i => `
             <div class="list-item"><span class="num">•</span><span>${i}</span></div>
         `).join('');
         document.getElementById('m-instructions').innerHTML = (r.instructions || []).map((inst, idx) => `
             <div class="list-item"><span class="num">${idx+1}</span><span>${inst}</span></div>
         `).join('');
-
+        document.getElementById('m-notes-section').innerHTML = r.notes ? `
+            <div class="section-h">NOTAS</div>
+            <p style="font-size:0.9rem; color:#666;">${r.notes}</p>
+        ` : '';
         document.getElementById('recipe-modal').style.display = 'block';
         lucide.createIcons();
     }
 
+    function toggleTag(t) { activeTag = activeTag === t ? '' : t; render(); }
+    function toggleCat(c) { activeCategory = activeCategory === c ? '' : c; render(); }
+    function toggleFav(id) {
+        if (favorites.includes(id)) { favorites = favorites.filter(f => f !== id); }
+        else { favorites.push(id); }
+        localStorage.setItem('web_favs', JSON.stringify(favorites));
+        renderList();
+    }
     function openRecipeByName(name) {
         const r = allRecipes.find(rec => rec.title === name);
         if (r) openRecipe(r.id || r.title);
     }
-
     function closeModal() { document.getElementById('recipe-modal').style.display = 'none'; }
 
     init();

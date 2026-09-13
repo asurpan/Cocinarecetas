@@ -30,6 +30,7 @@
             --text: #00363A;
             --tip-bg: #E8F5E9;
             --shopping-bg: #FFF8E1;
+            --salt-tip-bg: #E1F5FE;
         }
 
         body {
@@ -88,8 +89,11 @@
         .tip-card { background: var(--tip-bg); border-radius: 15px; padding: 15px; margin-top: 10px; border-left: 5px solid var(--secondary); display: flex; gap: 10px; }
         .tip-text { font-size: 0.85rem; color: #2E7D32; font-style: italic; }
 
+        .salt-tip-card { background: var(--salt-tip-bg); border-radius: 15px; padding: 15px; margin-top: 10px; border-left: 5px solid var(--primary-light); display: flex; gap: 10px; }
+        .salt-text { font-size: 0.85rem; color: #01579B; font-weight: 600; }
+
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; display: none; overflow-y: auto; animation: slideIn 0.3s ease-out; }
-        @keyframes slideIn { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
         .modal-header { background: white; padding: 50px 20px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .modal-title { font-size: 1.1rem; font-weight: 900; color: var(--primary); flex: 1; margin: 0 10px; }
         .modal-content { padding: 20px; padding-bottom: 120px; }
@@ -134,24 +138,18 @@
     <div class="modal-content">
         <div id="m-science-tip"></div>
 
-        <div class="section-h">INGREDIENTES <span><i data-lucide="book-open" size="18"></i></span></div>
+        <div class="section-h">INGREDIENTES</div>
         <div id="m-ingredients"></div>
 
         <div id="m-shopping-section"></div>
 
-        <div class="section-h">PREPARACIÓN <span><i data-lucide="chef-hat" size="18"></i></span></div>
+        <div class="section-h">PREPARACIÓN</div>
         <div id="m-instructions"></div>
 
-        <div class="section-h">MIS NOTAS <span><i data-lucide="edit-3" size="18"></i></span></div>
+        <div class="section-h">MIS NOTAS</div>
         <textarea id="m-notes" class="notes-area" placeholder="Añade tus trucos para esta receta..."></textarea>
-        <button class="btn" style="width:100%; margin-top:10px; background:var(--primary);" onclick="saveNote()">GUARDAR NOTA</button>
+        <button class="btn" style="width:100%; margin-top:10px; background:var(--primary); color:white; border:none; padding:15px; border-radius:12px; font-weight:bold;" onclick="saveNote()">GUARDAR NOTA</button>
     </div>
-</div>
-
-<div id="install-overlay">
-    <h3 style="margin:0;">¡Instala en tu iPhone!</h3>
-    <p>1. Pulsa <b>Compartir</b> <i data-lucide="share" style="width:16px;"></i> abajo en Safari. 2. Elige <b>Añadir a pantalla de inicio</b>.</p>
-    <div style="color:var(--primary); font-weight:bold; text-align:center; margin-top:15px;" onclick="document.getElementById('install-overlay').style.display='none'">ENTENDIDO</div>
 </div>
 
 <script>
@@ -166,18 +164,23 @@
     let currentOpenId = null;
 
     function cleanText(text) {
-        if (!text || text === "undefined" || text === "null") return "";
+        if (text === undefined || text === null || text === "undefined" || text === "null") return "";
         return String(text).replace(/\uFFFD/g, "Ó").replace(/Ã³/g, "ó").replace(/Ã¡/g, "á").replace(/Ã©/g, "é").replace(/Ã­/g, "í").replace(/Ãº/g, "ú").replace(/Ã±/g, "ñ").replace(/Ã“/g, "Ó").replace(/Ã /g, "Á").replace(/Ã‰/g, "É").replace(/Â½/g, "½").replace(/Âº/g, "º").replace(/Â/g, "").replace(/Ã/g, "í").replace(/%%/g, "É").replace(/FRÃDO/g, "FRÍO").replace(/FRÃ/g, "FRÍO");
     }
 
-    const dailyTips = [
+    const superTips = [
         "🌟 Superalimento: Añade zumo de limón a las legumbres para triplicar la absorción del hierro vegetal.",
-        "🌟 Proteína Completa: Combina legumbres con cereales para obtener todos los aminoácidos esenciales.",
-        "🌟 Omega-3: Agrega lino molido o chía a tus ensaladas para un corazón de hierro.",
-        "🌟 Quinoa: Sustituye el arroz blanco por quinoa para un extra de fibra y proteínas.",
-        "🌟 Semillas: Sésamo y calabaza aportan zinc y magnesio para tus defensas.",
-        "💡 Ciencia Glucosa: Enfría el arroz o pasta cocida para crear almidón resistente saludable.",
-        "💡 Tip Salud: Pica el ajo y déjalo reposar 10 min antes de cocinar para activar su alicina."
+        "🌟 Proteína Completa: Combina legumbres con arroz o quinoa para obtener todos los aminoácidos esenciales.",
+        "🌟 Omega-3: Agrega lino molido o chía a tus platos para un corazón de hierro y una salud cardiovascular óptima.",
+        "🌟 Almidón Resistente: Deja enfriar el arroz o pasta cocida para alimentar tu microbiota y reducir el índice glucémico.",
+        "🌟 Salud Natural: Pica el ajo y déjalo reposar 10 min antes de cocinarlo para activar toda su alicina protectora."
+    ];
+
+    const saltTips = [
+        "🧂 Cálculo de Sal: Para 1 litro de agua o caldo, usa 10g de sal (aprox. 2 cucharaditas de café rasas).",
+        "🧂 Proporción: Si cocinas por vasos, calcula 2.5g de sal por cada vaso de agua estándar (250ml).",
+        "🧂 Precaución: Si usas caldos comprados o ingredientes ya salados, no añadas sal extra; solo al final al gusto.",
+        "🧂 Tip Chef: Es mejor añadir la sal siempre al final para controlar el sabor real una vez reducido el líquido."
     ];
 
     async function init() {
@@ -189,7 +192,6 @@
             });
             switchView('list');
         } catch (e) { document.getElementById('main-content').innerHTML = "<p>Error de conexión.</p>"; }
-        if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.navigator.standalone) document.getElementById('install-overlay').style.display = 'block';
         lucide.createIcons();
     }
 
@@ -228,18 +230,35 @@
     }
 
     function renderMenu(c) {
-        c.innerHTML = `<div style="text-align:center; margin-bottom:25px;"><h2 style="margin:0; color:var(--primary);">Plan Semanal de Sevilla</h2><button class="chip active" style="margin-top:10px;" onclick="generateMenu()">GENERAR NUEVO</button></div><div id="weekly-days"></div>`;
+        c.innerHTML = `<div style="text-align:center; margin-bottom:25px;"><h2 style="margin:0; color:var(--primary);">Plan Semanal de Sevilla</h2><button class="chip active" style="margin-top:10px; cursor:pointer;" onclick="generateMenu()">GENERAR NUEVO</button></div><div id="weekly-days"></div>`;
         const menu = JSON.parse(localStorage.getItem('web_menu') || '[]');
         if (menu.length === 0) { generateMenu(); return; }
         const days = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
-        document.getElementById('weekly-days').innerHTML = menu.map((d, i) => `<div class="menu-day"><div class="day-title">${days[i]}</div><div class="meal-container"><div class="meal" onclick="openRecipeByName('${d.breakfast}')"><b>DESAYUNO</b> ${d.breakfast}</div><div class="refresh-btn" onclick="refreshMeal(${i}, 'breakfast')"><i data-lucide="refresh-cw" size="16"></i></div></div><div class="meal-container"><div class="meal" onclick="openRecipeByName('${d.lunch}')"><b>ALMUERZO</b> ${d.lunch}</div><div class="refresh-btn" onclick="refreshMeal(${i}, 'lunch')"><i data-lucide="refresh-cw" size="16"></i></div></div><div class="meal-container"><div class="meal" onclick="openRecipeByName('${d.dinner}')"><b>CENA</b> ${d.dinner}</div><div class="refresh-btn" onclick="refreshMeal(${i}, 'dinner')"><i data-lucide="refresh-cw" size="16"></i></div></div><div class="tip-card"><i data-lucide="sparkles" size="18"></i><div class="tip-text">${d.tip || dailyTips[i%7]}</div></div></div>`).join('');
+        document.getElementById('weekly-days').innerHTML = menu.map((d, i) => `
+            <div class="menu-day">
+                <div class="day-title">${days[i]}</div>
+                <div class="meal-container"><div class="meal" onclick="openRecipeByName('${d.breakfast}')"><b>DESAYUNO</b> ${d.breakfast}</div><div class="refresh-btn" onclick="refreshMeal(${i}, 'breakfast')"><i data-lucide="refresh-cw" size="16"></i></div></div>
+                <div class="meal-container"><div class="meal" onclick="openRecipeByName('${d.lunch}')"><b>ALMUERZO</b> ${d.lunch}</div><div class="refresh-btn" onclick="refreshMeal(${i}, 'lunch')"><i data-lucide="refresh-cw" size="16"></i></div></div>
+                <div class="meal-container"><div class="meal" onclick="openRecipeByName('${d.dinner}')"><b>CENA</b> ${d.dinner}</div><div class="refresh-btn" onclick="refreshMeal(${i}, 'dinner')"><i data-lucide="refresh-cw" size="16"></i></div></div>
+
+                <div class="tip-card"><i data-lucide="sparkles" size="18"></i><div class="tip-text">${d.superTip}</div></div>
+                <div class="salt-tip-card"><i data-lucide="droplet" size="18"></i><div class="salt-text">${d.saltTip}</div></div>
+            </div>`).join('');
         lucide.createIcons();
     }
 
     function generateMenu() {
         const m = [];
         const p = allRecipes.length > 20 ? allRecipes : [{title: "Cargando..."}];
-        for (let i = 0; i < 7; i++) m.push({ breakfast: p[Math.floor(Math.random()*p.length)].title, lunch: p[Math.floor(Math.random()*p.length)].title, dinner: p[Math.floor(Math.random()*p.length)].title, tip: dailyTips[i] });
+        for (let i = 0; i < 7; i++) {
+            m.push({
+                breakfast: p[Math.floor(Math.random()*p.length)].title,
+                lunch: p[Math.floor(Math.random()*p.length)].title,
+                dinner: p[Math.floor(Math.random()*p.length)].title,
+                superTip: superTips[i % superTips.length],
+                saltTip: saltTips[i % saltTips.length]
+            });
+        }
         localStorage.setItem('web_menu', JSON.stringify(m));
         if (currentView === 'menu') render();
     }
@@ -258,6 +277,7 @@
         renderIngredients(r);
         document.getElementById('m-instructions').innerHTML = r.instructions.map((inst, i) => `<div class="list-item"><span class="num">${i+1}</span><span>${inst}</span></div>`).join('');
         document.getElementById('recipe-modal').style.display = 'block';
+        document.getElementById('recipe-modal').scrollTop = 0;
         lucide.createIcons();
     }
 
@@ -267,21 +287,11 @@
             <div class="list-item" onclick="toggleIng('${ing}')">
                 <div class="ing-check ${checks.includes(ing) ? 'active' : ''}"><i data-lucide="check" size="14"></i></div>
                 <span class="ing-text ${checks.includes(ing) ? 'active' : ''}">${ing}</span>
-            </div>
-        `).join('');
+            </div>`).join('');
 
         const missing = r.ingredients.filter(i => !checks.includes(i));
         const shop = document.getElementById('m-shopping-section');
-        shop.innerHTML = missing.length > 0 ? `
-            <div class="shopping-card">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <strong style="color:var(--primary);"><i data-lucide="shopping-cart" size="16"></i> LISTA DE LA COMPRA</strong>
-                    <button class="close-btn" onclick="shareShoppingList()"><i data-lucide="share" size="16"></i></button>
-                </div>
-                <p style="font-size:0.8rem; margin:10px 0 5px;">Ingredientes que te faltan:</p>
-                ${missing.map(m => `<div style="font-size:0.9rem; margin:4px 0;">• ${m}</div>`).join('')}
-            </div>
-        ` : `<div class="shopping-card" style="background:#E8F5E9; border-color:#81C784; text-align:center; color:#2E7D32;">🎉 ¡Tienes todo listo!</div>`;
+        shop.innerHTML = missing.length > 0 ? `<div class="shopping-card"><div style="display:flex; justify-content:space-between; align-items:center;"><strong style="color:var(--primary);"><i data-lucide="shopping-cart" size="16"></i> LISTA DE LA COMPRA</strong><button class="close-btn" onclick="shareShoppingList()"><i data-lucide="share" size="16"></i></button></div><p style="font-size:0.8rem; margin:10px 0 5px;">Te faltan:</p>${missing.map(m => `<div style="font-size:0.9rem; margin:4px 0;">• ${m}</div>`).join('')}</div>` : `<div class="shopping-card" style="background:#E8F5E9; border-color:#81C784; text-align:center; color:#2E7D32;">🎉 ¡Tienes todo listo!</div>`;
         lucide.createIcons();
     }
 
@@ -290,30 +300,12 @@
         checks = checks.includes(ing) ? checks.filter(c => c !== ing) : [...checks, ing];
         checkedIngs[currentOpenId] = checks;
         localStorage.setItem('web_checked', JSON.stringify(checkedIngs));
-        const r = allRecipes.find(rec => (rec.id || rec.title) === currentOpenId);
-        renderIngredients(r);
+        renderIngredients(allRecipes.find(rec => (rec.id || rec.title) === currentOpenId));
     }
 
-    function saveNote() {
-        userNotes[currentOpenId] = document.getElementById('m-notes').value;
-        localStorage.setItem('web_notes', JSON.stringify(userNotes));
-        alert("¡Nota guardada con éxito!");
-    }
-
-    function shareRecipe() {
-        const r = allRecipes.find(rec => (rec.id || rec.title) === currentOpenId);
-        const text = `🍳 Receta: ${r.title}\n\nIngredientes:\n${r.ingredients.join('\n')}\n\nPreparación:\n${r.instructions.join('\n')}`;
-        if (navigator.share) navigator.share({ title: r.title, text: text });
-        else alert("Copiado al portapapeles:\n" + text);
-    }
-
-    function shareShoppingList() {
-        const r = allRecipes.find(rec => (rec.id || rec.title) === currentOpenId);
-        const missing = r.ingredients.filter(i => !(checkedIngs[currentOpenId] || []).includes(i));
-        const text = `🛒 Lista de la Compra para: ${r.title}\n\n${missing.map(m => "- " + m).join('\n')}`;
-        if (navigator.share) navigator.share({ title: 'Lista de la Compra', text: text });
-        else alert("Copiado al portapapeles:\n" + text);
-    }
+    function saveNote() { userNotes[currentOpenId] = document.getElementById('m-notes').value; localStorage.setItem('web_notes', JSON.stringify(userNotes)); alert("¡Nota guardada!"); }
+    function shareRecipe() { const r = allRecipes.find(rec => (rec.id || rec.title) === currentOpenId); const text = `🍳 Receta: ${r.title}\n\nIngredientes:\n${r.ingredients.join('\n')}\n\nPreparación:\n${r.instructions.join('\n')}`; if (navigator.share) navigator.share({ title: r.title, text: text }); else alert("Copiado al portapapeles:\n" + text); }
+    function shareShoppingList() { const r = allRecipes.find(rec => (rec.id || rec.title) === currentOpenId); const missing = r.ingredients.filter(i => !(checkedIngs[currentOpenId] || []).includes(i)); const text = `🛒 Lista de la Compra: ${r.title}\n\n${missing.map(m => "- " + m).join('\n')}`; if (navigator.share) navigator.share({ title: 'Lista de la Compra', text: text }); else alert("Copiado al portapapeles:\n" + text); }
 
     function toggleTag(t) { activeTag = activeTag === t ? '' : t; render(); }
     function toggleCat(c) { activeCategory = activeCategory === c ? '' : c; render(); }

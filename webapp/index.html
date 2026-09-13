@@ -18,13 +18,13 @@
 
     <style>
         :root {
-            --primary: #00ACC1; /* PoolBlue Original de JOSEMAN */
+            --primary: #00ACC1;
             --primary-dark: #00838F;
-            --secondary: #43A047; /* NatureGreen */
+            --secondary: #43A047;
             --accent: #D32F2F;
             --bg: #F0F7F8;
             --surface: #FFFFFF;
-            --text: #000000; /* Negro para máxima visibilidad */
+            --text: #000000;
             --tip-bg: #E8F5E9;
             --timer-bg: #E1F5FE;
         }
@@ -41,7 +41,7 @@
 
         .app-container { display: flex; flex-direction: column; height: 100vh; }
         .header {
-            background: var(--primary); color: white; padding: 25px 20px 15px;
+            background: var(--primary); color: white; padding: 35px 20px 15px;
             text-align: center; position: sticky; top: 0; z-index: 100;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             display: flex; flex-direction: column; align-items: center; gap: 5px;
@@ -156,21 +156,7 @@
 
     function cleanText(text) {
         if (!text || text === "undefined" || text === "null") return "";
-        return String(text)
-            .replace(/\uFFFD/g, "Ó")
-            .replace(/Ã±/g, "ñ").replace(/Ã‘/g, "Ñ")
-            .replace(/Ã³/g, "ó").replace(/Ã¡/g, "á").replace(/Ã©/g, "é")
-            .replace(/Ã­/g, "í").replace(/Ãº/g, "ú")
-            .replace(/Ã“/g, "Ó").replace(/Ã /g, "Á").replace(/Ã‰/g, "É")
-            .replace(/Â½/g, "½").replace(/Âº/g, "º").replace(/Â/g, "")
-            .replace(/Ã/g, "í")
-            .replace(/%%/g, "É")
-            .replace(/FRÃDO/g, "FRÍO")
-            .replace(/PURÃ/g, "PURÉ")
-            .replace(/CARIÃ/g, "CARIÑOSA")
-            .replace(/ALIÃ‘O/g, "ALIÑO")
-            .replace(/TIÃ“RTARA/g, "TÁRTARA")
-            .replace(/TIORTARA/g, "TÁRTARA");
+        return String(text).replace(/\uFFFD/g, "Ó").replace(/Ã±/g, "ñ").replace(/Ã‘/g, "Ñ").replace(/Ã³/g, "ó").replace(/Ã¡/g, "á").replace(/Ã©/g, "é").replace(/Ã­/g, "í").replace(/Ãº/g, "ú").replace(/Ã“/g, "Ó").replace(/Ã /g, "Á").replace(/Ã‰/g, "É").replace(/Â½/g, "½").replace(/Âº/g, "º").replace(/Â/g, "").replace(/Ã/g, "í").replace(/%%/g, "É").replace(/FRÃDO/g, "FRÍO").replace(/FRÃ/g, "FRÍO").replace(/PURÃ/g, "PURÉ").replace(/CARIÃ/g, "CARIÑOSA").replace(/CARIÃ‘OSA/g, "CARIÑOSA").replace(/ALIÃ‘O/g, "ALIÑO").replace(/TIÃ“RTARA/g, "TÁRTARA");
     }
 
     const predefinedBreakfasts = {
@@ -189,17 +175,19 @@
                 const title = cleanText(d.title || "");
                 let cat = cleanText(d.category || "");
                 const t = title.toLowerCase();
-                if (!cat || cat === "Varios" || cat === "undefined") {
+
+                // Forzar clasificación de Salsas para que no salgan en otras secciones
+                if (t.includes("salsa")) cat = "Salsas";
+                else if (!cat || cat === "Varios" || cat === "undefined") {
                     if (t.includes("arroz")) cat = "Arroces";
                     else if (t.includes("pasta") || t.includes("macarron")) cat = "Pastas";
                     else if (t.includes("ensalada")) cat = "Ensaladas";
                     else if (t.includes("carne") || t.includes("pollo")) cat = "Carnes";
                     else if (t.includes("pescado") || t.includes("bacalao")) cat = "Pescados";
-                    else if (t.includes("verdura") || t.includes("espinaca") || t.includes("judia") || t.includes("brocoli")) cat = "Verduras";
-                    else if (t.includes("lenteja") || t.includes("garbanzo") || t.includes("legumbre")) cat = "Legumbres";
+                    else if (t.includes("verdura") || t.includes("espinaca")) cat = "Verduras";
+                    else if (t.includes("lenteja") || t.includes("garbanzo")) cat = "Legumbres";
                     else if (t.includes("sopa") || t.includes("crema")) cat = "Sopas";
                     else if (t.includes("postre") || t.includes("tarta")) cat = "Postres";
-                    else if (t.includes("salsa")) cat = "Salsas";
                     else if (t.includes("aperitivo")) cat = "Aperitivos";
                 }
                 return { id: doc.id, ...d, title: title, category: cat || "Varios", ingredients: (d.ingredients || []).map(cleanText), instructions: (d.instructions || []).map(cleanText) };
@@ -232,7 +220,7 @@
     function renderList() {
         const div = document.getElementById('recipe-list');
         const q = searchQuery.toLowerCase();
-        if (allRecipes.length === 0) { div.innerHTML = "<p style='text-align:center; padding:40px; color:#666;'>Cargando base de datos...</p>"; return; }
+        if (allRecipes.length === 0) { div.innerHTML = "<p style='text-align:center; padding:40px;'>Cargando base de datos...</p>"; return; }
 
         const filtered = allRecipes.filter(r => {
             const t = r.title.toLowerCase();
@@ -242,13 +230,14 @@
             let matchTag = true;
             if (activeTag) {
                 const tag = activeTag.toLowerCase();
-                if (tag === "sana") matchTag = ["ensalada", "verdura", "pescado", "legumbre", "fruta"].some(x => c.includes(x) || t.includes(x));
-                else if (tag === "perder peso") matchTag = ["ensalada", "verdura", "sopa", "pescado", "fruta"].some(x => c.includes(x) || t.includes(x));
-                else if (tag === "músculo") matchTag = ["carne", "pescado", "legumbre", "pasta", "arroz"].some(x => c.includes(x) || t.includes(x));
-                else if (tag === "diabéticos") matchTag = !["postre", "tarta", "dulce", "bolleria", "reposteria", "nata"].some(x => c.includes(x) || t.includes(x));
+                if (tag === "sana") matchTag = ["ensalada", "verdura", "pescado", "legumbre", "fruta"].some(x => c.includes(x));
+                else if (tag === "perder peso") matchTag = ["ensalada", "verdura", "sopa", "pescado", "fruta"].some(x => c.includes(x));
+                else if (tag === "músculo") matchTag = ["carne", "pescado", "legumbre", "pasta", "arroz"].some(x => c.includes(x));
+                else if (tag === "diabéticos") matchTag = !["postre", "tarta", "dulce", "bolleria", "reposteria", "nata"].some(x => c.includes(x));
             }
 
-            let matchCat = !activeCategory || c.includes(activeCategory.toLowerCase().substring(0, 4)) || t.includes(activeCategory.toLowerCase().substring(0, 4));
+            // Búsqueda de Categoría Estricta: Ya no busca en el título para no mezclar Salsas con Verduras
+            let matchCat = !activeCategory || c.includes(activeCategory.toLowerCase().substring(0, 4));
             const matchFav = currentView !== 'favs' || favorites.includes(r.id || r.title);
             return matchSearch && matchTag && matchCat && matchFav;
         });

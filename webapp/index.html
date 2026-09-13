@@ -251,11 +251,12 @@
         const filtered = allRecipes.filter(r => {
             const mS = r.title.toLowerCase().includes(q) || r.ingredients.some(i => i.toLowerCase().includes(q));
             let mT = true;
-            if (activeTag === "Sana") mT = ["Ensaladas", "Verduras", "Pescados"].includes(r.category);
-            else if (activeTag === "Perder peso") mT = ["Ensaladas", "Verduras"].includes(r.category);
-            else if (activeTag === "Músculo") mT = ["Carnes", "Pescados", "Legumbres"].includes(r.category);
-            else if (activeTag === "Diabéticos") mT = !["Postres", "Pastas", "Arroces"].includes(r.category);
-            const mC = !activeCategory || r.category === activeCategory;
+            const cat = (r.category || "").toLowerCase();
+            if (activeTag === "Sana") mT = ["ensaladas", "verduras", "pescados"].includes(cat);
+            else if (activeTag === "Perder peso") mT = ["ensaladas", "verduras"].includes(cat);
+            else if (activeTag === "Músculo") mT = ["carnes", "pescados", "legumbres"].includes(cat);
+            else if (activeTag === "Diabéticos") mT = !["postres", "pastas", "arroces"].includes(cat);
+            const mC = !activeCategory || (r.category || "").toLowerCase() === activeCategory.toLowerCase();
             const mF = currentView !== 'favs' || favorites.includes(r.id || r.title);
             return mS && mT && mC && mF;
         });

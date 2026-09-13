@@ -70,7 +70,6 @@
         .search-box input { border: none; outline: none; width: 100%; margin-left: 10px; font-size: 1rem; }
 
         .filter-row { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 10px; scrollbar-width: none; }
-        .filter-row::-webkit-scrollbar { display: none; }
         .chip { white-space: nowrap; background: white; padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; border: 1px solid #eee; }
         .chip.active { background: var(--primary); color: white; border-color: var(--primary); }
         .chip.secondary.active { background: var(--secondary); border-color: var(--secondary); }
@@ -95,13 +94,12 @@
         .spice-title { font-weight: 900; color: #7B1FA2; font-size: 1rem; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
         .spice-benefit { background: white; color: #9C27B0; font-size: 0.65rem; padding: 3px 8px; border-radius: 10px; font-weight: 800; }
 
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; display: none; overflow-y: auto; animation: slideIn 0.3s ease-out; }
-        @keyframes slideIn { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; display: none; overflow-y: auto; }
         .modal-header { background: white; padding: 50px 20px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
         .modal-title { font-size: 1.1rem; font-weight: 900; color: var(--primary); flex: 1; margin: 0 10px; }
         .modal-content { padding: 20px; padding-bottom: 120px; }
 
-        .section-h { margin-top: 20px; color: var(--primary); font-weight: 900; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-bottom: 12px; display: flex; justify-content: space-between; }
+        .section-h { margin-top: 20px; color: var(--primary); font-weight: 900; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-bottom: 12px; }
         .list-item { margin-bottom: 10px; display: flex; gap: 10px; align-items: flex-start; }
         .ing-check { min-width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; color: white; margin-top: 2px; }
         .ing-check.active { background: var(--primary); }
@@ -207,10 +205,7 @@
         { name: "Comino", use: "Digestivo estrella. Imprescindible en legumbres y carnes pesadas para evitar gases.", health: "Digestivo" },
         { name: "Jengibre", use: "Fresco y picante. Excelente en pescados y tés. Acelera el metabolismo.", health: "Inmunidad" },
         { name: "Canela", use: "Regula el azúcar en sangre. Úsala en avena o café.", health: "Glucosa" },
-        { name: "Pimentón de la Vera", use: "Sabor ahumado antioxidante. Perfecto en pulpo, patatas y guisos tradicionales.", health: "Antioxidante" },
-        { name: "Orégano", use: "Antiséptico natural. Potencia salsas de tomate y carnes. Combate bacterias.", health: "Antibiótico" },
-        { name: "Pimienta Negra", use: "La piperina ayuda a absorber mejor los beneficios de otros alimentos.", health: "Potenciador" },
-        { name: "Azafrán", use: "Antioxidante de lujo que mejora el ánimo. Ideal en arroces y guisos marineros.", health: "Bienestar" }
+        { name: "Pimentón de la Vera", use: "Sabor ahumado antioxidante. Perfecto en pulpo, patatas y guisos tradicionales.", health: "Antioxidante" }
     ];
 
     async function init() {
@@ -258,7 +253,6 @@
             else if (activeTag === "Diabéticos") mT = !["postres", "pastas", "arroces"].some(c => cat.includes(c));
 
             const actCat = activeCategory.toLowerCase();
-            // Búsqueda flexible mejorada: 4 letras coinciden (ej: arroc/arroz, carn/carne)
             const mC = !activeCategory || cat.includes(actCat.substring(0, 4)) || actCat.includes(cat.substring(0, 4));
             const mF = currentView !== 'favs' || favorites.includes(r.id || r.title);
             return mS && mT && mC && mF;
@@ -283,29 +277,29 @@
         lucide.createIcons();
     }
 
+    const bannedWords = ["macerar", "marinar", "desalar", "salsa", "aliño", "base", "técnica", "relleno", "truco", "masa", "caldo", "sofrito", "limpieza", "preparación"];
+
     function getRandomMeal(type, used, dayIndex = 0) {
-        let pool = allRecipes;
+        let pool = allRecipes.filter(r => !bannedWords.some(w => r.title.toLowerCase().includes(w)));
         const profile = activeTag;
 
-        // 1. Perfil Nutricional
-        if (profile === "Sana") pool = pool.filter(r => !["salsas", "postres", "aperitivos"].some(x => (r.category||"").toLowerCase().includes(x)));
+        if (profile === "Sana") pool = pool.filter(r => !["postres", "aperitivos", "pastas"].some(x => (r.category||"").toLowerCase().includes(x)));
         else if (profile === "Perder peso") pool = pool.filter(r => ["ensaladas", "verduras", "sopas", "pescados"].some(x => (r.category||"").toLowerCase().includes(x)));
         else if (profile === "Músculo") pool = pool.filter(r => ["carnes", "pescados", "legumbres", "pastas", "arroces"].some(x => (r.category||"").toLowerCase().includes(x)));
         else if (profile === "Diabéticos") pool = pool.filter(r => !["postres", "pastas", "arroces", "dulces"].some(x => (r.category||"").toLowerCase().includes(x)));
 
-        // 2. Momento del Día - Pool de Categorías
         if (type === 'breakfast') {
-            pool = pool.filter(r => ["postres", "varios", "frutas", "repostería"].some(x => (r.category||"").toLowerCase().includes(x)) && !["salsas", "pescado", "carne", "guiso"].some(x => (r.category||"").toLowerCase().includes(x)));
+            pool = pool.filter(r => ["postres", "varios", "frutas", "repostería"].some(x => (r.category||"").toLowerCase().includes(x)) && !["pescado", "carne", "guiso", "legumbres"].some(x => (r.category||"").toLowerCase().includes(x)));
         } else if (type === 'lunch') {
             const lunchPattern = ["legumbres", "carnes", "pastas", "pescados", "legumbres", "carnes", "arroces"];
             const target = lunchPattern[dayIndex % 7];
             let subPool = pool.filter(r => (r.category||"").toLowerCase().includes(target));
             if (subPool.length > 5) pool = subPool;
+            pool = pool.filter(r => !(r.category||"").toLowerCase().includes("ensaladas"));
         } else if (type === 'dinner') {
             pool = pool.filter(r => ["verduras", "ensaladas", "sopas", "pescados", "aperitivos"].some(x => (r.category||"").toLowerCase().includes(x)));
         }
 
-        // 3. Rotación y Sin Repetir
         let finalPool = pool.filter(r => !used.has(r.title));
         if (finalPool.length === 0) finalPool = pool.length > 0 ? pool : allRecipes;
 

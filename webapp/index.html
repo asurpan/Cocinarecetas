@@ -253,33 +253,27 @@
                 let cat = cleanText(d.category || "").trim();
                 const t = title.toLowerCase();
 
-                // Clasificación de Salsas
-                if (t.includes("salsa") || t.includes("aliño") || t.includes("mayonesa") || t.includes("roquefort")) {
-                    cat = "Salsas";
-                } else if (!cat || cat === "Varios" || cat === "undefined" || cat.length < 3) {
-                    if (t.includes("arroz")) cat = "Arroces";
-                    else if (t.includes("pasta") || t.includes("macarron")) cat = "Pastas";
-                    else if (t.includes("ensalada")) cat = "Ensaladas";
-                    else if (t.includes("carne") || t.includes("pollo")) cat = "Carnes";
-                    else if (t.includes("pescado") || t.includes("bacalao")) cat = "Pescados";
-                    else if (t.includes("verdura") || t.includes("espinaca") || t.includes("judía")) cat = "Verduras";
-                    else if (t.includes("lenteja") || t.includes("garbanzo")) cat = "Legumbres";
-                    else if (t.includes("sopa") || t.includes("crema")) cat = "Sopas";
-                    else if (t.includes("postre") || t.includes("tarta")) cat = "Postres";
-                    else if (t.includes("aperitivo")) cat = "Aperitivos";
-                }
+                // Clasificación Robusta
+                const catNorm = cat.toLowerCase().replace(/\s+/g, "");
+                let mappedCat = null;
 
-                // Normalización de categoría para que coincida con los botones
-                cat = cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase();
-                const standardCategories = ["Aperitivos", "Ensaladas", "Legumbres", "Sopas", "Arroces", "Pastas", "Verduras", "Pescados", "Carnes", "Postres", "Salsas"];
-                const found = standardCategories.find(sc => sc.toLowerCase() === cat.toLowerCase());
-                if (found) cat = found;
+                if (catNorm.includes("ensalada") || t.includes("ensalada")) mappedCat = "Ensaladas";
+                else if (catNorm.includes("sopa") || catNorm.includes("crema") || t.includes("sopa") || t.includes("crema")) mappedCat = "Sopas";
+                else if (catNorm.includes("verdura") || t.includes("verdura") || t.includes("espinaca")) mappedCat = "Verduras";
+                else if (catNorm.includes("carne") || t.includes("carne") || t.includes("pollo")) mappedCat = "Carnes";
+                else if (catNorm.includes("pescado") || t.includes("pescado") || t.includes("bacalao")) mappedCat = "Pescados";
+                else if (catNorm.includes("legumbre") || t.includes("lenteja") || t.includes("garbanzo")) mappedCat = "Legumbres";
+                else if (catNorm.includes("arroz") || t.includes("arroz")) mappedCat = "Arroces";
+                else if (catNorm.includes("pasta") || t.includes("macarron")) mappedCat = "Pastas";
+                else if (catNorm.includes("postre") || t.includes("tarta")) mappedCat = "Postres";
+                else if (catNorm.includes("aperitivo")) mappedCat = "Aperitivos";
+                else if (catNorm.includes("salsa") || t.includes("salsa") || t.includes("aliño")) mappedCat = "Salsas";
 
                 tempMap.set(t.toLowerCase(), {
                     id: doc.id,
                     ...d,
                     title: title,
-                    category: cat || "Varios",
+                    category: mappedCat || cat || "Varios",
                     ingredients: sanitizeIngredients(d.ingredients || []),
                     instructions: (d.instructions || []).map(cleanText)
                 });

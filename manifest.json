@@ -1,7 +1,7 @@
 {
   "name": "CocinaREcetas Sevilla",
   "short_name": "CocinaREcetas",
-  "start_url": "index.html",
+  "start_url": "webapp/index.html",
   "display": "standalone",
   "background_color": "#00796B",
   "theme_color": "#00796B",

@@ -187,10 +187,14 @@
 
         // 3. Separar pegados accidentales (ej: RELLENASDE -> RELLENAS DE)
         // OJO: Evitamos romper palabras que empiezan con stopWords (Ensalada, Entrecot, Sevilla, etc.)
+        const kitchenTerms = ["ENSALADA", "ALUBIAS", "CONEJO", "ENTRECOT", "SEMILLAS", "ALBONDIGAS", "ALCACHOFAS", "ALMEJAS", "BACALAO", "ALCAPARRAS"];
         stopWords.forEach(w => {
             // Separación al FINAL (ej: RELLENASDE -> RELLENAS DE) - Siempre seguro
             let regEnd = new RegExp("(\\w{3,})(" + w + ")\\b", "gi");
-            fixed = fixed.replace(regEnd, "$1 $2");
+            fixed = fixed.replace(regEnd, (match, p1, p2) => {
+                if (kitchenTerms.includes(match.toUpperCase())) return match;
+                return p1 + " " + p2;
+            });
 
             // Separación al PRINCIPIO - SOLO si no es una palabra conocida que empieza así
             if (!["EN", "SE", "SI", "NO", "LO", "AL"].includes(w.toUpperCase())) {
@@ -255,8 +259,13 @@
 
     async function init() {
         try {
+            const container = document.getElementById('main-content');
+            container.innerHTML = "<p style='text-align:center; padding:40px;'>Conectando con Firestore...</p>";
+
             const snapshot = await db.collection('recipes').limit(3000).get();
             const tempMap = new Map();
+
+            console.log("Firestore respondió con " + snapshot.docs.length + " documentos.");
 
             snapshot.docs.forEach(doc => {
                 const d = doc.data();

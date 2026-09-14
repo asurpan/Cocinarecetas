@@ -181,8 +181,12 @@
         // Paso 2: Separar palabras comunes (sin romper Ensalada, Sevilla, etc.)
         const common = ["las", "los", "una", "del", "con", "que", "un", "el", "la", "de", "al", "lo", "por"];
         common.forEach(w => {
-            const reg = new RegExp("\\b(" + w + ")(\\w{3,})\\b", "gi");
-            fixed = fixed.replace(reg, "$1 $2");
+            // Separar al principio (ej: DEtomate -> DE tomate)
+            let regStart = new RegExp("\\b(" + w + ")(\\w{2,})", "gi");
+            fixed = fixed.replace(regStart, "$1 $2");
+            // Separar al final (ej: EntrecotDE -> Entrecot DE)
+            let regEnd = new RegExp("(\\w{2,})(" + w + ")\\b", "gi");
+            fixed = fixed.replace(regEnd, "$1 $2");
         });
 
         // Paso 3: Corregir errores comunes de escaneo

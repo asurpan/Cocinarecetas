@@ -134,7 +134,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-    let allRecipes = [], currentView = 'list', searchQuery = '', activeTag = '', activeCategory = '';
+    let allRecipes = [], currentView = 'list', searchQuery = '', activeTag = '', activeCategory = '', currentOpenId = null;
     let favorites = JSON.parse(localStorage.getItem('web_favs') || '[]');
     let userNotes = JSON.parse(localStorage.getItem('web_notes') || '{}');
     let timerSeconds = 1200, timerInterval = null, timerRunning = false;
@@ -260,7 +260,7 @@
     async function init() {
         try {
             const container = document.getElementById('main-content');
-            container.innerHTML = "<p style='text-align:center; padding:40px;'>Conectando con Firestore...</p>";
+            container.innerHTML = "<p style='text-align:center; padding:40px;'>Conectando con base de datos...</p>";
 
             const snapshot = await db.collection('recipes').limit(3000).get();
             const tempMap = new Map();
@@ -481,7 +481,11 @@
 
     function toggleFav(id) { if (favorites.includes(id)) favorites = favorites.filter(f => f !== id); else favorites.push(id); localStorage.setItem('web_favs', JSON.stringify(favorites)); renderList(); }
     function openRecipeByName(n) { openRecipe(n); }
-    function closeModal() { document.getElementById('recipe-modal').style.display = 'none'; clearInterval(timerInterval); timerRunning = false; }
+    function closeModal() {
+        document.getElementById('recipe-modal').style.display = 'none';
+        if (timerInterval) clearInterval(timerInterval);
+        timerRunning = false;
+    }
     function toggleTag(t) { activeTag = activeTag === t ? '' : t; render(); }
     function toggleCat(c) { activeCategory = activeCategory === c ? '' : c; render(); }
 

@@ -370,7 +370,18 @@
 
             return matchSearch && matchTag && matchCat && matchFav;
         });
-        div.innerHTML = filtered.length === 0 ? `<p style="text-align:center; padding:40px; color:#666;">No hay resultados para este filtro.</p>` : filtered.map(r => `<div class="recipe-card" onclick="openRecipe('${r.id || r.title}')"><div class="recipe-info"><h3>${r.title}</h3><p>${r.category}</p></div><div class="fav-icon ${favorites.includes(r.id || r.title) ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav('${r.id || r.title}')"><i data-lucide="heart" fill="${favorites.includes(r.id || r.title) ? 'currentColor' : 'none'}"></i></div></div>`).join('');
+        div.innerHTML = filtered.length === 0 ? `<p style="text-align:center; padding:40px; color:#666;">No hay resultados para este filtro.</p>` : filtered.map(r => {
+            const recipeId = (r.id || r.title).toString().replace(/'/g, "\\'");
+            return `<div class="recipe-card" onclick="openRecipe('${recipeId}')">
+                        <div class="recipe-info">
+                            <h3>${r.title}</h3>
+                            <p>${r.category}</p>
+                        </div>
+                        <div class="fav-icon ${favorites.includes(r.id || r.title) ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav('${recipeId}')">
+                            <i data-lucide="heart" fill="${favorites.includes(r.id || r.title) ? 'currentColor' : 'none'}"></i>
+                        </div>
+                    </div>`;
+        }).join('');
         lucide.createIcons();
     }
 
@@ -433,29 +444,69 @@
     }
 
     function openRecipe(id) {
-        const r = allRecipes.find(rec => (rec.id || rec.title) === id);
-        currentOpenId = id;
-        document.getElementById('m-title').innerText = r ? r.title : id;
-        let html = "";
-        if (r) {
-            const recipeChecked = checkedIngredients[id] || [];
-            const missingCount = r.ingredients.filter(i => !recipeChecked.includes(i)).length;
-
-            html = `<div class="timer-card"><div><div style="font-size: 0.6rem; font-weight: bold; color: var(--primary-light);">TEMPORIZADOR</div><div id="m-timer" class="timer-display">20:00</div></div><div style="display:flex; gap:8px;"><button class="timer-btn" onclick="adjustTimer(-60)"><i data-lucide="minus"></i></button><button id="timer-toggle" class="timer-btn" onclick="toggleTimer()"><i data-lucide="play"></i></button><button class="timer-btn" onclick="adjustTimer(60)"><i data-lucide="plus"></i></button></div></div>`;
-
-            // Nueva Sección: Lista de la Compra Dinámica
-            html += `<div class="timer-card" style="background:var(--tip-bg); flex-direction:column; align-items:flex-start; border:1px solid var(--secondary);">
-                        <div style="font-size: 0.7rem; font-weight: 900; color: var(--secondary); display:flex; align-items:center; gap:5px;"><i data-lucide="shopping-cart" size="12"></i> LISTA DE LA COMPRA</div>
-                        <div style="font-size: 0.9rem; margin-top:5px; font-weight:800; color:#000;">${missingCount === 0 ? '✅ ¡Tienes todos los ingredientes!' : '⚠️ Faltan ' + missingCount + ' ingredientes.'}</div>
-                    </div>`;
-
-            html += `<div class="section-h">INGREDIENTES</div><div id="m-ingredients">${r.ingredients.map(i => `<div class="list-item" onclick="toggleIng('${id}', '${i}')"><div class="ing-check ${recipeChecked.includes(i) ? 'active' : ''}"><i data-lucide="check" size="14"></i></div><span>${i}</span></div>`).join('')}</div><div class="section-h">PREPARACIÓN</div><div id="m-instructions">${r.instructions.map((ins, idx) => `<div class="list-item"><b style="color:#000;">${idx+1}.</b> <span style="color:#000;">${ins}</span></div>`).join('')}</div><div class="section-h">MIS NOTAS</div><textarea id="m-notes" style="width:100%; min-height:80px; padding:10px; border-radius:10px; border:1px solid #ddd; font-family: inherit; color:#000;" placeholder="Añade tus trucos..."></textarea><button class="btn" style="width:100%; margin-top:10px; background:var(--primary); color:white; border:none; padding:15px; border-radius:12px; font-weight:bold;" onclick="saveNote()">GUARDAR NOTA</button>`;
-        } else {
-            html = `<div style="padding:30px; text-align:center; color:var(--text);"><p>Sugerencia de desayuno nutritiva diseñada para tu perfil.</p></div>`;
+        // Buscamos por ID o por Título para asegurar compatibilidad total
+        const r = allRecipes.find(rec => (rec.id === id) || (rec.title === id));
+        if (!r) {
+            console.error("No se encontró la receta con ID:", id);
+            return;
         }
+
+        currentOpenId = id;
+        document.getElementById('m-title').innerText = r.title;
+
+        const recipeChecked = checkedIngredients[id] || [];
+        const missingCount = r.ingredients.filter(i => !recipeChecked.includes(i)).length;
+
+        let html = `
+            <div class="timer-card">
+                <div>
+                    <div style="font-size: 0.6rem; font-weight: bold; color: var(--primary-dark);">TEMPORIZADOR</div>
+                    <div id="m-timer" class="timer-display">20:00</div>
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <button class="timer-btn" onclick="adjustTimer(-60)"><i data-lucide="minus"></i></button>
+                    <button id="timer-toggle" class="timer-btn" onclick="toggleTimer()"><i data-lucide="play"></i></button>
+                    <button class="timer-btn" onclick="adjustTimer(60)"><i data-lucide="plus"></i></button>
+                </div>
+            </div>
+
+            <div class="timer-card" style="background:var(--tip-bg); flex-direction:column; align-items:flex-start; border:1px solid var(--secondary);">
+                <div style="font-size: 0.7rem; font-weight: 900; color: var(--secondary);">LISTA DE LA COMPRA</div>
+                <div style="font-size: 0.9rem; margin-top:5px; font-weight:800;">
+                    ${missingCount === 0 ? '✅ ¡Todo listo!' : '⚠️ Faltan ' + missingCount + ' ingredientes.'}
+                </div>
+            </div>
+
+            <div class="section-h">INGREDIENTES</div>
+            <div id="m-ingredients">
+                ${r.ingredients.map(i => `
+                    <div class="list-item" onclick="toggleIng('${id}', '${i.replace(/'/g, "\\'")}')">
+                        <div class="ing-check ${recipeChecked.includes(i) ? 'active' : ''}">
+                            <i data-lucide="check" size="14"></i>
+                        </div>
+                        <span>${i}</span>
+                    </div>
+                `).join('')}
+            </div>
+
+            <div class="section-h">PREPARACIÓN</div>
+            <div id="m-instructions">
+                ${r.instructions.map((ins, idx) => `
+                    <div class="list-item">
+                        <b style="color:var(--primary-dark);">${idx + 1}.</b>
+                        <span>${ins}</span>
+                    </div>
+                `).join('')}
+            </div>
+
+            <div class="section-h">MIS NOTAS</div>
+            <textarea id="m-notes" style="width:100%; min-height:80px; padding:10px; border-radius:10px; border:1px solid #ddd; font-family: inherit;" placeholder="Añade tus notas..."></textarea>
+            <button class="btn" style="width:100%; margin-top:10px; background:var(--primary); color:white; border:none; padding:15px; border-radius:12px; font-weight:bold;" onclick="saveNote()">GUARDAR NOTA</button>
+        `;
+
         document.getElementById('m-content-area').innerHTML = html;
         document.getElementById('recipe-modal').style.display = 'block';
-        if (r) document.getElementById('m-notes').value = userNotes[id] || "";
+        document.getElementById('m-notes').value = userNotes[id] || "";
         lucide.createIcons();
     }
 
@@ -467,7 +518,7 @@
             checkedIngredients[recipeId].push(ing);
         }
         localStorage.setItem('web_checked', JSON.stringify(checkedIngredients));
-        openRecipe(recipeId); // Recarga el modal para mostrar los cambios
+        openRecipe(recipeId); // Refrescar modal
     }
 
     function toggleTimer() {

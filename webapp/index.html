@@ -175,8 +175,8 @@
             fixed = next;
         }
 
-        // Paso 2: Separar palabras comunes
-        const common = ["Se", "las", "los", "una", "del", "con", "que", "para", "en", "un", "el", "la", "de", "al", "lo", "por", "si", "no"];
+        // Paso 2: Separar palabras comunes (sin romper Ensalada, Sevilla, etc.)
+        const common = ["las", "los", "una", "del", "con", "que", "un", "el", "la", "de", "al", "lo", "por"];
         common.forEach(w => {
             const reg = new RegExp("\\b(" + w + ")(\\w{3,})\\b", "gi");
             fixed = fixed.replace(reg, "$1 $2");

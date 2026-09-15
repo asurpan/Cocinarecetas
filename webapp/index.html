@@ -84,9 +84,9 @@
         .section-h { margin-top: 30px; color: var(--primary-dark); font-weight: 900; border-bottom: 2px solid #eee; padding-bottom: 8px; margin-bottom: 18px; font-size: 1.1rem; }
 
         /* Salud Dashboard */
-        .health-hero { background: white; border-radius: 24px; padding: 24px; margin-bottom: 24px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
-        .calorie-meter { position: relative; width: 160px; height: 160px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; }
-        .progress-ring { transform: rotate(-90deg); width: 160px; height: 160px; }
+        .health-hero { background: white; border-radius: 24px; padding: 24px; margin-bottom: 24px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.06); overflow: visible; }
+        .calorie-meter { position: relative; width: 180px; height: 180px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; }
+        .progress-ring { transform: rotate(-90deg); width: 180px; height: 180px; overflow: visible; }
         .progress-ring-circle { transition: stroke-dashoffset 0.35s; stroke-linecap: round; }
         .calorie-info { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
         .calorie-val { font-size: 1.6rem; font-weight: 900; color: var(--primary); display: block; }
@@ -256,16 +256,17 @@
         const todayKey = new Date().toLocaleDateString();
         const todayLog = healthLog[todayKey] || { kcal: 0, prot: 0, hc: 0, fat: 0 };
         const percent = Math.min(100, (todayLog.kcal / profile.target) * 100);
-        const offset = 440 - (440 * percent) / 100;
+        // Perímetro del círculo: 2 * PI * r = 2 * 3.14159 * 75 ≈ 471
+        const offset = 471 - (471 * percent) / 100;
 
         c.innerHTML = `
             <div class="health-hero">
                 <div class="calorie-meter">
-                    <svg width="160" height="160" viewBox="0 0 160 160" class="progress-ring">
-                        <circle stroke="#EEE" stroke-width="12" fill="transparent" r="70" cx="80" cy="80"/>
-                        <circle stroke="var(--primary)" stroke-width="12" stroke-dasharray="440" stroke-dashoffset="${offset}" fill="transparent" r="70" cx="80" cy="80" class="progress-ring-circle"/>
+                    <svg width="180" height="180" viewBox="0 0 180 180" class="progress-ring">
+                        <circle stroke="#EEE" stroke-width="14" fill="transparent" r="75" cx="90" cy="90"/>
+                        <circle stroke="var(--primary)" stroke-width="14" stroke-dasharray="471" stroke-dashoffset="${offset}" fill="transparent" r="75" cx="90" cy="90" class="progress-ring-circle"/>
                     </svg>
-                    <div class="calorie-info"><span class="calorie-val">${todayLog.kcal}</span><span style="font-size:0.7rem; color:#888;">/ ${profile.target} kcal</span></div>
+                    <div class="calorie-info"><span class="calorie-val">${todayLog.kcal}</span><span style="font-size:0.75rem; color:#888; font-weight:800;">/ ${profile.target} kcal</span></div>
                 </div>
                 <h3 style="margin:0; font-weight:900; text-transform:uppercase;">MI CONSUMO DE HOY</h3>
                 <p class="help-text">Añade raciones manualmente si has comido algo fuera de CocinaREcetas:</p>

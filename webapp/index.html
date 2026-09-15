@@ -175,24 +175,29 @@
 
     async function init() {
         const c = document.getElementById('main-content');
-        c.innerHTML = "<div style='text-align:center; padding:50px;'><p>Cargando Recetario Magistral de Joseman...</p></div>";
+        c.innerHTML = "<div style='text-align:center; padding:50px;'><p>Conectando con el Arsenal de Joseman...</p></div>";
 
         try {
-            // USAMOS RUTAS RELATIVAS (MÁS SEGURO Y COMPATIBLE CON GITHUB PAGES)
-            const baseUrl = "../app/src/main/assets/";
+            // USAMOS URLs DIRECTAS DE GITHUB (MÁS RÁPIDO Y FIABLE)
+            const baseUrl = "https://raw.githubusercontent.com/asurpan/Cocinarecetas/main/app/src/main/assets/";
+
+            console.log("Iniciando descarga de recetas desde GitHub...");
+
+            // Cargamos los archivos con control de errores individual
+            const fetchJSON = async (url) => {
+                const r = await fetch(url);
+                if (!r.ok) throw new Error(`Fallo al descargar: ${url.split('/').pop()} (Error ${r.status})`);
+                return r.json();
+            };
 
             const [resMain, resDelta] = await Promise.all([
-                fetch(baseUrl + "recipes.json").then(r => {
-                    if (!r.ok) throw new Error("No se pudo cargar recipes.json");
-                    return r.json();
-                }),
-                fetch(baseUrl + "recipes_delta.json").then(r => {
-                    if (!r.ok) throw new Error("No se pudo cargar recipes_delta.json");
-                    return r.json();
-                })
+                fetchJSON(baseUrl + "recipes.json"),
+                fetchJSON(baseUrl + "recipes_delta.json")
             ]);
 
             const map = new Map();
+
+            // 1. Procesar recetas del archivo principal
             if (resMain && resMain.recipes) {
                 resMain.recipes.forEach(r => {
                     const title = cleanText(r.title);
@@ -200,6 +205,8 @@
                     map.set(title.toLowerCase(), { ...r, title, category: r.category || "Varios" });
                 });
             }
+
+            // 2. Procesar recetas del archivo delta (Salsas, Pizza, etc.)
             if (resDelta) {
                 resDelta.forEach(r => {
                     const title = cleanText(r.title);
@@ -209,11 +216,19 @@
             }
 
             allRecipes = Array.from(map.values());
+            console.log("CONEXIÓN EXITOSA: " + allRecipes.length + " recetas cargadas.");
+
             if (!localStorage.getItem('web_menu') && allRecipes.length > 0) generateMenu(false);
             switchView('list');
         } catch (e) {
-            console.error("Error de carga:", e);
-            c.innerHTML = `<div style='text-align:center; padding:50px;'><p>Error al conectar con el servidor de recetas.</p><button class="chip active" onclick="location.reload()" style="margin-top:20px;">REINTENTAR</button></div>`;
+            console.error("DETALLE ERROR CARGA:", e);
+            c.innerHTML = `
+                <div style='text-align:center; padding:50px;'>
+                    <p style='color:var(--error); font-weight:800;'>Error de Conexión con el Servidor</p>
+                    <p style='font-size:0.8rem; color:#666; margin: 15px 0;'>Motivo: ${e.message}</p>
+                    <p style='font-size:0.7rem; color:#999;'>Asegúrate de haber hecho 'Push' de la carpeta assets.</p>
+                    <button class="chip active" onclick="location.reload()" style="margin-top:20px;">REINTENTAR CONEXIÓN</button>
+                </div>`;
         }
         lucide.createIcons();
     }

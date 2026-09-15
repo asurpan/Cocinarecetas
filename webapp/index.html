@@ -175,26 +175,38 @@
 
     async function init() {
         const c = document.getElementById('main-content');
-        c.innerHTML = "<div style='text-align:center; padding:50px;'><p>Sincronizando con Joseman Cloud...</p></div>";
+        c.innerHTML = "<div style='text-align:center; padding:50px;'><p>Cargando Recetario Magistral...</p></div>";
+
         try {
-            const snap = await db.collection('recipes').limit(2000).get();
-            if (snap.empty) {
-                c.innerHTML = "<p style='text-align:center; padding:50px;'>Base de datos vacía. Pulsa 'Sincronizar' en la App.</p>";
-                return;
-            }
+            // CARGA DESDE GITHUB (SIN LÍMITES)
+            const baseUrl = "https://raw.githubusercontent.com/asurpan/Cocinarecetas/main/app/src/main/assets/";
+
+            const [resMain, resDelta] = await Promise.all([
+                fetch(baseUrl + "recipes.json").then(r => r.json()),
+                fetch(baseUrl + "recipes_delta.json").then(r => r.json())
+            ]);
+
             const map = new Map();
-            snap.docs.forEach(doc => {
-                const d = doc.data();
-                const title = cleanText(d.title);
+
+            // Procesar principales
+            resMain.recipes.forEach(r => {
+                const title = cleanText(r.title);
                 if (!title || map.has(title.toLowerCase())) return;
-                map.set(title.toLowerCase(), { id: doc.id, ...d, title, category: d.category || "Varios" });
+                map.set(title.toLowerCase(), { ...r, title, category: r.category || "Varios" });
             });
+
+            // Procesar extra (Delta)
+            resDelta.forEach(r => {
+                const title = cleanText(r.title);
+                map.set(title.toLowerCase(), { ...r, title, category: r.category || "Varios" });
+            });
+
             allRecipes = Array.from(map.values());
             if (!localStorage.getItem('web_menu') && allRecipes.length > 0) generateMenu(false);
             switchView('list');
         } catch (e) {
-            console.error(e);
-            c.innerHTML = "<p style='text-align:center; padding:50px;'>Error de conexión con la nube.</p>";
+            console.error("Error cargando desde GitHub:", e);
+            c.innerHTML = "<p style='text-align:center; padding:50px;'>Error al conectar con el servidor de recetas. Inténtalo en unos minutos.</p>";
         }
         lucide.createIcons();
     }

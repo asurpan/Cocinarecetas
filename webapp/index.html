@@ -105,7 +105,7 @@
 <div class="app-container">
     <div class="header">
         <h1>CocinaREcetas</h1>
-        <div class="brand-label">BY JOSEMAN</div>
+        <div class="brand-label">DE JOSEMAN</div>
     </div>
 
     <div class="content" id="main-content"></div>
@@ -261,7 +261,10 @@
         c.innerHTML = `
             <div class="health-hero">
                 <div class="calorie-meter">
-                    <svg width="140" height="140" class="progress-ring"><circle stroke="#EEE" stroke-width="12" fill="transparent" r="70" cx="70" cy="70"/><circle stroke="var(--primary)" stroke-width="12" stroke-dasharray="440" stroke-dashoffset="${offset}" fill="transparent" r="70" cx="70" cy="70" class="progress-ring-circle"/></svg>
+                    <svg width="160" height="160" viewBox="0 0 160 160" class="progress-ring">
+                        <circle stroke="#EEE" stroke-width="12" fill="transparent" r="70" cx="80" cy="80"/>
+                        <circle stroke="var(--primary)" stroke-width="12" stroke-dasharray="440" stroke-dashoffset="${offset}" fill="transparent" r="70" cx="80" cy="80" class="progress-ring-circle"/>
+                    </svg>
                     <div class="calorie-info"><span class="calorie-val">${todayLog.kcal}</span><span style="font-size:0.7rem; color:#888;">/ ${profile.target} kcal</span></div>
                 </div>
                 <h3 style="margin:0; font-weight:900; text-transform:uppercase;">MI CONSUMO DE HOY</h3>

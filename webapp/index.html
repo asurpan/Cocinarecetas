@@ -424,21 +424,59 @@
 
     function shareMenu() {
         const menu = JSON.parse(localStorage.getItem('web_menu'));
+        if (!menu) return;
         const dNames = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
-        let text = "🥘 *MI PLAN NUTRICIONAL COCINARECETAS*\n\n";
-        menu.forEach((d, i) => { text += `*${dNames[i]}*\n🌅 ${d.breakfast}\n☀️ ${d.lunch}\n🌙 ${d.dinner}\n\n`; });
+        const header = activeTag ? `🥘 *MI PLAN NUTRICIONAL (${activeTag.toUpperCase()})*\n\n` : "🥘 *MI PLAN NUTRICIONAL COCINARECETAS*\n\n";
+        let text = header;
+        menu.forEach((d, i) => {
+            const totalKcal = Math.round(d.kcalB + d.kcalL + d.kcalD);
+            const totalProt = Math.round((d.protB||0) + (d.protL||0) + (d.protD||0));
+            text += `*${dNames[i]}* (${totalKcal} kcal | ${totalProt}g prot)\n🌅 ${d.breakfast}\n☀️ ${d.lunch}\n🌙 ${d.dinner}\n\n`;
+        });
+        text += "Generado por CocinaREcetas DE JOSEMAN 👨‍🍳";
         if (navigator.share) navigator.share({ title: 'Mi Menú Semanal', text: text });
     }
 
     function generateMenu(shouldRender = true) {
-        const m = [], used = new Set();
+        if (allRecipes.length < 5) return;
+        const m = [], usedIds = new Set(), weeklyIngs = new Set();
+        const blacklist = ["sal", "aceite", "agua", "ajo", "cebolla", "pimienta", "azucar"];
+
         for (let i = 0; i < 7; i++) {
-            const b = { title: "Tostada con Tomate", kcal: 250 };
-            const l = allRecipes.filter(r => r.mealSuitability?.lunch)[Math.floor(Math.random()*30)];
-            const d = allRecipes.filter(r => r.mealSuitability?.dinner)[Math.floor(Math.random()*30)];
-            m.push({ breakfast: b.title, kcalB: b.kcal, lunch: l.title, kcalL: 600, dinner: d.title, kcalD: 400 });
+            // Desayuno con prioridad a comodines saludables
+            const b = breakfastWildcards[Math.floor(Math.random() * breakfastWildcards.length)];
+
+            // Función para obtener receta que mejor encaje nutricionalmente y por aprovechamiento
+            const getBestMatch = (pool, targetKcal) => {
+                const filtered = pool.filter(r => !usedIds.has(r.id));
+                const targetPool = filtered.length > 0 ? filtered : pool;
+
+                return targetPool.sort((a, b) => {
+                    const bonusA = (a.ingredients || []).filter(ing => [...weeklyIngs].some(wi => ing.toLowerCase().includes(wi))).length * 50;
+                    const bonusB = (b.ingredients || []).filter(ing => [...weeklyIngs].some(wi => ing.toLowerCase().includes(wi))).length * 50;
+                    return (Math.abs((a.nutrition?.perServing?.kcal||500) - targetKcal) - bonusA) -
+                           (Math.abs((b.nutrition?.perServing?.kcal||500) - targetKcal) - bonusB);
+                })[Math.floor(Math.random() * Math.min(3, targetPool.length))] || targetPool[0];
+            };
+
+            const l = getBestMatch(allRecipes.filter(r => r.mealSuitability?.lunch), 650);
+            usedIds.add(l.id);
+            l.ingredients.forEach(ing => {
+                const clean = ing.toLowerCase();
+                if(!blacklist.some(b => clean.includes(b))) weeklyIngs.add(clean.split(' ')[0]);
+            });
+
+            const d = getBestMatch(allRecipes.filter(r => r.mealSuitability?.dinner), 450);
+            usedIds.add(d.id);
+
+            m.push({
+                breakfast: b.title, kcalB: b.kcal, protB: b.prot,
+                lunch: l.title, kcalL: l.nutrition?.perServing?.kcal||600, protL: l.nutrition?.perServing?.protein_g||30,
+                dinner: d.title, kcalD: d.nutrition?.perServing?.kcal||400, protD: d.nutrition?.perServing?.protein_g||20
+            });
         }
-        localStorage.setItem('web_menu', JSON.stringify(m)); if (shouldRender) render();
+        localStorage.setItem('web_menu', JSON.stringify(m));
+        if (shouldRender) render();
     }
 
     function renderHealth(c) {

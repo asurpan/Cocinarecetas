@@ -131,7 +131,12 @@
     <div class="modal-content" id="m-content-area"></div>
 </div>
 
-<audio id="alarm-sound" src="z.mp3" loop></audio>
+<audio id="alarm-sound" src="./z.mp3" loop preload="auto"></audio>
+<script>
+    const alarmAudio = document.getElementById('alarm-sound');
+    alarmAudio.oncanplaythrough = () => console.log("Audio de alarma listo.");
+    alarmAudio.onerror = () => console.error("Error cargando el audio de la alarma.");
+</script>
 
 <script src="firebase-config.js"></script>
 <script>
@@ -283,8 +288,18 @@
 
     function previewWebAlarm() {
         const audio = document.getElementById('alarm-sound');
-        audio.play();
-        setTimeout(() => { audio.pause(); audio.currentTime = 0; }, 3000);
+        audio.currentTime = 0;
+        audio.play().then(() => {
+            setTimeout(() => {
+                if (!audio.paused) {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }
+            }, 3000);
+        }).catch(err => {
+            console.error("Error al reproducir audio:", err);
+            alert("Pulsa en cualquier parte de la web primero para permitir el sonido.");
+        });
     }
 
     function saveNotes() {

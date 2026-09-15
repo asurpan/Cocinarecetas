@@ -254,7 +254,15 @@
     function renderMenu(c) {
         const menu = JSON.parse(localStorage.getItem('web_menu') || '[]');
         if (menu.length === 0) { if (allRecipes.length > 0) { generateMenu(); return; } else { c.innerHTML = "<p style='text-align:center; padding:50px;'>Cargando...</p>"; return; } }
-        c.innerHTML = `<div style="text-align:center; margin-bottom:20px;"><h2 style="font-weight:900; text-transform:uppercase;">Plan Semanal</h2><button class="chip active" onclick="generateMenu()">REGENERAR TODO</button></div><div id="weekly-days"></div>`;
+        c.innerHTML = `
+            <div style="text-align:center; margin-bottom:20px;">
+                <h2 style="font-weight:900; text-transform:uppercase;">Plan Semanal</h2>
+                <div style="display:flex; justify-content:center; gap:10px;">
+                    <button class="chip active" onclick="generateMenu()">REGENERAR</button>
+                    <button class="chip" style="background:var(--accent); color:white; border:none;" onclick="shareMenu()">COMPARTIR</button>
+                </div>
+            </div>
+            <div id="weekly-days"></div>`;
         const dNames = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
         document.getElementById('weekly-days').innerHTML = menu.map((d, i) => `
             <div class="day-card">

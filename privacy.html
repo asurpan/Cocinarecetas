@@ -159,19 +159,8 @@
             <strong>appsaiber@gmail.com</strong></p>
 
             <div style="text-align: center; margin-top: 40px; border-top: 1px solid #EEE; padding-top: 30px;">
-                <a href="javascript:window.close();" class="btn-back" id="btnCerrar">CERRAR VENTANA</a>
-                <p class="app-note">Nota: Si el botón no cierra la ventana, usa el botón "Atrás" de tu teléfono para regresar.</p>
+                <p class="app-note">Usa el botón "Atrás" de tu teléfono o navegador para regresar a la aplicación.</p>
             </div>
-            <script>
-                // Si estamos en un navegador y no se abrió con window.open, el botón close no funcionará.
-                // Intentamos redirigir a la web principal como fallback si no puede cerrar.
-                document.getElementById('btnCerrar').onclick = function(e) {
-                    if (window.history.length > 1) {
-                        window.history.back();
-                        return false;
-                    }
-                };
-            </script>
         </div>
     </div>
 

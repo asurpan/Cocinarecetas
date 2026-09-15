@@ -260,9 +260,16 @@
 
     function shareMenu() {
         const menu = JSON.parse(localStorage.getItem('web_menu'));
+        if (!menu) return;
         const daysArr = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
-        let text = "🥘 *MI PLAN NUTRICIONAL COCINARECETAS*\n\n";
-        menu.forEach((d, i) => { text += `*${daysArr[i]}*\n🌅 ${d.breakfast}\n☀️ ${d.lunch}\n🌙 ${d.dinner}\n\n`; });
+        const header = activeTag ? `🥘 *MI PLAN NUTRICIONAL (${activeTag.toUpperCase()})*\n\n` : "🥘 *MI PLAN NUTRICIONAL COCINARECETAS*\n\n";
+        let text = header;
+        menu.forEach((d, i) => {
+            const totalKcal = Math.round(d.kcalB + d.kcalL + d.kcalD);
+            const totalProt = Math.round((d.protB||0) + (d.protL||0) + (d.protD||0));
+            text += `*${daysArr[i]}* (${totalKcal} kcal | ${totalProt}g prot)\n🌅 ${d.breakfast}\n☀️ ${d.lunch}\n🌙 ${d.dinner}\n\n`;
+        });
+        text += "Generado por CocinaREcetas DE JOSEMAN 👨‍🍳";
         if (navigator.share) navigator.share({ title: 'Mi Menú Semanal', text: text });
     }
 

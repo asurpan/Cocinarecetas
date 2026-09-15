@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="CocinaREcetas">
     <link rel="apple-touch-icon" href="../recetas-removebg-preview.png">
-
     <link rel="manifest" href="../manifest.json">
     <title>CocinaREcetas Pro | Web App</title>
 
@@ -18,13 +16,13 @@
 
     <style>
         :root {
-            --primary: #00ACC1; /* PoolBlue Original de JOSEMAN */
+            --primary: #00ACC1;
             --primary-dark: #00838F;
-            --secondary: #43A047; /* NatureGreen */
+            --secondary: #43A047;
             --accent: #D32F2F;
             --bg: #F0F7F8;
             --surface: #FFFFFF;
-            --text: #000000; /* Negro para máxima visibilidad */
+            --text: #000000;
             --tip-bg: #E8F5E9;
             --timer-bg: #E1F5FE;
         }
@@ -59,7 +57,7 @@
             align-items: center; border-top: 1px solid #eee; z-index: 150;
             padding-bottom: env(safe-area-inset-bottom);
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #90A4AE; font-size: 0.7rem; font-weight: bold; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #90A4AE; font-size: 0.65rem; font-weight: bold; flex: 1; }
         .nav-item.active { color: var(--primary); }
 
         .search-box { background: white; border-radius: 12px; padding: 12px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; align-items: center; border: 1px solid #ddd; }
@@ -77,11 +75,14 @@
         .fav-icon.active { color: var(--accent); }
 
         .menu-day { background: white; border-radius: 20px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .day-title { color: var(--primary-dark); font-weight: 900; margin-bottom: 15px; font-size: 1.2rem; border-bottom: 2px solid var(--bg); padding-bottom: 8px; }
+        .day-title { color: var(--primary-dark); font-weight: 900; margin-bottom: 15px; font-size: 1.2rem; border-bottom: 2px solid var(--bg); padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
         .meal-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 10px; }
         .meal { flex: 1; font-size: 1rem; font-weight: 700; color: #000000; }
         .meal b { color: #666; font-size: 0.75rem; display: block; margin-bottom: 3px; font-weight: 900; text-transform: uppercase; }
         .refresh-btn { color: var(--primary); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
+
+        .health-card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .stats-val { font-size: 1.3rem; font-weight: 900; color: var(--primary); }
 
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; display: none; overflow-y: auto; }
         .modal-header { background: white; padding: 50px 20px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
@@ -114,7 +115,7 @@
         <div class="nav-item active" onclick="switchView('list', this)"><i data-lucide="book-open"></i><span>RECETAS</span></div>
         <div class="nav-item" onclick="switchView('favs', this)"><i data-lucide="heart"></i><span>FAVORITOS</span></div>
         <div class="nav-item" onclick="switchView('menu', this)"><i data-lucide="calendar"></i><span>MENÚ</span></div>
-        <div class="nav-item" onclick="switchView('spices', this)"><i data-lucide="leaf"></i><span>ESPECIAS</span></div>
+        <div class="nav-item" onclick="switchView('health', this)"><i data-lucide="activity"></i><span>SALUD</span></div>
     </div>
 </div>
 
@@ -129,38 +130,22 @@
     </div>
 </div>
 
-    <script src="firebase-config.js"></script>
-    <script>
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+<script src="firebase-config.js"></script>
+<script>
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
     let allRecipes = [], currentView = 'list', searchQuery = '', activeTag = '', activeCategory = '', currentOpenId = null;
     let favorites = JSON.parse(localStorage.getItem('web_favs') || '[]');
     let userNotes = JSON.parse(localStorage.getItem('web_notes') || '{}');
+    let healthLog = JSON.parse(localStorage.getItem('web_health_log') || '{}');
+    let userProfile = JSON.parse(localStorage.getItem('web_profile') || '{"weight": 70, "calTarget": 2000}');
     let timerSeconds = 1200, timerInterval = null, timerRunning = false;
-
-    let audioCtx = null;
-    function playAlarm() {
-        try {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.type = 'sine'; osc.frequency.setValueAtTime(880, audioCtx.currentTime);
-            gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
-            osc.start();
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.5);
-            osc.stop(audioCtx.currentTime + 1.5);
-        } catch(e) {}
-    }
 
     function cleanText(text) {
         if (!text || text === "undefined" || text === "null") return "";
         let fixed = String(text)
             .replace(/\uFFFD/g, "Ó")
-            .replace(/TÃ\u00A1RTARA/g, "TÁRTARA")
-            .replace(/TIÃ“RTARA/g, "TÁRTARA")
-            .replace(/TIORTARA/g, "TÁRTARA")
             .replace(/Ã±/g, "ñ").replace(/Ã‘/g, "Ñ")
             .replace(/Ã³/g, "ó").replace(/Ã¡/g, "á").replace(/Ã©/g, "é")
             .replace(/Ã­/g, "í").replace(/Ãº/g, "ú")
@@ -171,13 +156,15 @@
 
         if (fixed.length < 3) return fixed;
 
-        // 1. Unir letras sueltas
         fixed = fixed.replace(/(?<=\b\w)\s+(?=\w\b)/g, "");
 
-        // 2. Unir fragmentos cortos (1-2 letras) cuidando preposiciones
         const stopWords = ["DE", "LA", "EL", "AL", "EN", "CON", "UN", "LO", "SI", "NO", "POR"];
+        const kitchenTerms = ["ENSALADA", "ALCACHOFAS", "ALUBIAS", "CONEJO", "ENTRECOT", "SEMILLAS", "ALBONDIGAS", "ALMEJAS", "BACALAO"];
+
         for (let i = 0; i < 3; i++) {
             let next = fixed.replace(/\b(\w{1,2})\s+(\w{1,2})\b/g, (match, p1, p2) => {
+                const combined = (p1 + p2).toUpperCase();
+                if (kitchenTerms.some(t => t.includes(combined))) return p1 + p2;
                 if (stopWords.includes(p1.toUpperCase()) || stopWords.includes(p2.toUpperCase())) return match;
                 return p1 + p2;
             });
@@ -185,131 +172,53 @@
             fixed = next;
         }
 
-        // 3. Separar pegados accidentales (ej: RELLENASDE -> RELLENAS DE)
-        // OJO: Evitamos romper palabras que empiezan con stopWords (Ensalada, Entrecot, Sevilla, etc.)
-        const kitchenTerms = ["ENSALADA", "ALUBIAS", "CONEJO", "ENTRECOT", "SEMILLAS", "ALBONDIGAS", "ALCACHOFAS", "ALMEJAS", "BACALAO", "ALCAPARRAS"];
         stopWords.forEach(w => {
-            // Separación al FINAL (ej: RELLENASDE -> RELLENAS DE) - Siempre seguro
             let regEnd = new RegExp("(\\w{3,})(" + w + ")\\b", "gi");
             fixed = fixed.replace(regEnd, (match, p1, p2) => {
-                if (kitchenTerms.includes(match.toUpperCase())) return match;
+                const combined = (p1 + p2).toUpperCase();
+                if (kitchenTerms.some(t => combined.includes(t))) return match;
                 return p1 + " " + p2;
             });
-
-            // Separación al PRINCIPIO - SOLO si no es una palabra conocida que empieza así
-            if (!["EN", "SE", "SI", "NO", "LO", "AL"].includes(w.toUpperCase())) {
-                let regStart = new RegExp("\\b(" + w + ")(\\w{3,})", "gi");
-                fixed = fixed.replace(regStart, "$1 $2");
-            }
         });
 
         fixed = fixed.replace(/(?<=\d)\s+(?=\d)/g, "");
         fixed = fixed.replace(/\s+([,.:;])/g, "$1");
-
         return fixed.replace(/\s{2,}/g, " ").trim();
     }
 
-    function sanitizeIngredients(ingredients) {
-        if (!ingredients || !ingredients.length) return [];
-        const cleaned = ingredients.map(cleanText);
-        const qtyPat = /^(\d+\s*(gr|ml|Kg|unidades|dientes|cucharadas|unidad|vaso|chorro|taza|pizca|gramos|litro|cl|kg))|^\d+(?:\/\d+)?\s*(unidad|cucharada|diente|vaso)?$/i;
-
-        const names = [], quantities = [];
-        cleaned.forEach(item => {
-            if (qtyPat.test(item)) quantities.push(item);
-            else names.push(item);
-        });
-
-        if (quantities.length > 0 && names.length > 0 && qtyPat.test(cleaned[cleaned.length-1])) {
-            const res = [];
-            for (let i = 0; i < names.length; i++) {
-                if (i < quantities.length) res.push(`${names[i]} ${quantities[i]}`);
-                else res.push(names[i]);
-            }
-            if (quantities.length > names.length) {
-                for (let i = names.length; i < quantities.length; i++) res.push(quantities[i]);
-            }
-            return res;
-        }
-
-        // Unión secuencial
-        const res = [];
-        for (let i = 0; i < cleaned.length; i++) {
-            const curr = cleaned[i];
-            if (i + 1 < cleaned.length) {
-                const next = cleaned[i + 1];
-                if (qtyPat.test(next) && !qtyPat.test(curr)) {
-                    res.push(`${curr} ${next}`);
-                    i++;
-                    continue;
-                }
-            }
-            res.push(curr);
-        }
-        return res;
-    }
-
-    const predefinedBreakfasts = {
-        "Default": ["Tostada con AOVE y Tomate", "Yogur con Nueces y Fruta", "Café solo y pieza de Fruta", "Tostada con Jamón Serrano"],
-        "Sana": ["Tostada Integral con Aguacate", "Bol de Frutas Tropicales", "Kéfir con Semillas de Chía", "Tortilla de Claras con Pavo"],
-        "Perder peso": ["Tortilla Francesa de 2 claras", "Yogur Desnatado con Frutos Rojos", "Batido Verde Detox", "Infusión y Manzana"],
-        "Músculo": ["Tortilla de 3 huevos y Queso", "Batido de Proteína y Plátano", "Tostada con Salmón y Huevo", "Yogur Griego con Almendras"],
-        "Diabéticos": ["Tostada de Pan Alemán con Aguacate", "Tortilla con Champiñones", "Café con Stevia y Nueces", "Yogur Natural sin azúcar"]
-    };
+    const breakfastWildcards = [
+        { title: "Tostadas integrales con AOVE y tomate", kcal: 250, prot: 8 },
+        { title: "Tortilla francesa con pavo", kcal: 220, prot: 18 },
+        { title: "Yogur natural con nueces y fruta", kcal: 180, prot: 10 },
+        { title: "Lonchas de pavo con queso fresco", kcal: 150, prot: 20 }
+    ];
 
     async function init() {
         try {
             const container = document.getElementById('main-content');
-            container.innerHTML = "<p style='text-align:center; padding:40px;'>Conectando con base de datos...</p>";
-
+            container.innerHTML = "<p style='text-align:center; padding:40px;'>Conectando...</p>";
             const snapshot = await db.collection('recipes').limit(3000).get();
             const tempMap = new Map();
-
-            console.log("Firestore respondió con " + snapshot.docs.length + " documentos.");
 
             snapshot.docs.forEach(doc => {
                 const d = doc.data();
                 const title = cleanText(d.title || "").trim();
                 if (!title || tempMap.has(title.toLowerCase())) return;
 
-                let cat = cleanText(d.category || "").trim();
-                const t = title.toLowerCase();
+                const t = title.toUpperCase();
+                let cat = (d.category || "Varios");
 
-                // Clasificación Robusta (Sincronizada con la App)
-                const catNorm = cat.toLowerCase().replace(/\s+/g, "");
-                let mappedCat = null;
+                // Lógica Inteligente de Categorías
+                const esSalsa = t.startsWith("SALSA") || t.startsWith("MAYONESA") || t.startsWith("VINAGRETA") || t.startsWith("ALIÑO");
+                const esPlatoEnSalsa = t.includes(" EN SALSA") || t.includes(" CON SALSA");
 
-                const isEnsalada = catNorm.includes("ensalada") || t.includes("ensalada");
-                const isSopa = catNorm.includes("sopa") || catNorm.includes("crema") || t.includes("sopa") || t.includes("crema") || t.includes("caldo");
-                const isVerdura = catNorm.includes("verdura") || t.includes("verdura") || t.includes("espinaca") || t.includes("judía") || t.includes("acelga") || t.includes("berenjena") || t.includes("aguacate") || t.includes("brocoli") || t.includes("coliflor");
-                const isCarne = catNorm.includes("carne") || t.includes("carne") || t.includes("pollo") || t.includes("ternera") || t.includes("cerdo") || t.includes("lomo") || t.includes("entrecot") || t.includes("solomillo") || t.includes("churrasco") || t.includes("jamon") || t.includes("pavo");
-                const isPescado = catNorm.includes("pescado") || t.includes("pescado") || t.includes("bacalao") || t.includes("merluza") || t.includes("atún") || t.includes("gambas") || t.includes("pulpo") || t.includes("calamar");
-                const isLegumbre = catNorm.includes("legumbre") || t.includes("lenteja") || t.includes("garbanzo") || t.includes("habas") || t.includes("alubia") || t.includes("frijol");
-                const isArroz = catNorm.includes("arroz") || t.includes("arroz") || t.includes("paella") || t.includes("risotto");
-                const isPasta = catNorm.includes("pasta") || t.includes("macarron") || t.includes("espagueti") || t.includes("tallarin") || t.includes("fideo") || t.includes("lasaña") || t.includes("canelones");
-                const isPostre = catNorm.includes("postre") || t.includes("tarta") || t.includes("dulce") || t.includes("bizcocho") || t.includes("fruta") || t.includes("yogur") || t.includes("flan");
-                const isAperitivo = catNorm.includes("aperitivo") || t.includes("tapa") || t.includes("pincho") || t.includes("canapé") || t.includes("montadito");
-                const isSalsa = catNorm.includes("salsa") || catNorm.includes("aliño") || t.includes("mayonesa") || t.includes("vinagreta") || t.includes("mojo") || t.includes("bechamel");
+                if (t.includes("ENSALADA")) cat = "Ensaladas";
+                else if (esSalsa && !esPlatoEnSalsa) cat = "Salsas";
+                else cat = cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase();
 
-                if (isEnsalada) mappedCat = "Ensaladas";
-                else if (isSopa) mappedCat = "Sopas";
-                else if (isVerdura) mappedCat = "Verduras";
-                else if (isCarne) mappedCat = "Carnes";
-                else if (isPescado) mappedCat = "Pescados";
-                else if (isLegumbre) mappedCat = "Legumbres";
-                else if (isArroz) mappedCat = "Arroces";
-                else if (isPasta) mappedCat = "Pastas";
-                else if (isPostre) mappedCat = "Postres";
-                else if (isAperitivo) mappedCat = "Aperitivos";
-                else if (isSalsa) mappedCat = "Salsas";
-
-                tempMap.set(t.toLowerCase(), {
-                    id: doc.id,
-                    ...d,
-                    title: title,
-                    category: mappedCat || "Varios",
-                    ingredients: sanitizeIngredients(d.ingredients || []),
-                    instructions: (d.instructions || []).map(cleanText)
+                tempMap.set(title.toLowerCase(), {
+                    id: doc.id, ...d, title: title, category: cat,
+                    ingredients: d.ingredients || [], instructions: d.instructions || []
                 });
             });
             allRecipes = Array.from(tempMap.values());
@@ -328,225 +237,153 @@
         const container = document.getElementById('main-content');
         container.innerHTML = '';
         if (currentView === 'list' || currentView === 'favs') {
-            const ui = document.createElement('div');
-            ui.innerHTML = `<div class="search-box"><i data-lucide="search"></i><input type="text" id="search-input" placeholder="Buscar receta o ingrediente..." value="${searchQuery}"></div><div class="filter-row">${["Sana", "Perder peso", "Músculo", "Diabéticos"].map(t => `<div class="chip ${activeTag === t ? 'active' : ''}" onclick="toggleTag('${t}')">${t}</div>`).join('')}</div><div class="filter-row">${["Aperitivos", "Ensaladas", "Legumbres", "Sopas", "Arroces", "Pastas", "Verduras", "Pescados", "Carnes", "Postres", "Salsas"].map(f => `<div class="chip secondary ${activeCategory === f ? 'active' : ''}" onclick="toggleCat('${f}')">${f}</div>`).join('')}</div><div id="recipe-list"></div><div class="legal-footer"><a href="../privacy.html">Privacidad</a> | <a href="../terms.html">Términos</a><br>By JOSEMAN &copy; 2026</div>`;
-            container.appendChild(ui);
+            container.innerHTML = `<div class="search-box"><i data-lucide="search"></i><input type="text" id="search-input" placeholder="Buscar..." value="${searchQuery}"></div><div class="filter-row">${["Sana", "Perder peso", "Músculo", "Diabéticos"].map(t => `<div class="chip ${activeTag === t ? 'active' : ''}" onclick="toggleTag('${t}')">${t}</div>`).join('')}</div><div class="filter-row">${["Aperitivos", "Ensaladas", "Legumbres", "Sopas", "Arroces", "Pastas", "Verduras", "Pescados", "Carnes", "Postres", "Salsas"].map(f => `<div class="chip secondary ${activeCategory === f ? 'active' : ''}" onclick="toggleCat('${f}')">${f}</div>`).join('')}</div><div id="recipe-list"></div>`;
             document.getElementById('search-input').addEventListener('input', (e) => { searchQuery = e.target.value; renderList(); });
             renderList();
         } else if (currentView === 'menu') renderMenu(container);
-        else if (currentView === 'spices') renderSpices(container);
+        else if (currentView === 'health') renderHealth(container);
         lucide.createIcons();
     }
 
     function renderList() {
         const div = document.getElementById('recipe-list');
         const q = searchQuery.toLowerCase().trim();
-        if (allRecipes.length === 0) { div.innerHTML = "<p style='text-align:center; padding:40px;'>Cargando base de datos...</p>"; return; }
-
         const filtered = allRecipes.filter(r => {
-            const t = r.title.toLowerCase();
-            // Eliminamos espacios de la categoría para comparar: "V E R D" -> "verd"
-            const c = r.category.toLowerCase().replace(/\s+/g, "").trim();
-
-            const matchSearch = !q || t.includes(q) || r.ingredients.some(i => i.toLowerCase().includes(q));
-
+            const matchSearch = !q || r.title.toLowerCase().includes(q) || r.ingredients.some(i => i.toLowerCase().includes(q));
             let matchTag = true;
             if (activeTag) {
                 const tag = activeTag.toLowerCase();
-                if (tag === "sana") matchTag = ["ensalada", "verdura", "pescado", "legumbre", "fruta"].some(x => c.includes(x) || t.includes(x));
-                else if (tag === "perder peso") matchTag = ["ensalada", "verdura", "sopa", "pescado"].some(x => c.includes(x) || t.includes(x));
-                else if (tag === "músculo") matchTag = ["carne", "pescado", "legumbre", "pasta", "arroz"].some(x => c.includes(x) || t.includes(x));
-                else if (tag === "diabéticos") matchTag = !["postre", "tarta", "dulce", "bolleria", "nata", "azucar"].some(x => c.includes(x) || t.includes(x));
+                matchTag = r.goals && (
+                    (tag === "sana" && r.goals.healthy) ||
+                    (tag === "perder peso" && r.goals.weightLoss) ||
+                    (tag === "músculo" && r.goals.muscleGain) ||
+                    (tag === "diabéticos" && r.goals.diabeticFriendly)
+                );
             }
-
-            // Filtro de categoría flexible (coincidencia de los primeros 4 caracteres sin espacios)
-            let matchCat = true;
-            if (activeCategory) {
-                const target = activeCategory.toLowerCase().replace(/\s+/g, "").substring(0, 4);
-                matchCat = c.includes(target);
-            }
-
+            const matchCat = !activeCategory || r.category.toLowerCase().includes(activeCategory.toLowerCase().substring(0,4));
             const matchFav = currentView !== 'favs' || favorites.includes(r.id || r.title);
-
             return matchSearch && matchTag && matchCat && matchFav;
         });
-        div.innerHTML = filtered.length === 0 ? `<p style="text-align:center; padding:40px; color:#666;">No hay resultados para este filtro.</p>` : filtered.map(r => {
-            const recipeId = (r.id || r.title).toString().replace(/'/g, "\\'");
-            return `<div class="recipe-card" onclick="openRecipe('${recipeId}')">
-                        <div class="recipe-info">
-                            <h3>${r.title}</h3>
-                            <p>${r.category}</p>
-                        </div>
-                        <div class="fav-icon ${favorites.includes(r.id || r.title) ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav('${recipeId}')">
-                            <i data-lucide="heart" fill="${favorites.includes(r.id || r.title) ? 'currentColor' : 'none'}"></i>
-                        </div>
-                    </div>`;
-        }).join('');
+        div.innerHTML = filtered.map(r => `<div class="recipe-card" onclick="openRecipe('${(r.id||r.title).toString().replace(/'/g,"\\'")}')"><div class="recipe-info"><h3>${r.title}</h3><p>${r.category}</p></div><div class="fav-icon ${favorites.includes(r.id||r.title)?'active':''}" onclick="event.stopPropagation(); toggleFav('${(r.id||r.title).toString().replace(/'/g,"\\'")}')"><i data-lucide="heart" fill="${favorites.includes(r.id||r.title)?'currentColor':'none'}"></i></div></div>`).join('');
         lucide.createIcons();
     }
 
     function renderMenu(c) {
-        c.innerHTML = `<div style="text-align:center; margin-bottom:20px;"><h2 style="color:var(--primary-dark); margin:0;">Plan Semanal Inteligente</h2><p style="font-size:0.75rem; margin-top:5px; color:#666;">Perfil: <b>${activeTag || 'Estándar'}</b></p><button class="chip active" style="margin-top:10px;" onclick="generateMenu()">GENERAR NUEVO</button></div><div id="weekly-days"></div>`;
         const menu = JSON.parse(localStorage.getItem('web_menu') || '[]');
         if (menu.length === 0) { generateMenu(); return; }
+        c.innerHTML = `<div style="text-align:center; margin-bottom:20px;"><h2>Plan Semanal Inteligente</h2><button class="chip active" onclick="generateMenu()">GENERAR NUEVO</button></div><div id="weekly-days"></div>`;
         const days = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
         document.getElementById('weekly-days').innerHTML = menu.map((d, i) => `
             <div class="menu-day">
-                <div class="day-title">${days[i]}</div>
-                <div class="meal-container"><div class="meal" onclick="openRecipeByName('${d.breakfast}')"><b>DESAYUNO</b> ${d.breakfast}</div><div class="refresh-btn" onclick="refreshMeal(${i}, 'breakfast')"><i data-lucide="refresh-cw" size="18"></i></div></div>
-                <div class="meal-container"><div class="meal" onclick="openRecipeByName('${d.lunch}')"><b>ALMUERZO</b> ${d.lunch}</div><div class="refresh-btn" onclick="refreshMeal(${i}, 'lunch')"><i data-lucide="refresh-cw" size="18"></i></div></div>
-                <div class="meal-container"><div class="meal" onclick="openRecipeByName('${d.dinner}')"><b>CENA</b> ${d.dinner}</div><div class="refresh-btn" onclick="refreshMeal(${i}, 'dinner')"><i data-lucide="refresh-cw" size="18"></i></div></div>
+                <div class="day-title"><span>${days[i]}</span><span style="font-size:0.7rem; color:var(--primary);">${Math.round(d.kcalB+d.kcalL+d.kcalD)} kcal</span></div>
+                <div class="meal-container"><div class="meal" onclick="openRecipeByName('${d.breakfast}')"><b>DESAYUNO</b> ${d.breakfast}</div><div class="refresh-btn" onclick="refreshMeal(${i},'breakfast')"><i data-lucide="refresh-cw" size="16"></i></div></div>
+                <div class="meal-container"><div class="meal" onclick="openRecipeByName('${d.lunch}')"><b>ALMUERZO</b> ${d.lunch}</div><div class="refresh-btn" onclick="refreshMeal(${i},'lunch')"><i data-lucide="refresh-cw" size="16"></i></div></div>
+                <div class="meal-container"><div class="meal" onclick="openRecipeByName('${d.dinner}')"><b>CENA</b> ${d.dinner}</div><div class="refresh-btn" onclick="refreshMeal(${i},'dinner')"><i data-lucide="refresh-cw" size="16"></i></div></div>
             </div>`).join('');
         lucide.createIcons();
     }
 
-    const bannedWords = ["macerar", "marinar", "desalar", "salsa", "aliño", "base", "técnica", "relleno", "truco", "masa", "caldo", "sofrito", "preparación", "nata", "crema", "decoración"];
-
-    function getRandomMeal(type, used, dayIndex = 0) {
-        if (type === 'breakfast') {
-            const list = predefinedBreakfasts[activeTag] || predefinedBreakfasts["Default"];
-            return list[Math.floor(Math.random() * list.length)];
+    function getRandomMealObj(type, used) {
+        if (type === 'breakfast' && Math.random() < 0.8) {
+            const w = breakfastWildcards[Math.floor(Math.random() * breakfastWildcards.length)];
+            return { title: w.title, nutrition: { perServing: { kcal: w.kcal, protein_g: w.prot } } };
         }
-        const profile = activeTag;
         let pool = allRecipes.filter(r => {
-            const t = r.title.toLowerCase();
-            const c = r.category.toLowerCase();
-            if (bannedWords.some(w => t.includes(w))) return false;
-            if (["salsa", "base", "tecnica"].some(x => c.includes(x))) return false;
-            if (profile === "Diabéticos" && ["postre", "dulce", "nata", "azucar"].some(x => t.includes(x) || c.includes(x))) return false;
+            if (type === 'breakfast') return r.mealSuitability?.breakfast && !r.isMainDish;
+            if (type === 'lunch') return r.mealSuitability?.lunch && !r.menuConstraints?.mustNotBeUsedAsStandaloneMeal;
+            if (type === 'dinner') return r.mealSuitability?.dinner && !r.menuConstraints?.mustNotBeUsedAsStandaloneMeal;
             return true;
         });
-
-        if (type === 'lunch') {
-            const pattern = ["legumbre", "carne", "pasta", "pescado", "legumbre", "carne", "arroz"];
-            let sub = pool.filter(r => r.category.toLowerCase().includes(pattern[dayIndex % 7]));
-            if (sub.length > 5) pool = sub;
-            if (profile !== "Perder peso") pool = pool.filter(r => !r.category.toLowerCase().includes("ensalada"));
-        } else {
-            pool = pool.filter(r => ["verdura", "ensalada", "sopa", "pescado", "ave"].some(x => r.category.toLowerCase().includes(x)));
+        if (activeTag) {
+            const tag = activeTag.toLowerCase();
+            pool = pool.filter(r => r.goals && ((tag==="sana"&&r.goals.healthy)||(tag==="perder peso"&&r.goals.weightLoss)||(tag==="músculo"&&r.goals.muscleGain)));
         }
-
-        let final = pool.filter(r => !used.has(r.title));
-        if (final.length === 0) final = pool.length > 0 ? pool : allRecipes.filter(r => !bannedWords.some(w => r.title.toLowerCase().includes(w)));
-        const recipe = final[Math.floor(Math.random() * final.length)];
-        used.add(recipe.title); return recipe.title;
+        const final = pool.filter(r => !used.has(r.title));
+        const res = (final.length > 0 ? final : pool)[Math.floor(Math.random() * (final.length || pool.length))];
+        if (res) used.add(res.title);
+        return res || { title: "Plato Equilibrado", nutrition: { perServing: { kcal: 500, protein_g: 20 } } };
     }
 
     function generateMenu() {
-        const m = []; const used = new Set();
-        for (let i = 0; i < 7; i++) m.push({ breakfast: getRandomMeal('breakfast', used, i), lunch: getRandomMeal('lunch', used, i), dinner: getRandomMeal('dinner', used, i) });
+        const m = [], used = new Set();
+        for (let i = 0; i < 7; i++) {
+            const b = getRandomMealObj('breakfast', used), l = getRandomMealObj('lunch', used), d = getRandomMealObj('dinner', used);
+            m.push({ breakfast: b.title, kcalB: b.nutrition?.perServing?.kcal||250, protB: b.nutrition?.perServing?.protein_g||10, lunch: l.title, kcalL: l.nutrition?.perServing?.kcal||600, protL: l.nutrition?.perServing?.protein_g||30, dinner: d.title, kcalD: d.nutrition?.perServing?.kcal||400, protD: d.nutrition?.perServing?.protein_g||20 });
+        }
         localStorage.setItem('web_menu', JSON.stringify(m)); render();
     }
 
     function refreshMeal(day, type) {
         const m = JSON.parse(localStorage.getItem('web_menu') || '[]');
-        if (m[day]) { m[day][type] = getRandomMeal(type, new Set(), day); localStorage.setItem('web_menu', JSON.stringify(m)); render(); }
+        if (m[day]) {
+            const r = getRandomMealObj(type, new Set());
+            if (type === 'breakfast') { m[day].breakfast = r.title; m[day].kcalB = r.nutrition?.perServing?.kcal||250; }
+            else if (type === 'lunch') { m[day].lunch = r.title; m[day].kcalL = r.nutrition?.perServing?.kcal||600; }
+            else if (type === 'dinner') { m[day].dinner = r.title; m[day].kcalD = r.nutrition?.perServing?.kcal||400; }
+            localStorage.setItem('web_menu', JSON.stringify(m)); render();
+        }
+    }
+
+    function renderHealth(c) {
+        const today = new Date().toLocaleDateString();
+        const log = healthLog[today] || { kcal: 0 };
+        c.innerHTML = `
+            <div class="health-card">
+                <h2>Seguimiento de Hoy</h2>
+                <div class="stats-summary">
+                    <div><span class="stats-val">${log.kcal}</span> <span class="stats-label">kcal</span></div>
+                    <div><span class="stats-val">${userProfile.weight}</span> <span class="stats-label">kg</span></div>
+                </div>
+                <p style="font-size:0.8rem; color:#666; margin-top:10px;">Objetivo: ${userProfile.calTarget} kcal</p>
+            </div>
+            <div class="health-card">
+                <h3>Ajustar Perfil</h3>
+                <div class="input-group"><label>Peso Actual (kg)</label><input type="number" id="p-weight" value="${userProfile.weight}" onchange="updateProfile()"></div>
+                <div class="input-group"><label>Objetivo Calorías</label><input type="number" id="p-cal" value="${userProfile.calTarget}" onchange="updateProfile()"></div>
+            </div>`;
+    }
+
+    function updateProfile() {
+        userProfile.weight = document.getElementById('p-weight').value;
+        userProfile.calTarget = document.getElementById('p-cal').value;
+        localStorage.setItem('web_profile', JSON.stringify(userProfile));
+        alert("Perfil actualizado");
     }
 
     function openRecipe(id) {
-        // Buscamos por ID o por Título para asegurar compatibilidad total
-        const r = allRecipes.find(rec => (rec.id === id) || (rec.title === id));
-        if (!r) {
-            console.error("No se encontró la receta con ID:", id);
-            return;
-        }
-
-        currentOpenId = id;
+        const r = allRecipes.find(rec => (rec.id != 0 && rec.id == id) || (rec.title === id));
+        if (!r) return;
+        currentOpenId = r.id || r.title;
         document.getElementById('m-title').innerText = r.title;
-
-        const recipeChecked = checkedIngredients[id] || [];
-        const missingCount = r.ingredients.filter(i => !recipeChecked.includes(i)).length;
-
-        let html = `
-            <div class="timer-card">
-                <div>
-                    <div style="font-size: 0.6rem; font-weight: bold; color: var(--primary-dark);">TEMPORIZADOR</div>
-                    <div id="m-timer" class="timer-display">20:00</div>
-                </div>
-                <div style="display:flex; gap:8px;">
-                    <button class="timer-btn" onclick="adjustTimer(-60)"><i data-lucide="minus"></i></button>
-                    <button id="timer-toggle" class="timer-btn" onclick="toggleTimer()"><i data-lucide="play"></i></button>
-                    <button class="timer-btn" onclick="adjustTimer(60)"><i data-lucide="plus"></i></button>
-                </div>
+        const kcal = Math.round(r.nutrition?.perServing?.kcal || 450);
+        document.getElementById('m-content-area').innerHTML = `
+            <div class="timer-card" style="background:var(--tip-bg); border:1px solid var(--secondary);">
+                <div style="font-weight:900; color:var(--secondary);">INFORMACIÓN NUTRICIONAL</div>
+                <div style="font-size:1.1rem; font-weight:800;">${kcal} kcal | ${Math.round(r.nutrition?.perServing?.protein_g || 20)}g Prot</div>
+                <button class="btn" style="background:var(--primary); color:white; border:none; padding:8px 15px; border-radius:8px; margin-top:10px;" onclick="addKcal(${kcal})">AÑADIR A HOY</button>
             </div>
-
-            <div class="timer-card" style="background:var(--tip-bg); flex-direction:column; align-items:flex-start; border:1px solid var(--secondary);">
-                <div style="font-size: 0.7rem; font-weight: 900; color: var(--secondary);">LISTA DE LA COMPRA</div>
-                <div style="font-size: 0.9rem; margin-top:5px; font-weight:800;">
-                    ${missingCount === 0 ? '✅ ¡Todo listo!' : '⚠️ Faltan ' + missingCount + ' ingredientes.'}
-                </div>
-            </div>
-
             <div class="section-h">INGREDIENTES</div>
-            <div id="m-ingredients">
-                ${r.ingredients.map(i => `
-                    <div class="list-item" onclick="toggleIng('${id}', '${i.replace(/'/g, "\\'")}')">
-                        <div class="ing-check ${recipeChecked.includes(i) ? 'active' : ''}">
-                            <i data-lucide="check" size="14"></i>
-                        </div>
-                        <span>${i}</span>
-                    </div>
-                `).join('')}
-            </div>
-
+            <div>${r.ingredients.map(i => `<div class="list-item"><i data-lucide="check-circle" size="14"></i><span>${i}</span></div>`).join('')}</div>
             <div class="section-h">PREPARACIÓN</div>
-            <div id="m-instructions">
-                ${r.instructions.map((ins, idx) => `
-                    <div class="list-item">
-                        <b style="color:var(--primary-dark);">${idx + 1}.</b>
-                        <span>${ins}</span>
-                    </div>
-                `).join('')}
-            </div>
-
-            <div class="section-h">MIS NOTAS</div>
-            <textarea id="m-notes" style="width:100%; min-height:80px; padding:10px; border-radius:10px; border:1px solid #ddd; font-family: inherit;" placeholder="Añade tus notas..."></textarea>
-            <button class="btn" style="width:100%; margin-top:10px; background:var(--primary); color:white; border:none; padding:15px; border-radius:12px; font-weight:bold;" onclick="saveNote()">GUARDAR NOTA</button>
-        `;
-
-        document.getElementById('m-content-area').innerHTML = html;
+            <div>${r.instructions.map((ins, idx) => `<div class="list-item"><b>${idx+1}.</b><span>${ins}</span></div>`).join('')}</div>`;
         document.getElementById('recipe-modal').style.display = 'block';
-        document.getElementById('m-notes').value = userNotes[id] || "";
         lucide.createIcons();
     }
 
-    function toggleIng(recipeId, ing) {
-        if (!checkedIngredients[recipeId]) checkedIngredients[recipeId] = [];
-        if (checkedIngredients[recipeId].includes(ing)) {
-            checkedIngredients[recipeId] = checkedIngredients[recipeId].filter(x => x !== ing);
-        } else {
-            checkedIngredients[recipeId].push(ing);
-        }
-        localStorage.setItem('web_checked', JSON.stringify(checkedIngredients));
-        openRecipe(recipeId); // Refrescar modal
+    function addKcal(k) {
+        const today = new Date().toLocaleDateString();
+        if (!healthLog[today]) healthLog[today] = { kcal: 0 };
+        healthLog[today].kcal += k;
+        localStorage.setItem('web_health_log', JSON.stringify(healthLog));
+        alert("Calorías añadidas: " + k);
     }
 
-    function toggleTimer() {
-        if (timerRunning) { clearInterval(timerInterval); timerRunning = false; }
-        else { if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); timerInterval = setInterval(() => { if (timerSeconds > 0) { timerSeconds--; updateTimerDisplay(); } else { clearInterval(timerInterval); timerRunning = false; updateTimerDisplay(); playAlarm(); alert("¡Listo!"); } }, 1000); timerRunning = true; }
-        document.getElementById('timer-toggle').innerHTML = `<i data-lucide="${timerRunning ? 'pause' : 'play'}" size="18"></i>`; lucide.createIcons();
-    }
-
-    function updateTimerDisplay() { const m = Math.floor(timerSeconds/60), s = timerSeconds%60; const el = document.getElementById('m-timer'); if (el) el.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`; }
-    function adjustTimer(s) { timerSeconds = Math.max(0, timerSeconds + s); updateTimerDisplay(); }
-
-    function toggleFav(id) { if (favorites.includes(id)) favorites = favorites.filter(f => f !== id); else favorites.push(id); localStorage.setItem('web_favs', JSON.stringify(favorites)); renderList(); }
     function openRecipeByName(n) { openRecipe(n); }
-    function closeModal() {
-        document.getElementById('recipe-modal').style.display = 'none';
-        if (timerInterval) clearInterval(timerInterval);
-        timerRunning = false;
-    }
+    function closeModal() { document.getElementById('recipe-modal').style.display = 'none'; }
     function toggleTag(t) { activeTag = activeTag === t ? '' : t; render(); }
     function toggleCat(c) { activeCategory = activeCategory === c ? '' : c; render(); }
-
-    function saveNote() { userNotes[currentOpenId] = document.getElementById('m-notes').value; localStorage.setItem('web_notes', JSON.stringify(userNotes)); alert("¡Guardada!"); }
-    function shareRecipe() { const r = allRecipes.find(x => (x.id||x.title) === currentOpenId); const text = r ? `Receta: ${r.title}\n\nIngredientes:\n${r.ingredients.join('\n')}` : `Sugerencia: ${currentOpenId}`; if (navigator.share) navigator.share({ title: 'Receta', text: text }); }
-
-    function renderSpices(c) {
-        c.innerHTML = `<div style="text-align:center; margin-bottom: 25px;"><h2 style="color:var(--primary-dark);">Guía de Especias</h2></div><div class="spice-card"><div class="spice-title">Cúrcuma</div><p>Antinflamatorio natural potente.</p></div><div class="spice-card"><div class="spice-title">Comino</div><p>Digestivo estrella, ideal para legumbres.</p></div>`;
-        lucide.createIcons();
-    }
+    function toggleFav(id) { if (favorites.includes(id)) favorites = favorites.filter(f => f !== id); else favorites.push(id); localStorage.setItem('web_favs', JSON.stringify(favorites)); renderList(); }
+    function shareRecipe() { const r = allRecipes.find(x => (x.id||x.title) === currentOpenId); const text = r ? `Receta: ${r.title}\n\nIngredientes:\n${r.ingredients.join('\n')}` : ""; if (navigator.share) navigator.share({ title: 'Receta', text: text }); }
 
     init();
 </script>

@@ -72,6 +72,17 @@
         .shopping-title { font-weight: 900; color: #E65100; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
         .shopping-card.complete .shopping-title { color: #2E7D32; }
 
+        /* Efecto Pulso para Botón Consumo */
+        .btn-pulse {
+            animation: pulse-animation 1.5s infinite;
+            box-shadow: 0 0 0 0 rgba(0, 172, 193, 0.7);
+        }
+        @keyframes pulse-animation {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 172, 193, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(0, 172, 193, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 172, 193, 0); }
+        }
+
         .list-item { display: flex; gap: 15px; align-items: flex-start; margin-bottom: 16px; cursor: pointer; padding: 10px; border-radius: 12px; transition: 0.2s; }
         .list-item:active { background: #EEE; }
         .ing-check { min-width: 26px; height: 26px; border-radius: 8px; border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; color: transparent; background: white; }
@@ -243,8 +254,11 @@
                 <div class="nutri-item"><span class="nutri-val">${kcal}</span><span class="nutri-label">Kcal</span></div>
                 <div class="nutri-item"><span class="nutri-val">${prot}g</span><span class="nutri-label">Prot</span></div>
                 <div class="nutri-item"><span class="nutri-val">${hc}g</span><span class="nutri-label">HC</span></div>
-                <button class="chip active" onclick="addKcal(${kcal})">COMER</button>
             </div>
+
+            <button class="btn btn-pulse" style="width:100%; background:var(--primary); color:white; border:none; padding:18px; border-radius:18px; font-weight:900; font-size:1.1rem; margin-bottom:24px;" onclick="addNutritionWeb(${kcal}, ${prot}, ${hc}, 15)">
+                ¡MARCAR COMO CONSUMIDO! 🥘
+            </button>
 
             <div class="shopping-card ${missing.length===0?'complete':''}">
                 <div style="display:flex; justify-content:space-between; align-items:center;">

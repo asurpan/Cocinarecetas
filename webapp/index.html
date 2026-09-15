@@ -31,7 +31,6 @@
         body { margin: 0; background: var(--bg); font-family: 'Segoe UI', Roboto, sans-serif; color: var(--text); -webkit-tap-highlight-color: transparent; }
         .app-container { display: flex; flex-direction: column; height: 100vh; }
 
-        /* Header con Sello JOSEMAN */
         .header { background: var(--primary); color: white; padding: 40px 20px 20px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .header h1 { margin: 0; font-size: 1.6rem; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
         .brand-label { font-size: 0.7rem; font-weight: 900; letter-spacing: 5px; color: #FFEB3B; text-transform: uppercase; margin-top: 5px; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
@@ -45,6 +44,8 @@
         .recipe-card { background: var(--surface); border-radius: 20px; padding: 18px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; border-left: 8px solid var(--primary); cursor: pointer; }
         .recipe-info h3 { margin: 0 0 4px; font-size: 1rem; font-weight: 900; text-transform: uppercase; }
         .recipe-info p { margin: 0; font-size: 0.75rem; color: var(--secondary); font-weight: 800; text-transform: uppercase; }
+        .fav-btn { color: #DDD; padding: 5px; }
+        .fav-btn.active { color: var(--error); }
 
         .search-box { background: white; border-radius: 16px; padding: 14px; margin-bottom: 20px; display: flex; align-items: center; border: 1px solid #E0E0E0; }
         .search-box input { border: none; outline: none; width: 100%; margin-left: 12px; font-size: 1rem; }
@@ -52,32 +53,24 @@
         .chip { white-space: nowrap; background: white; padding: 10px 20px; border-radius: 25px; font-size: 0.85rem; font-weight: 800; border: 1px solid #D1D1D1; color: #444; cursor: pointer; }
         .chip.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-        /* Modal y Detalle */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; display: none; overflow-y: auto; }
         .modal-header { background: white; padding: 50px 20px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .modal-content { padding: 24px; padding-bottom: 120px; }
 
-        .nutri-row { display: flex; justify-content: space-around; background: white; border-radius: 20px; padding: 20px; margin-bottom: 24px; border: 1px solid #EEE; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+        .nutri-row { display: flex; justify-content: space-around; background: white; border-radius: 20px; padding: 20px; margin-bottom: 24px; border: 1px solid #EEE; }
         .nutri-item { text-align: center; }
         .nutri-val { font-size: 1.2rem; font-weight: 900; color: var(--primary-dark); display: block; }
         .nutri-label { font-size: 0.65rem; font-weight: 800; color: #888; text-transform: uppercase; }
 
-        /* Botón Latido */
-        .btn-consumo {
-            animation: pulse-animation 1.5s infinite;
-            background: var(--primary); color: white; border: none; padding: 20px;
-            border-radius: 20px; font-weight: 900; width: 100%; cursor: pointer;
-            margin-bottom: 24px; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(0,172,193,0.3);
-        }
+        .btn-consumo { animation: pulse-animation 1.5s infinite; background: var(--primary); color: white; border: none; padding: 20px; border-radius: 20px; font-weight: 900; width: 100%; cursor: pointer; margin-bottom: 24px; font-size: 1.1rem; }
         @keyframes pulse-animation { 0% { transform: scale(1); } 70% { transform: scale(1.03); } 100% { transform: scale(1); } }
 
         .shopping-card { background: #FFF3E0; border: 2px dashed #FFB74D; border-radius: 20px; padding: 20px; margin: 24px 0; }
         .shopping-card.complete { background: #E8F5E9; border: 2px solid #4CAF50; }
         .shopping-title { font-weight: 900; color: #E65100; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
-        .shopping-card.complete .shopping-title { color: #2E7D32; }
 
         .list-item { display: flex; gap: 15px; align-items: flex-start; margin-bottom: 16px; cursor: pointer; padding: 5px; }
-        .ing-check { min-width: 26px; height: 26px; border-radius: 8px; border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; background: white; transition: 0.2s; }
+        .ing-check { min-width: 26px; height: 26px; border-radius: 8px; border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; background: white; }
         .ing-check.active { background: var(--primary); color: white; }
         .ing-text.checked { text-decoration: line-through; color: #888; }
 
@@ -97,7 +90,12 @@
         .macro-label { font-size: 0.6rem; font-weight: 800; color: #888; text-transform: uppercase; margin-top: 4px; }
 
         .day-card { background: white; border-radius: 24px; padding: 24px; margin-bottom: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .help-text { font-size: 0.75rem; color: #888; margin-top: 10px; line-height: 1.4; }
+        .day-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid var(--bg); padding-bottom: 10px; }
+        .day-name { font-size: 1.2rem; font-weight: 900; color: var(--primary-dark); }
+        .day-stats { font-size: 0.7rem; font-weight: 800; color: var(--primary); background: var(--primary-light); padding: 4px 10px; border-radius: 8px; }
+        .meal-slot { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; padding: 10px; border-radius: 12px; background: var(--bg); cursor: pointer; }
+        .meal-data b { display: block; font-size: 0.6rem; color: #888; text-transform: uppercase; }
+        .meal-data span { font-size: 0.9rem; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -114,7 +112,7 @@
         <div class="nav-item active" onclick="switchView('list', this)"><i data-lucide="book-open"></i><span>RECETARIO</span></div>
         <div class="nav-item" onclick="switchView('favs', this)"><i data-lucide="heart"></i><span>MIS FAVORITOS</span></div>
         <div class="nav-item" onclick="switchView('menu', this)"><i data-lucide="calendar"></i><span>MENÚ SEMANAL</span></div>
-        <div class="nav-item" onclick="switchView('health', this)"><i data-lucide="MI SALUD"></i><span>MI SALUD</span></div>
+        <div class="nav-item" onclick="switchView('health', this)"><i data-lucide="activity"></i><span>MI SALUD</span></div>
     </div>
 </div>
 
@@ -132,7 +130,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    let allRecipes = [], currentView = 'list', searchQuery = '', activeTag = '', activeCategory = '', currentOpenId = null;
+    let allRecipes = [], currentView = 'list', searchQuery = '', activeTag = '', currentOpenId = null;
     let favorites = JSON.parse(localStorage.getItem('web_favs') || '[]');
     let checkedIngs = JSON.parse(localStorage.getItem('web_checked') || '{}');
     let healthLog = JSON.parse(localStorage.getItem('web_health_log') || '{}');
@@ -142,16 +140,24 @@
         if (!text) return "";
         let f = String(text).replace(/Ã±/g,"ñ").replace(/Ã‘/g,"Ñ").replace(/Ã³/g,"ó").replace(/Ã¡/g,"á").replace(/Ã©/g,"é").replace(/Ã­/g,"í").replace(/Ãº/g,"ú");
         f = f.replace(/(?<=\b\w)\s+(?=\w\b)/g, "");
-        ["ENSALADA", "ALCACHOFAS", "CALAMARES", "VINAGRETA", "ALUBIAS", "BACALAO", "SOLOMILLO"].forEach(t => {
+        ["ENSALADA", "ALCACHOFAS", "CALAMARES", "VINAGRETA", "ALUBIAS", "BACALAO", "SOLOMILLO", "ARROZ"].forEach(t => {
             const reg = new RegExp(t.split('').join('\\s+'), 'gi');
             f = f.replace(reg, t);
         });
+        // Correcciones específicas para "Arroz con gambas" y similares
+        f = f.replace(/ce boll aye/gi, "cebolla y el").replace(/dev inod eagu/gi, "de vino de agua").replace(/ahir vi en do/gi, "a hirviendo");
         return f.trim();
     }
 
+    const breakfastWildcards = [
+        { title: "Tostadas integrales con AOVE y Tomate", kcal: 280, prot: 8, hc: 30, fat: 12 },
+        { title: "Tortilla francesa con Pavo", kcal: 240, prot: 18, hc: 2, fat: 16 },
+        { title: "Bowl de Avena con leche y fruta", kcal: 320, prot: 12, hc: 45, fat: 8 }
+    ];
+
     async function init() {
         const c = document.getElementById('main-content');
-        c.innerHTML = "<div style='text-align:center; padding:50px;'><p>Cargando tu cocina premium...</p></div>";
+        c.innerHTML = "<div style='text-align:center; padding:50px;'><p>Sincronizando Nutri-Cloud...</p></div>";
         try {
             const snap = await db.collection('recipes').limit(2000).get();
             const map = new Map();
@@ -165,8 +171,9 @@
                 map.set(title.toLowerCase(), { id: doc.id, ...d, title, category: cat });
             });
             allRecipes = Array.from(map.values());
+            if (!localStorage.getItem('web_menu')) generateMenu(false);
             switchView('list');
-        } catch (e) { c.innerHTML = "<p>Error de conexión. Revisa el Wi-Fi.</p>"; }
+        } catch (e) { c.innerHTML = "<p>Error de conexión.</p>"; }
         lucide.createIcons();
     }
 
@@ -181,7 +188,7 @@
         const c = document.getElementById('main-content');
         c.innerHTML = '';
         if (currentView === 'list' || currentView === 'favs') {
-            c.innerHTML = `<div class="search-box"><i data-lucide="search"></i><input type="text" id="search-input" placeholder="¿Qué te apetece cocinar?" value="${searchQuery}"></div><div class="filter-row">${["Sana", "Perder peso", "Músculo", "Diabéticos"].map(t => `<div class="chip ${activeTag===t?'active' : ''}" onclick="toggleTag('${t}')">${t}</div>`).join('')}</div><div id="recipe-list"></div>`;
+            c.innerHTML = `<div class="search-box"><i data-lucide="search"></i><input type="text" id="search-input" placeholder="¿Qué quieres cocinar?" value="${searchQuery}"></div><div class="filter-row">${["Sana", "Perder peso", "Músculo", "Diabéticos"].map(t => `<div class="chip ${activeTag===t?'active':''}" onclick="toggleTag('${t}')">${t}</div>`).join('')}</div><div id="recipe-list"></div>`;
             document.getElementById('search-input').oninput = (e) => { searchQuery = e.target.value; renderList(); };
             renderList();
         } else if (currentView === 'menu') renderMenu(c);
@@ -202,7 +209,14 @@
             const matchFav = currentView !== 'favs' || favorites.includes(r.id || r.title);
             return matchSearch && matchTag && matchFav;
         });
-        div.innerHTML = filtered.map(r => `<div class="recipe-card" onclick="openRecipe('${(r.id||r.title).toString().replace(/'/g,"\\'")}')"><div class="recipe-info"><h3>${r.title}</h3><p>${r.category}</p></div><i data-lucide="chevron-right" color="#DDD"></i></div>`).join('');
+        div.innerHTML = filtered.map(r => `
+            <div class="recipe-card" onclick="openRecipe('${(r.id||r.title).toString().replace(/'/g,"\\'")}')">
+                <div class="recipe-info"><h3>${r.title}</h3><p>${r.category}</p></div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <div class="fav-btn ${favorites.includes(r.id||r.title)?'active':''}" onclick="event.stopPropagation(); toggleFav('${(r.id||r.title).toString().replace(/'/g,"\\'")}')"><i data-lucide="heart" fill="${favorites.includes(r.id||r.title)?'currentColor':'none'}"></i></div>
+                    <i data-lucide="chevron-right" color="#DDD"></i>
+                </div>
+            </div>`).join('');
         lucide.createIcons();
     }
 
@@ -224,9 +238,7 @@
                 <div class="nutri-item"><span class="nutri-val">${p}g</span><span class="nutri-label">PROTEÍNAS</span></div>
                 <div class="nutri-item"><span class="nutri-val">${h}g</span><span class="nutri-label">CARBOS</span></div>
             </div>
-
             <button class="btn-consumo" onclick="addNutritionWeb(${kcal}, ${p}, ${h}, ${f})">¡AÑADIR A MI DIETA DE HOY! 🥘</button>
-
             <div class="shopping-card ${missing.length===0?'complete':''}">
                 <div class="shopping-title">
                     <span>🛒 ${missing.length===0?'¡TODO LISTO!':'LISTA DE LA COMPRA'}</span>
@@ -234,48 +246,69 @@
                 </div>
                 <div style="font-size:0.85rem; font-weight:600; opacity:0.8;">${missing.length===0?'Tienes todo en tu despensa.':'Faltan '+missing.length+' ingredientes por comprar.'}</div>
             </div>
-
             <div class="section-h">INGREDIENTES (Toca para tachar)</div>
             <div>${(r.ingredients||[]).map(i => `<div class="list-item" onclick="toggleIng('${i.replace(/'/g,"\\'")}')"><div class="ing-check ${checked.includes(i)?'active':''}"><i data-lucide="check" size="14"></i></div><span class="ing-text ${checked.includes(i)?'checked':''}">${i}</span></div>`).join('')}</div>
             <div class="section-h">PREPARACIÓN PASO A PASO</div>
-            <div>${(r.instructions||[]).map((ins, idx) => `<div class="list-item"><b>${idx+1}.</b><span>${ins}</span></div>`).join('')}</div>
+            <div>${(r.instructions||[]).map((ins, idx) => `<div class="list-item"><b>${idx+1}.</b><span>${cleanText(ins)}</span></div>`).join('')}</div>
         `;
         document.getElementById('recipe-modal').style.display = 'block';
         lucide.createIcons();
     }
 
-    function addNutritionWeb(k, p, h, f) {
-        const today = new Date().toLocaleDateString();
-        if (!healthLog[today]) healthLog[today] = { kcal: 0, prot: 0, hc: 0, fat: 0 };
-        healthLog[today].kcal += k; healthLog[today].prot += (p||0); healthLog[today].hc += (h||0); healthLog[today].fat += (f||0);
-        localStorage.setItem('web_health_log', JSON.stringify(healthLog));
-        closeModal(); switchView('health');
+    function renderMenu(c) {
+        const menu = JSON.parse(localStorage.getItem('web_menu') || '[]');
+        if (menu.length === 0) { generateMenu(); return; }
+        c.innerHTML = `<div style="text-align:center; margin-bottom:20px;"><h2 style="font-weight:900; text-transform:uppercase;">Plan Nutricional Semanal</h2><button class="chip active" onclick="generateMenu()">REGENERAR PLAN SEMANAL</button></div><div id="weekly-days"></div>`;
+        const days = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
+        document.getElementById('weekly-days').innerHTML = menu.map((d, i) => `
+            <div class="day-card">
+                <div class="day-header"><span class="day-name">${days[i]}</span><span class="day-stats">${Math.round(d.kcalB+d.kcalL+d.kcalD)} kcal | ${Math.round(d.protB+d.protL+d.protD)}g prot</span></div>
+                <div class="meal-slot" onclick="openRecipeByName('${d.breakfast}')">🌅 <div class="meal-data"><b>Desayuno</b><span>${d.breakfast}</span></div></div>
+                <div class="meal-slot" onclick="openRecipeByName('${d.lunch}')">☀️ <div class="meal-data"><b>Almuerzo</b><span>${d.lunch}</span></div></div>
+                <div class="meal-slot" onclick="openRecipeByName('${d.dinner}')">🌙 <div class="meal-data"><b>Cena</b><span>${d.dinner}</span></div></div>
+            </div>`).join('');
+        lucide.createIcons();
+    }
+
+    function generateMenu(shouldRender = true) {
+        const m = [], used = new Set();
+        const days = 7;
+        for (let i = 0; i < days; i++) {
+            const b = breakfastWildcards[Math.floor(Math.random() * breakfastWildcards.length)];
+            const lPool = allRecipes.filter(r => r.mealSuitability?.lunch && !used.has(r.title));
+            const l = lPool.length > 0 ? lPool[Math.floor(Math.random() * Math.min(20, lPool.length))] : allRecipes[0];
+            used.add(l.title);
+            const dPool = allRecipes.filter(r => r.mealSuitability?.dinner && !used.has(r.title));
+            const d = dPool.length > 0 ? dPool[Math.floor(Math.random() * Math.min(20, dPool.length))] : allRecipes[1];
+            used.add(d.title);
+            m.push({
+                breakfast: b.title, kcalB: b.kcal, protB: b.prot,
+                lunch: l.title, kcalL: l.nutrition?.perServing?.kcal||600, protL: l.nutrition?.perServing?.protein_g||30,
+                dinner: d.title, kcalD: d.nutrition?.perServing?.kcal||400, protD: d.nutrition?.perServing?.protein_g||20
+            });
+        }
+        localStorage.setItem('web_menu', JSON.stringify(m));
+        if (shouldRender) render();
     }
 
     function renderHealth(c) {
         const todayKey = new Date().toLocaleDateString();
         const todayLog = healthLog[todayKey] || { kcal: 0, prot: 0, hc: 0, fat: 0 };
         const percent = Math.min(100, (todayLog.kcal / profile.target) * 100);
-        // Perímetro del círculo: 2 * PI * r = 2 * 3.14159 * 75 ≈ 471
         const offset = 471 - (471 * percent) / 100;
 
         c.innerHTML = `
             <div class="health-hero">
                 <div class="calorie-meter">
-                    <svg width="180" height="180" viewBox="0 0 180 180" class="progress-ring">
-                        <circle stroke="#EEE" stroke-width="14" fill="transparent" r="75" cx="90" cy="90"/>
-                        <circle stroke="var(--primary)" stroke-width="14" stroke-dasharray="471" stroke-dashoffset="${offset}" fill="transparent" r="75" cx="90" cy="90" class="progress-ring-circle"/>
-                    </svg>
+                    <svg width="180" height="180" viewBox="0 0 180 180" class="progress-ring"><circle stroke="#EEE" stroke-width="14" fill="transparent" r="75" cx="90" cy="90"/><circle stroke="var(--primary)" stroke-width="14" stroke-dasharray="471" stroke-dashoffset="${offset}" fill="transparent" r="75" cx="90" cy="90" class="progress-ring-circle"/></svg>
                     <div class="calorie-info"><span class="calorie-val">${todayLog.kcal}</span><span style="font-size:0.75rem; color:#888; font-weight:800;">/ ${profile.target} kcal</span></div>
                 </div>
                 <h3 style="margin:0; font-weight:900; text-transform:uppercase;">MI CONSUMO DE HOY</h3>
-                <p class="help-text">Añade raciones manualmente si has comido algo fuera de CocinaREcetas:</p>
-                <div style="display:flex; justify-content:center; gap:15px; margin-top:10px;">
+                <div style="display:flex; justify-content:center; gap:15px; margin-top:15px;">
                     <button class="chip" onclick="adjustWebKcal(-50)" style="background:var(--error); color:white;">-50</button>
                     <button class="chip" onclick="adjustWebKcal(50)" style="background:var(--secondary); color:white;">+50</button>
                 </div>
             </div>
-
             <div class="day-card" style="text-align:center;">
                 <h3 style="font-weight:900; margin-bottom:20px; text-transform:uppercase;">Balance de Nutrientes</h3>
                 <div class="macro-grid">
@@ -284,37 +317,31 @@
                     <div class="nutri-item"><div class="macro-circle" style="border-color:var(--grasas);"><span class="macro-val">${Math.round(todayLog.fat)}g</span></div><span class="macro-label">Grasas</span></div>
                 </div>
             </div>
-
             <div class="day-card">
                 <h3 style="font-weight:900; border-bottom:2px solid #EEE; padding-bottom:10px; margin-bottom:20px; text-transform:uppercase;">Mi Perfil y Objetivos</h3>
                 <div style="text-align:center; margin-bottom:15px;"><label style="font-size:0.7rem; font-weight:800; color:#888;">PESO ACTUAL (KG)</label><div style="font-size:2.5rem; font-weight:900; color:var(--primary);">${profile.weight}</div></div>
                 <div style="display:flex; justify-content:center; gap:10px; margin-bottom:20px;">
                     <button class="chip" onclick="adjustWebWeight(-0.1)">-0.1</button><button class="chip" onclick="adjustWebWeight(0.1)">+0.1</button><button class="chip" onclick="adjustWebWeight(1)">+1 kg</button>
                 </div>
-                <div style="display:flex; gap:10px; margin-bottom:20px;">
-                    <div style="flex:1;"><label style="font-size:0.6rem; font-weight:800; color:#888;">EDAD</label><div style="display:flex; align-items:center; justify-content:space-between; background:#EEE; padding:10px; border-radius:10px;"><button onclick="adjustWebAge(-1)">-</button><span style="font-weight:900;">${profile.age}</span><button onclick="adjustWebAge(1)">+</button></div></div>
-                    <div style="flex:1;"><label style="font-size:0.6rem; font-weight:800; color:#888;">ALTURA (CM)</label><input type="number" id="p-height" value="${profile.height}" style="width:100%; border:none; background:#EEE; padding:10px; border-radius:10px; font-weight:900;"></div>
-                </div>
                 <button class="btn-consumo" style="animation:none; background:var(--primary-dark); margin:0;" onclick="saveProfileWeb()">RECALCULAR MI DIETA INTELIGENTE</button>
-                <button class="chip" style="width:100%; margin-top:15px; border-color:var(--error); color:var(--error);" onclick="resetAllData()">RESET TOTAL (BORRAR TODO)</button>
             </div>
         `;
     }
 
-    function resetAllData() { if(confirm("¿Seguro que quieres borrar todos tus datos de salud y favoritos?")) { localStorage.clear(); location.reload(); } }
-    function saveProfileWeb() {
-        profile.height = document.getElementById('p-height').value;
-        profile.target = Math.round(10 * profile.weight + 6.25 * profile.height - 5 * profile.age + 5);
-        localStorage.setItem('web_profile', JSON.stringify(profile)); alert("¡Objetivos actualizados!"); render();
+    function toggleFav(id) { if(favorites.includes(id)) favorites = favorites.filter(f => f !== id); else favorites.push(id); localStorage.setItem('web_favs', JSON.stringify(favorites)); renderList(); }
+    function addNutritionWeb(k, p, h, f) {
+        const today = new Date().toLocaleDateString();
+        if (!healthLog[today]) healthLog[today] = { kcal: 0, prot: 0, hc: 0, fat: 0 };
+        healthLog[today].kcal += k; healthLog[today].prot += (p||0); healthLog[today].hc += (h||0); healthLog[today].fat += (f||0);
+        localStorage.setItem('web_health_log', JSON.stringify(healthLog)); closeModal(); switchView('health');
     }
-    function adjustWebAge(v) { profile.age = Math.max(1, profile.age + v); localStorage.setItem('web_profile', JSON.stringify(profile)); render(); }
-    function adjustWebWeight(v) { profile.weight = Math.round((parseFloat(profile.weight) + v) * 10) / 10; localStorage.setItem('web_profile', JSON.stringify(profile)); render(); }
     function adjustWebKcal(v) {
         const today = new Date().toLocaleDateString();
         if (!healthLog[today]) healthLog[today] = { kcal: 0, prot: 0, hc: 0, fat: 0 };
         healthLog[today].kcal = Math.max(0, healthLog[today].kcal + v);
         localStorage.setItem('web_health_log', JSON.stringify(healthLog)); render();
     }
+    function adjustWebWeight(v) { profile.weight = Math.round((parseFloat(profile.weight) + v) * 10) / 10; localStorage.setItem('web_profile', JSON.stringify(profile)); render(); }
     function toggleIng(ing) {
         if (!checkedIngs[currentOpenId]) checkedIngs[currentOpenId] = [];
         if (checkedIngs[currentOpenId].includes(ing)) checkedIngs[currentOpenId] = checkedIngs[currentOpenId].filter(x => x !== ing);
@@ -325,14 +352,19 @@
         const r = allRecipes.find(x => (x.id||x.title) === currentOpenId);
         const checked = checkedIngs[currentOpenId] || [];
         const missing = r.ingredients.filter(i => !checked.includes(i));
-        const text = `🛒 *Lista de la Compra para: ${r.title}*\n\n` + missing.map(i => `• ${i}`).join('\n') + `\n\nGenerado por CocinaREcetas 🥘`;
+        const text = `🛒 *Lista de la Compra para: ${r.title}*\n\n` + missing.map(i => `• ${i}`).join('\n');
         if (navigator.share) navigator.share({ title: 'Lista de la Compra', text: text });
     }
+    function openRecipeByName(n) { openRecipe(n); }
     function closeModal() { document.getElementById('recipe-modal').style.display = 'none'; }
     function toggleTag(t) { activeTag = activeTag === t ? '' : t; render(); }
     function shareRecipe() {
         const r = allRecipes.find(x => (x.id||x.title) === currentOpenId);
         if (r && navigator.share) navigator.share({ title: r.title, text: `Mira esta receta: ${r.title}\n\nIngredientes:\n${r.ingredients.join('\n')}` });
+    }
+    function saveProfileWeb() {
+        profile.target = Math.round(10 * profile.weight + 6.25 * profile.height - 5 * profile.age + 5);
+        localStorage.setItem('web_profile', JSON.stringify(profile)); alert("¡Objetivos actualizados!"); render();
     }
 
     init();

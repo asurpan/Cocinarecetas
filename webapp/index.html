@@ -175,38 +175,45 @@
 
     async function init() {
         const c = document.getElementById('main-content');
-        c.innerHTML = "<div style='text-align:center; padding:50px;'><p>Cargando Recetario Magistral...</p></div>";
+        c.innerHTML = "<div style='text-align:center; padding:50px;'><p>Cargando Recetario Magistral de Joseman...</p></div>";
 
         try {
-            // CARGA DESDE GITHUB (SIN LÍMITES)
-            const baseUrl = "https://raw.githubusercontent.com/asurpan/Cocinarecetas/main/app/src/main/assets/";
+            // USAMOS RUTAS RELATIVAS (MÁS SEGURO Y COMPATIBLE CON GITHUB PAGES)
+            const baseUrl = "../app/src/main/assets/";
 
             const [resMain, resDelta] = await Promise.all([
-                fetch(baseUrl + "recipes.json").then(r => r.json()),
-                fetch(baseUrl + "recipes_delta.json").then(r => r.json())
+                fetch(baseUrl + "recipes.json").then(r => {
+                    if (!r.ok) throw new Error("No se pudo cargar recipes.json");
+                    return r.json();
+                }),
+                fetch(baseUrl + "recipes_delta.json").then(r => {
+                    if (!r.ok) throw new Error("No se pudo cargar recipes_delta.json");
+                    return r.json();
+                })
             ]);
 
             const map = new Map();
-
-            // Procesar principales
-            resMain.recipes.forEach(r => {
-                const title = cleanText(r.title);
-                if (!title || map.has(title.toLowerCase())) return;
-                map.set(title.toLowerCase(), { ...r, title, category: r.category || "Varios" });
-            });
-
-            // Procesar extra (Delta)
-            resDelta.forEach(r => {
-                const title = cleanText(r.title);
-                map.set(title.toLowerCase(), { ...r, title, category: r.category || "Varios" });
-            });
+            if (resMain && resMain.recipes) {
+                resMain.recipes.forEach(r => {
+                    const title = cleanText(r.title);
+                    if (!title || map.has(title.toLowerCase())) return;
+                    map.set(title.toLowerCase(), { ...r, title, category: r.category || "Varios" });
+                });
+            }
+            if (resDelta) {
+                resDelta.forEach(r => {
+                    const title = cleanText(r.title);
+                    if (!title) return;
+                    map.set(title.toLowerCase(), { ...r, title, category: r.category || "Varios" });
+                });
+            }
 
             allRecipes = Array.from(map.values());
             if (!localStorage.getItem('web_menu') && allRecipes.length > 0) generateMenu(false);
             switchView('list');
         } catch (e) {
-            console.error("Error cargando desde GitHub:", e);
-            c.innerHTML = "<p style='text-align:center; padding:50px;'>Error al conectar con el servidor de recetas. Inténtalo en unos minutos.</p>";
+            console.error("Error de carga:", e);
+            c.innerHTML = `<div style='text-align:center; padding:50px;'><p>Error al conectar con el servidor de recetas.</p><button class="chip active" onclick="location.reload()" style="margin-top:20px;">REINTENTAR</button></div>`;
         }
         lucide.createIcons();
     }

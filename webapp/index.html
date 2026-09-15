@@ -162,8 +162,14 @@
     }
 
     async function init() {
+        const c = document.getElementById('main-content');
+        c.innerHTML = "<div style='text-align:center; padding:50px;'><p>Sincronizando con Joseman Cloud...</p></div>";
         try {
             const snap = await db.collection('recipes').limit(2000).get();
+            if (snap.empty) {
+                c.innerHTML = "<p style='text-align:center; padding:50px;'>Base de datos vacía. Pulsa 'Sincronizar' en la App.</p>";
+                return;
+            }
             const map = new Map();
             snap.docs.forEach(doc => {
                 const d = doc.data();
@@ -174,7 +180,10 @@
             allRecipes = Array.from(map.values());
             if (!localStorage.getItem('web_menu') && allRecipes.length > 0) generateMenu(false);
             switchView('list');
-        } catch (e) { document.getElementById('main-content').innerHTML = "<p style='text-align:center; padding:50px;'>Error de conexión.</p>"; }
+        } catch (e) {
+            console.error(e);
+            c.innerHTML = "<p style='text-align:center; padding:50px;'>Error de conexión con la nube.</p>";
+        }
         lucide.createIcons();
     }
 

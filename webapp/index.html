@@ -281,6 +281,12 @@
         document.getElementById('web-timer-display').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
     }
 
+    function previewWebAlarm() {
+        const audio = document.getElementById('alarm-sound');
+        audio.play();
+        setTimeout(() => { audio.pause(); audio.currentTime = 0; }, 3000);
+    }
+
     function saveNotes() {
         userNotes[currentOpenId] = document.getElementById('recipe-notes').value;
         localStorage.setItem('web_notes', JSON.stringify(userNotes));

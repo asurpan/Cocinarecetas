@@ -193,10 +193,7 @@
                 return r.json();
             };
 
-            const [resMain, resDelta] = await Promise.all([
-                fetchJSON(baseUrl + "recipes.json"),
-                fetchJSON(baseUrl + "recipes_delta.json")
-            ]);
+            const resMain = await fetchJSON(baseUrl + "recipes.json");
 
             const map = new Map();
             if (resMain && resMain.recipes) {
@@ -204,12 +201,6 @@
                     const title = cleanText(r.title);
                     if (!title || map.has(title.toLowerCase())) return;
                     map.set(title.toLowerCase(), { ...r, title, category: r.category || "Varios" });
-                });
-            }
-            if (resDelta) {
-                resDelta.forEach(r => {
-                    const title = cleanText(r.title);
-                    if (title) map.set(title.toLowerCase(), { ...r, title, category: r.category || "Varios" });
                 });
             }
 

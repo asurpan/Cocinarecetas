@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "371905184110",
+    "project_id": "cocinarecetas",
+    "storage_bucket": "cocinarecetas.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:371905184110:android:7ef6abfb0b7246e8d0817f",
+        "android_client_info": {
+          "package_name": "com.sagon.cocinarecetas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB22mRyiAUNDtf5Gg8H_Qpzo1-2T8ZPduQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

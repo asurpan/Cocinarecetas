@@ -102,9 +102,34 @@
         .meal-slot { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; padding: 10px; border-radius: 12px; background: var(--bg); cursor: pointer; }
         .meal-data b { display: block; font-size: 0.6rem; color: #888; text-transform: uppercase; }
         .meal-data span { font-size: 0.95rem; font-weight: 700; }
+        .help-text { font-size: 0.75rem; color: #888; margin-top: 10px; line-height: 1.4; }
+
+        /* Banner de Instalación PWA Pro */
+        #pwa-banner {
+            display: none; position: fixed; top: 100px; left: 15px; right: 15px;
+            background: white; border-radius: 24px; padding: 20px; z-index: 9999;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2); border-left: 10px solid var(--primary);
+            align-items: center; gap: 15px; animation: slideDown 0.5s ease;
+        }
+        @keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .pwa-logo { width: 60px; height: 60px; border-radius: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .pwa-info { flex: 1; }
+        .pwa-info b { display: block; font-size: 1rem; color: var(--primary-dark); margin-bottom: 2px; }
+        .pwa-info p { margin: 0; font-size: 0.75rem; color: #666; font-weight: 600; }
+        .pwa-close { position: absolute; top: 10px; right: 15px; font-size: 1.2rem; color: #CCC; cursor: pointer; }
     </style>
 </head>
 <body>
+
+<div id="pwa-banner">
+    <div class="pwa-close" onclick="this.parentElement.style.display='none'">×</div>
+    <img src="../recetas-removebg-preview.png" class="pwa-logo" alt="Logo">
+    <div class="pwa-info">
+        <b id="pwa-title">¡Instala CocinaREcetas!</b>
+        <p id="pwa-msg">Accede más rápido y controla tu dieta desde tu pantalla de inicio.</p>
+        <button id="btn-pwa-install" class="chip active" style="margin-top:10px; font-size:0.7rem;">AÑADIR A INICIO</button>
+    </div>
+</div>
 
 <div class="app-container">
     <div class="header">

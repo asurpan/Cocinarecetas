@@ -398,11 +398,28 @@
     }
 
     function refreshSingleMeal(day, type) {
-        const m = JSON.parse(localStorage.getItem('web_menu'));
-        const pool = allRecipes.filter(r => r.mealSuitability?.[type]);
-        const r = pool[Math.floor(Math.random()*pool.length)];
-        m[day][type] = r.title; m[day]['kcal'+type[0].toUpperCase()] = r.nutrition?.perServing?.kcal || 500;
-        localStorage.setItem('web_menu', JSON.stringify(m)); render();
+        const menu = JSON.parse(localStorage.getItem('web_menu'));
+        if (!menu) return;
+
+        let pool = allRecipes.filter(r => {
+            if (type === 'breakfast') return r.mealSuitability?.breakfast;
+            if (type === 'lunch') return r.mealSuitability?.lunch;
+            if (type === 'dinner') return r.mealSuitability?.dinner;
+            return false;
+        });
+
+        if (pool.length === 0) pool = allRecipes;
+
+        const r = pool[Math.floor(Math.random() * pool.length)];
+        menu[day][type] = r.title;
+
+        // Actualizamos kcal y prots del objeto del día
+        if (type === 'breakfast') { menu[day].kcalB = r.nutrition?.perServing?.kcal || 250; menu[day].protB = r.nutrition?.perServing?.protein_g || 10; }
+        if (type === 'lunch') { menu[day].kcalL = r.nutrition?.perServing?.kcal || 650; menu[day].protL = r.nutrition?.perServing?.protein_g || 30; }
+        if (type === 'dinner') { menu[day].kcalD = r.nutrition?.perServing?.kcal || 450; menu[day].protD = r.nutrition?.perServing?.protein_g || 20; }
+
+        localStorage.setItem('web_menu', JSON.stringify(menu));
+        render(); // Refrescamos la vista completa
     }
 
     function shareMenu() {
@@ -429,8 +446,23 @@
         const offset = 471 - (471 * Math.min(100, (log.kcal / profile.target) * 100)) / 100;
         c.innerHTML = `
             <div class="health-hero"><div class="calorie-meter"><svg width="180" height="180" viewBox="0 0 180 180" class="progress-ring"><circle stroke="#EEE" stroke-width="14" fill="transparent" r="75" cx="90" cy="90"/><circle stroke="var(--primary)" stroke-width="14" stroke-dasharray="471" stroke-dashoffset="${offset}" fill="transparent" r="75" cx="90" cy="90" class="progress-ring-circle"/></svg><div class="calorie-info"><span class="calorie-val">${log.kcal}</span><span style="font-size:0.75rem; color:#888;">/ ${profile.target} kcal</span></div></div><h3 style="margin:0; font-weight:900;">MI CONSUMO HOY</h3><div style="display:flex; justify-content:center; gap:15px; margin-top:15px;"><button class="chip" onclick="adjustWebKcal(-50)" style="background:var(--error); color:white;">-50</button><button class="chip" onclick="adjustWebKcal(50)" style="background:var(--secondary); color:white;">+50</button></div></div>
-            <div class="macro-grid"><div class="nutri-item"><div class="macro-circle" style="border-color:var(--prots);"><span class="macro-val">${Math.round(log.prot)}g</span></div><span class="macro-label">Proteínas</span></div><div class="nutri-item"><div class="macro-circle" style="border-color:var(--carbos);"><span class="macro-val">${Math.round(log.hc)}g</span></div><span class="macro-label">Carbos</span></div><div class="nutri-item"><div class="macro-circle" style="border-color:var(--grasas);"><span class="macro-val">${Math.round(log.fat)}g</span></div><span class="macro-label">Grasas</span></div></div>
-        `;
+            <div class="day-card" style="text-align:center;">
+                <h3 style="font-weight:900; margin-bottom:20px; text-transform:uppercase;">Nutrientes de Hoy</h3>
+                <div class="macro-grid">
+                    <div class="nutri-item">
+                        <div class="macro-circle" style="border-color:var(--prots);"><span class="macro-val">${Math.round(log.prot)}g</span></div>
+                        <span class="macro-label">Proteínas</span>
+                    </div>
+                    <div class="nutri-item">
+                        <div class="macro-circle" style="border-color:var(--carbos);"><span class="macro-val">${Math.round(log.hc)}g</span></div>
+                        <span class="macro-label">Carbos</span>
+                    </div>
+                    <div class="nutri-item">
+                        <div class="macro-circle" style="border-color:var(--grasas);"><span class="macro-val">${Math.round(log.fat)}g</span></div>
+                        <span class="macro-label">Grasas</span>
+                    </div>
+                </div>
+            </div>
         lucide.createIcons();
     }
 

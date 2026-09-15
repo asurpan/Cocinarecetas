@@ -99,9 +99,27 @@
         .macro-label { font-size: 0.6rem; font-weight: 800; color: #888; text-transform: uppercase; margin-top: 4px; }
 
         .day-card { background: white; border-radius: 24px; padding: 24px; margin-bottom: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .meal-slot { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; padding: 10px; border-radius: 12px; background: var(--bg); cursor: pointer; position: relative; }
-        .meal-data span { font-size: 0.95rem; font-weight: 700; }
-        .refresh-btn { position: absolute; right: 10px; color: var(--primary); opacity: 0.6; cursor: pointer; }
+        .meal-slot {
+            display: flex; align-items: center; gap: 15px; margin-bottom: 12px;
+            padding: 15px; border-radius: 16px; background: var(--bg);
+            cursor: pointer; position: relative; transition: 0.2s;
+            border: 1px solid transparent;
+        }
+        .meal-slot:hover { border-color: var(--primary); background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .meal-icon-wrapper {
+            width: 40px; height: 40px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            background: white; box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .meal-data b { display: block; font-size: 0.65rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+        .meal-data span { font-size: 0.95rem; font-weight: 800; color: var(--text); }
+        .refresh-btn {
+            width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--primary); opacity: 0.4; transition: 0.3s;
+            margin-left: auto;
+        }
+        .refresh-btn:hover { opacity: 1; background: var(--primary-light); transform: rotate(180deg); }
 
         .notes-area { width: 100%; border: 1px solid #DDD; border-radius: 12px; padding: 15px; min-height: 100px; font-family: inherit; font-size: 0.95rem; margin-top: 10px; box-sizing: border-box; }
     </style>
@@ -320,14 +338,61 @@
     function renderMenu(c) {
         const menu = JSON.parse(localStorage.getItem('web_menu') || '[]');
         if (menu.length === 0) { if (allRecipes.length > 0) { generateMenu(); return; } else { c.innerHTML = "<p style='text-align:center; padding:50px;'>Cargando...</p>"; return; } }
-        c.innerHTML = `<div style="text-align:center; margin-bottom:20px;"><h2 style="font-weight:900;">PLAN SEMANAL</h2><div style="display:flex; justify-content:center; gap:10px;"><button class="chip active" onclick="generateMenu()">REGENERAR TODO</button><button class="chip" style="background:var(--accent); color:white; border:none;" onclick="shareMenu()">COMPARTIR</button></div></div><div id="weekly-days"></div>`;
+        c.innerHTML = `
+            <div style="text-align:center; margin-bottom:24px;">
+                <h2 style="font-weight:900; color:var(--text); letter-spacing:1px; text-transform:uppercase; margin-bottom:15px;">Plan Nutricional Semanal</h2>
+                <div style="display:flex; justify-content:center; gap:12px;">
+                    <button class="chip active" onclick="generateMenu()" style="box-shadow: 0 4px 10px rgba(0,172,193,0.2);">REGENERAR PLAN</button>
+                    <button class="chip" style="background:var(--accent); color:white; border:none; box-shadow: 0 4px 10px rgba(255,111,0,0.2);" onclick="shareMenu()">COMPARTIR MENÚ</button>
+                </div>
+            </div>
+            <div id="weekly-days"></div>`;
         const dNames = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
         document.getElementById('weekly-days').innerHTML = menu.map((d, i) => `
             <div class="day-card">
-                <div class="day-header"><span class="day-name">${dNames[i]}</span><span class="day-stats">${Math.round(d.kcalB+d.kcalL+d.kcalD)} kcal</span></div>
-                <div class="meal-slot" onclick="openRecipeByName('${d.breakfast.replace(/'/g,"\\'")}')">🌅 <div class="meal-data"><b>Desayuno</b><span>${d.breakfast}</span></div><div class="refresh-btn" onclick="event.stopPropagation(); refreshSingleMeal(${i},'breakfast')"><i data-lucide="refresh-cw" size="16"></i></div></div>
-                <div class="meal-slot" onclick="openRecipeByName('${d.lunch.replace(/'/g,"\\'")}')">☀️ <div class="meal-data"><b>Almuerzo</b><span>${d.lunch}</span></div><div class="refresh-btn" onclick="event.stopPropagation(); refreshSingleMeal(${i},'lunch')"><i data-lucide="refresh-cw" size="16"></i></div></div>
-                <div class="meal-slot" onclick="openRecipeByName('${d.dinner.replace(/'/g,"\\'")}')">🌙 <div class="meal-data"><b>Cena</b><span>${d.dinner}</span></div><div class="refresh-btn" onclick="event.stopPropagation(); refreshSingleMeal(${i},'dinner')"><i data-lucide="refresh-cw" size="16"></i></div></div>
+                <div class="day-header">
+                    <span class="day-name">${dNames[i]}</span>
+                    <span class="day-stats">${Math.round(d.kcalB+d.kcalL+d.kcalD)} kcal | ${Math.round((d.protB||0)+(d.protL||0)+(d.protD||0))}g prot</span>
+                </div>
+
+                <div class="meal-slot" onclick="openRecipeByName('${d.breakfast.replace(/'/g,"\\'")}')">
+                    <div class="meal-icon-wrapper" style="color:var(--carbos);">
+                        <i data-lucide="cloud-sun"></i>
+                    </div>
+                    <div class="meal-data">
+                        <b>Desayuno</b>
+                        <span>${d.breakfast}</span>
+                    </div>
+                    <div class="refresh-btn" onclick="event.stopPropagation(); refreshSingleMeal(${i},'breakfast')">
+                        <i data-lucide="refresh-cw"></i>
+                    </div>
+                </div>
+
+                <div class="meal-slot" onclick="openRecipeByName('${d.lunch.replace(/'/g,"\\'")}')">
+                    <div class="meal-icon-wrapper" style="color:var(--secondary);">
+                        <i data-lucide="sun"></i>
+                    </div>
+                    <div class="meal-data">
+                        <b>Almuerzo</b>
+                        <span>${d.lunch}</span>
+                    </div>
+                    <div class="refresh-btn" onclick="event.stopPropagation(); refreshSingleMeal(${i},'lunch')">
+                        <i data-lucide="refresh-cw"></i>
+                    </div>
+                </div>
+
+                <div class="meal-slot" onclick="openRecipeByName('${d.dinner.replace(/'/g,"\\'")}')">
+                    <div class="meal-icon-wrapper" style="color:var(--primary);">
+                        <i data-lucide="moon"></i>
+                    </div>
+                    <div class="meal-data">
+                        <b>Cena</b>
+                        <span>${d.dinner}</span>
+                    </div>
+                    <div class="refresh-btn" onclick="event.stopPropagation(); refreshSingleMeal(${i},'dinner')">
+                        <i data-lucide="refresh-cw"></i>
+                    </div>
+                </div>
             </div>`).join('');
         lucide.createIcons();
     }

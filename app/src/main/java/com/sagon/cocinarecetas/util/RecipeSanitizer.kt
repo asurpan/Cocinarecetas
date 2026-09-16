@@ -107,6 +107,19 @@ object RecipeSanitizer {
                      .replace(Regex("""\bpage\s+\d+\b""", RegexOption.IGNORE_CASE), "")
                      .replace("---", "")
 
+        // Reglas de pegado comunes detectadas en Escalfar Huevos y otras
+        fixed = fixed.replace(Regex("""\baguacon\b""", RegexOption.IGNORE_CASE), "agua con")
+                     .replace(Regex("""\bechalos\b""", RegexOption.IGNORE_CASE), "echa los")
+                     .replace(Regex("""\bde\s+beránsermuy\b""", RegexOption.IGNORE_CASE), "deberán ser muy")
+                     .replace(Regex("""\bdeberánsermuy\b""", RegexOption.IGNORE_CASE), "deberán ser muy")
+                     .replace(Regex("""\bComomáximo\b""", RegexOption.IGNORE_CASE), "Como máximo")
+                     .replace(Regex("""\btresa\b""", RegexOption.IGNORE_CASE), "tres a")
+                     .replace(Regex("""\bhervira\b""", RegexOption.IGNORE_CASE), "hervir a")
+                     .replace(Regex("""\bhuevoscon\b""", RegexOption.IGNORE_CASE), "huevos con")
+                     .replace(Regex("""(\d)a(\d)"""), "$1 a $2") // "2a3" -> "2 a 3"
+                     .replace(Regex("""\bde\s+l\b""", RegexOption.IGNORE_CASE), "del")
+                     .replace(Regex("""\bde\s+be\b""", RegexOption.IGNORE_CASE), "debe")
+
         // Unir letras sueltas y corregir espaciados dobles
         val singleLetterPattern = Regex("""(?<=\b\w)\s+(?=\w\b)""")
         repeat(3) { fixed = fixed.replace(singleLetterPattern, "") }

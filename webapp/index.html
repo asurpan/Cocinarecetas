@@ -205,7 +205,7 @@
             </div>
 
             <div class="section-h">EL SEMÁFORO DEL ORDEN (CÓMO COMERLO)</div>
-            <p style="font-size:0.8rem; color:#444; margin:0 0 10px;">Come en este orden para evitar el cansancio y no guardar grasa:</p>
+            <p style="font-size:0.8rem; color:#444; margin:0 0 10px;">Sigue este orden para evitar el cansancio después de comer:</p>
             <div class="bio-sequencer">
                 <div class="seq-fiber"></div><div class="seq-protein"></div><div class="seq-carbs"></div>
             </div>
@@ -214,19 +214,29 @@
             </div>
 
             <div class="science-card">
-                <h4><i data-lucide="brain"></i> CIENCIA FÁCIL PARA TI</h4>
-                ${scienceTips}
-                <span class="study-ref">Fuentes: Nature Metabolism 2024 / Cornell Food Lab</span>
+                <h4><i data-lucide="zap"></i> CIENCIA Y PROTOCOLOS</h4>
+                <div id="dynamic-science-content"></div>
+                <span class="study-ref">Fuentes: Nature Metabolism 2024 / Cornell University</span>
             </div>
 
             <div class="section-h">INGREDIENTES</div>
-            ${r.ingredients.map(i => `<div class="list-item"><span>•</span> <span>${i}</span></div>`).join('')}
+            <div style="margin-bottom:20px;">
+                ${r.ingredients.map(i => `<div class="list-item"><span>•</span> <span>${i}</span></div>`).join('')}
+            </div>
 
-            <div class="section-h">PASO A PASO</div>
-            ${r.instructions.filter(i => !i.includes("TIP") && !i.includes("CONSEJO")).map((ins, idx) => `<div class="list-item"><b>${idx+1}.</b><span>${ins}</span></div>`).join('')}
+            <div class="section-h">PASO A PASO (PREPARACIÓN)</div>
+            <div id="prep-steps"></div>
 
             <button class="btn-consumo" onclick="addNutritionWeb()">¡MARCAR COMO COMIDO! 🥘</button>
         `;
+
+        // Lógica de separación de Ciencia vs Preparación
+        const scienceKeywords = ["TIP", "CONSEJO", "CIENCIA", "TRUCO", "PASEO", "SINERGIA", "RENDIMIENTO", "ESTRATEGIA", "ORDEN", "ALMIDÓN"];
+        const scienceList = r.instructions.filter(ins => scienceKeywords.some(kw => ins.toUpperCase().includes(kw)));
+        const prepList = r.instructions.filter(ins => !scienceKeywords.some(kw => ins.toUpperCase().includes(kw)));
+
+        document.getElementById('dynamic-science-content').innerHTML = scienceList.map(s => `<p>${s}</p>`).join('') || "<p>Disfruta de este plato saludable.</p>";
+        document.getElementById('prep-steps').innerHTML = prepList.map((ins, idx) => `<div class="list-item"><b>${idx+1}.</b><span>${ins}</span></div>`).join('');
         document.getElementById('recipe-modal').style.display = 'block';
         lucide.createIcons();
     }

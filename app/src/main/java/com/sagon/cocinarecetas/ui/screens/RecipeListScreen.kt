@@ -87,6 +87,16 @@ fun RecipeListScreen(
                     }
                     IconButton(onClick = {
                         SoundUtil.playBeep()
+                        onWeeklyMenuClick()
+                    }) {
+                        Icon(
+                            imageVector = Icons.Rounded.CalendarMonth,
+                            contentDescription = "Menú Semanal",
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
+                    IconButton(onClick = {
+                        SoundUtil.playBeep()
                         onHealthClick()
                     }) {
                         Icon(
@@ -115,23 +125,6 @@ fun RecipeListScreen(
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                )
-            )
-        },
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = {
-                    SoundUtil.playBeep()
-                    onWeeklyMenuClick()
-                },
-                icon = { Icon(Icons.Rounded.CalendarMonth, contentDescription = null) },
-                text = { Text("Menú Semanal") },
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
             )
         }
     ) { padding ->

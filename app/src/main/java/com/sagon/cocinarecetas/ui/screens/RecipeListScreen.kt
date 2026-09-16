@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.material.icons.rounded.Info
+import com.sagon.cocinarecetas.data.local.JsonAssetImporter
 import com.sagon.cocinarecetas.data.model.Recipe
 import com.sagon.cocinarecetas.ui.viewmodel.RecipeViewModel
 import com.sagon.cocinarecetas.util.SoundUtil
@@ -341,13 +342,24 @@ fun RecipeListScreen(
             title = { Text("Resetear aplicación") },
             text = { Text("Se restaurarán todas las recetas que hayas ocultado previamente. ¿Deseas continuar?") },
             confirmButton = {
-                TextButton(
-                    onClick = {
-                        viewModel.restoreAllRecipes()
-                        showResetDialog = false
+                Column {
+                    TextButton(
+                        onClick = {
+                            viewModel.restoreAllRecipes()
+                            showResetDialog = false
+                        }
+                    ) {
+                        Text("RESTAURAR OCULTAS")
                     }
-                ) {
-                    Text("RESETEAR")
+                    TextButton(
+                        onClick = {
+                            val localRecipes = JsonAssetImporter.loadRecipesFromAsset(context, "recipes.json")
+                            viewModel.forceReloadFromAssets(localRecipes)
+                            showResetDialog = false
+                        }
+                    ) {
+                        Text("IMPORTAR DATOS LIMPIOS (v3.0)", color = Color.Red, fontWeight = FontWeight.Bold)
+                    }
                 }
             },
             dismissButton = {

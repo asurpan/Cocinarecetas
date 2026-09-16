@@ -490,10 +490,20 @@ fun RecipeDetailScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Text(text = "Preparación", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.primary)
+            Text(text = "Paso a Paso", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.primary)
             Spacer(modifier = Modifier.height(12.dp))
-            recipe.instructions.forEachIndexed { index, instruction ->
-                PreparationStep(index + 1, instruction)
+            
+            val scienceKeywords = listOf("TIP", "CONSEJO", "CIENCIA", "TRUCO", "PASEO", "SINERGIA", "RENDIMIENTO", "ESTRATEGIA", "ORDEN", "ALMIDÓN")
+            val prepSteps = recipe.instructions.filter { step ->
+                !scienceKeywords.any { kw -> step.contains(kw, ignoreCase = true) }
+            }
+            
+            if (prepSteps.isEmpty()) {
+                Text("Consulta las notas o ciencia para la preparación de este básico.", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+            } else {
+                prepSteps.forEachIndexed { index, instruction ->
+                    PreparationStep(index + 1, instruction)
+                }
             }
 
             Spacer(modifier = Modifier.height(24.dp))

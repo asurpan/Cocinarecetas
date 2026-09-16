@@ -387,6 +387,26 @@
     function toggleIng(ing) { if (!checkedIngs[currentOpenId]) checkedIngs[currentOpenId] = []; if (checkedIngs[currentOpenId].includes(ing)) checkedIngs[currentOpenId] = checkedIngs[currentOpenId].filter(x => x !== ing); else checkedIngs[currentOpenId].push(ing); localStorage.setItem('web_checked', JSON.stringify(checkedIngs)); openRecipe(currentOpenId); }
     function saveNotes() { userNotes[currentOpenId] = document.getElementById('recipe-notes').value; localStorage.setItem('web_notes', JSON.stringify(userNotes)); alert("¡Notas guardadas!"); }
     function shareRecipe() { alert("¡Enlace copiado!"); }
+    function shareShoppingList(title, itemsJson) {
+        try {
+            const items = JSON.parse(decodeURIComponent(itemsJson));
+            if (!items || items.length === 0) {
+                alert("La lista de la compra está vacía.");
+                return;
+            }
+            const text = `🛒 LISTA DE LA COMPRA - ${title}\n\nNecesito comprar:\n${items.map(i => `• ${i}`).join('\n')}\n\nCompartido desde CocinaREcetas Pro`;
+
+            if (navigator.share) {
+                navigator.share({ title: 'Lista de la Compra', text: text });
+            } else {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert("¡Lista de la compra copiada al portapapeles!");
+                });
+            }
+        } catch(e) {
+            alert("Error al compartir la lista");
+        }
+    }
     function openRecipeByName(n) { const r = allRecipes.find(x => x.title === n); if(r) openRecipe(r.id); }
 
     init();

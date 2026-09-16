@@ -204,16 +204,6 @@
                 });
             }
 
-            // 2. CARGA DE FIREBASE (SOLO RECTIFICACIONES Y NOTAS - POCOS DATOS)
-            try {
-                const userSnap = await db.collection('recipes').get();
-                userSnap.forEach(doc => {
-                    const r = doc.data();
-                    const title = cleanText(r.title);
-                    if (title) map.set(title.toLowerCase(), { id: doc.id, ...r, title });
-                });
-            } catch(e) { console.log("Nota: Usando base estática GitHub."); }
-
             allRecipes = Array.from(map.values());
             if (!localStorage.getItem('web_menu') && allRecipes.length > 0) generateMenu(false);
             switchView('list');

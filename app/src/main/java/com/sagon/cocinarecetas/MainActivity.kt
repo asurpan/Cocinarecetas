@@ -210,18 +210,9 @@ fun RecipeApp(viewModel: RecipeViewModel) {
                     viewModel.generateWeeklyMenu()
                     navController.navigate("weekly_menu")
                 },
-                onImportClick = {
-                    navController.navigate("add_recipe")
-                },
                 onHealthClick = {
                     navController.navigate("health_stats")
                 }
-            )
-        }
-        composable("add_recipe") {
-            com.sagon.cocinarecetas.ui.screens.AddRecipeScreen(
-                viewModel = viewModel,
-                onBackClick = { navController.popBackStack() }
             )
         }
         composable("health_stats") {

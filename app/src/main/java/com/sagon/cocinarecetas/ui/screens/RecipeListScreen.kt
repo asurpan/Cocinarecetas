@@ -42,7 +42,6 @@ fun RecipeListScreen(
     viewModel: RecipeViewModel,
     onRecipeClick: (Recipe) -> Unit,
     onWeeklyMenuClick: () -> Unit,
-    onImportClick: () -> Unit,
     onHealthClick: () -> Unit
 ) {
     val context = LocalContext.current
@@ -124,29 +123,16 @@ fun RecipeListScreen(
             )
         },
         floatingActionButton = {
-            Column(horizontalAlignment = Alignment.End) {
-                SmallFloatingActionButton(
-                    onClick = {
-                        SoundUtil.playBeep()
-                        onImportClick()
-                    },
-                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                ) {
-                    Icon(Icons.Rounded.Add, contentDescription = "Añadir Propia")
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                ExtendedFloatingActionButton(
-                    onClick = {
-                        SoundUtil.playBeep()
-                        onWeeklyMenuClick()
-                    },
-                    icon = { Icon(Icons.Rounded.CalendarMonth, contentDescription = null) },
-                    text = { Text("Menú Semanal") },
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            }
+            ExtendedFloatingActionButton(
+                onClick = {
+                    SoundUtil.playBeep()
+                    onWeeklyMenuClick()
+                },
+                icon = { Icon(Icons.Rounded.CalendarMonth, contentDescription = null) },
+                text = { Text("Menú Semanal") },
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
         }
     ) { padding ->
         Column(

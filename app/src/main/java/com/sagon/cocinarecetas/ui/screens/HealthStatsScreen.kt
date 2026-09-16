@@ -431,33 +431,13 @@ fun HealthStatsScreen(
 
                     HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                     
-                    // BOTÓN DE MANTENIMIENTO MAESTRO (Sincronización Total)
-                    val syncStatus by viewModel.syncStatus.collectAsState()
-                    val context = LocalContext.current
-                    
-                    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-                        Text("ZONA DE MANTENIMIENTO", style = MaterialTheme.typography.labelSmall, color = Color.Gray, fontWeight = FontWeight.Bold)
-                        Text("(Uso exclusivo Administrador)", style = MaterialTheme.typography.labelSmall, color = Color.Gray.copy(alpha = 0.6f), fontSize = 9.sp)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Button(
-                            onClick = {
-                                scope.launch {
-                                    val recipes = JsonAssetImporter.loadRecipesFromAsset(context, "recipes.json")
-                                    viewModel.forceReloadFromAssets(recipes)
-                                }
-                            },
-                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = MaterialTheme.shapes.medium
-                        ) {
-                            Icon(Icons.Default.CloudUpload, contentDescription = null)
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("RECARGAR JSON Y ACTUALIZAR NUBE", fontSize = 12.sp)
-                        }
-                        if (syncStatus.isNotEmpty()) {
-                            Text(text = syncStatus, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(top = 4.dp))
-                        }
-                    }
+                    // ESPACIO PARA FUTURAS CONFIGURACIONES
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Text(
+                        "Versión del Recetario: 3.0 Premium (Maestro)",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color.Gray.copy(alpha = 0.5f)
+                    )
                 }
             },
             confirmButton = {

@@ -233,7 +233,7 @@
         });
         div.innerHTML = filtered.map(r => `
             <div class="recipe-card" onclick="openRecipe('${r.id}')">
-                <div class="recipe-info"><h3>${r.title}</h3><p>${r.category}</p></div>
+                <div class="recipe-info"><h3>${cleanDataText(r.title)}</h3><p>${r.category}</p></div>
                 <div class="fav-btn ${favorites.includes(r.id)?'active':''}" onclick="event.stopPropagation(); toggleFav('${r.id}')"><i data-lucide="heart" fill="${favorites.includes(r.id)?'currentColor':'none'}"></i></div>
             </div>
         `).join('');
@@ -251,7 +251,7 @@
 
         timerSeconds = parseInt(r.cookingTime) * 60 || 1200;
 
-        document.getElementById('m-title').innerText = r.title;
+        document.getElementById('m-title').innerText = cleanDataText(r.title);
         document.getElementById('m-content-area').innerHTML = `
             <div class="nutri-row">
                 <div class="nutri-item"><span class="nutri-val">${kcal}</span><span class="nutri-label">KCAL</span></div>
@@ -280,15 +280,15 @@
             <div class="shopping-card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                     <div class="shopping-title" style="margin: 0;">🛒 LISTA DE LA COMPRA (${missing.length})</div>
-                    <button class="timer-btn" style="padding: 6px 12px; font-size: 0.75rem; background: #9A3412; border-radius: 8px; display: flex; align-items: center; gap: 4px;" onclick="shareShoppingList('${r.title.replace(/'/g,"\\'")}', '${encodeURIComponent(JSON.stringify(missing))}')">
+                    <button class="timer-btn" style="padding: 6px 12px; font-size: 0.75rem; background: #9A3412; border-radius: 8px; display: flex; align-items: center; gap: 4px;" onclick="shareShoppingList('${cleanDataText(r.title).replace(/'/g,"\\'")}', '${encodeURIComponent(JSON.stringify(missing.map(i => cleanDataText(i))))}')">
                         <i data-lucide="share-2" style="width: 12px; height: 12px;"></i> COMPARTIR
                     </button>
                 </div>
-                <div id="shopping-list-area">${missing.map(i => `<div style="font-size:0.9rem; margin-bottom:5px;">• ${i}</div>`).join('') || '¡Tienes todo!'}</div>
+                <div id="shopping-list-area">${missing.map(i => `<div style="font-size:0.9rem; margin-bottom:5px;">• ${cleanDataText(i)}</div>`).join('') || '¡Tienes todo!'}</div>
             </div>
 
             <div class="section-h">INGREDIENTES</div>
-            ${(r.ingredients||[]).map(i => `<div class="list-item" onclick="toggleIng('${i.replace(/'/g,"\\'")}')"><div class="ing-check ${checked.includes(i)?'active':''}"><i data-lucide="check" size="14"></i></div><span class="ing-text ${checked.includes(i)?'checked':''}">${i}</span></div>`).join('')}
+            ${(r.ingredients||[]).map(i => `<div class="list-item" onclick="toggleIng('${i.replace(/'/g,"\\'")}')"><div class="ing-check ${checked.includes(i)?'active':''}"><i data-lucide="check" size="14"></i></div><span class="ing-text ${checked.includes(i)?'checked':''}">${cleanDataText(i)}</span></div>`).join('')}
 
             <div class="section-h">PREPARACIÓN</div>
             <div id="prep-steps"></div>
@@ -307,10 +307,10 @@
         let scienceHTML = "";
         const lowText = (r.ingredients.join(" ") + r.instructions.join(" ")).toLowerCase();
         if (lowText.includes("arroz") || lowText.includes("pasta") || lowText.includes("patata")) scienceHTML += "<p><b>TRUCO DÍA DESPUÉS:</b> Enfría 24h para crear almidón resistente.</p>";
-        scienceHTML += scienceList.map(s => `<p>${s}</p>`).join('');
+        scienceHTML += scienceList.map(s => `<p>${cleanDataText(s)}</p>`).join('');
 
         document.getElementById('dynamic-science-content').innerHTML = scienceHTML || "<p>Optimizado para balance metabólico.</p>";
-        document.getElementById('prep-steps').innerHTML = prepList.map((ins, idx) => `<div class="list-item"><b>${idx+1}.</b><span>${ins}</span></div>`).join('');
+        document.getElementById('prep-steps').innerHTML = prepList.map((ins, idx) => `<div class="list-item"><b>${idx+1}.</b><span>${cleanDataText(ins)}</span></div>`).join('');
 
         updateTimerDisplay();
         document.getElementById('recipe-modal').style.display = 'block';
@@ -419,7 +419,7 @@
                     <i data-lucide="sun" size="20"></i>
                     <div class="meal-data">
                         <b>Almuerzo Sugerido</b>
-                        <span>${d.lunch}</span>
+                        <span>${cleanDataText(d.lunch)}</span>
                         ${infoLunch ? `<span style="display:block; font-size:0.75rem; color:#64748B; font-weight:bold; margin-top:4px;">${infoLunch}</span>` : ''}
                     </div>
                     <button class="chip" style="margin: 0; padding: 4px 8px; font-size: 0.65rem; background: #E2E8F0; z-index: 5;" onclick="event.stopPropagation(); changeSingleMeal(${i}, 'lunch')">
@@ -431,7 +431,7 @@
                     <i data-lucide="moon" size="20"></i>
                     <div class="meal-data">
                         <b>Cena Sugerida</b>
-                        <span>${d.dinner}</span>
+                        <span>${cleanDataText(d.dinner)}</span>
                         ${infoDinner ? `<span style="display:block; font-size:0.75rem; color:#64748B; font-weight:bold; margin-top:4px;">${infoDinner}</span>` : ''}
                     </div>
                     <button class="chip" style="margin: 0; padding: 4px 8px; font-size: 0.65rem; background: #E2E8F0; z-index: 5;" onclick="event.stopPropagation(); changeSingleMeal(${i}, 'dinner')">
@@ -529,6 +529,53 @@
         }
     }
     function openRecipeByName(n) { const r = allRecipes.find(x => x.title === n); if(r) openRecipe(r.id); }
+
+    function cleanDataText(text) {
+        if (!text || typeof text !== 'string') return text;
+        let fixed = text;
+
+        // 1. Limpieza de fragmentos OCR basura y códigos extraños
+        fixed = fixed.replace(/\bdoc\s+[a-zA-Z0-9]+\b/gi, "")
+                     .replace(/\bpage\s+\d+\b/gi, "")
+                     .replace(/---/g, "");
+
+        // 2. Unir letras sueltas que deberían ir juntas (m a c h a c a r -> machacar)
+        // Lo hacemos 3 veces para capturar casos de letras alternas
+        for(let i=0; i<3; i++) {
+            fixed = fixed.replace(/(\b\w)\s+(?=\w\b)/g, "$1");
+        }
+
+        // 3. Diccionario de correcciones de OCR específicas (Basado en la ficha de Albóndigas y otros fallos)
+        const fixes = [
+            [/\bA\s+L\s+B[ÓO]NDIGAS\b/gi, "ALBÓNDIGAS"],
+            [/\bAL\s+B[ÓO]NDIGAS\b/gi, "ALBÓNDIGAS"],
+            [/\bPO\s*[_-]\s*LO\b/gi, "POLLO"],
+            [/\bSepican\b/gi, "Se pican"],
+            [/\bstrozosdepol\s+lo\b/gi, "trozos de pollo"],
+            [/\bs\s+nunbol\b/gi, "en un bol"],
+            [/\be\s+panr\s+al\s+a\s+do\b/gi, "empanado"],
+            [/\bcimadel\b/gi, "encima del"],
+            [/\bHUEVOS\s*,\b/gi, "huevos,"],
+            [/\bSeamasa\b/gi, "Se amasa"],
+            [/\bSelimpian\b/gi, "Se limpian"],
+            [/\bderezanconlas\b/gi, "aderezan con las"],
+            [/\bmachacarene\b/gi, "machacar en el"],
+            [/\bSehaceuns\s+ofri\s+to\b/gi, "Se hace un sofrito"],
+            [/\bdeberánsermuy\b/gi, "deberán ser muy"],
+            [/\bhuevoscon\b/gi, "huevos con"],
+            [/\baguacon\b/gi, "agua con"],
+            [/\bechalos\b/gi, "echa los"],
+            [/\bcab\s+al\s+la\b/gi, "Caballa"],
+            [/\bcaballa\s+sysea\b/gi, "Caballa y se"]
+        ];
+
+        fixes.forEach(([regex, replacement]) => {
+            fixed = fixed.replace(regex, replacement);
+        });
+
+        // 4. Limpieza final de espacios múltiples y limpieza de bordes
+        return fixed.replace(/\s{2,}/g, " ").trim();
+    }
 
     init();
 </script>

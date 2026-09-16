@@ -256,7 +256,12 @@
             </div>
 
             <div class="shopping-card">
-                <div class="shopping-title">🛒 LISTA DE LA COMPRA (${missing.length})</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div class="shopping-title" style="margin: 0;">🛒 LISTA DE LA COMPRA (${missing.length})</div>
+                    <button class="timer-btn" style="padding: 6px 12px; font-size: 0.75rem; background: #9A3412; border-radius: 8px; display: flex; align-items: center; gap: 4px;" onclick="shareShoppingList('${r.title.replace(/'/g,"\\'")}', '${encodeURIComponent(JSON.stringify(missing))}')">
+                        <i data-lucide="share-2" style="width: 12px; height: 12px;"></i> COMPARTIR
+                    </button>
+                </div>
                 <div id="shopping-list-area">${missing.map(i => `<div style="font-size:0.9rem; margin-bottom:5px;">• ${i}</div>`).join('') || '¡Tienes todo!'}</div>
             </div>
 

@@ -425,9 +425,53 @@ fun RecipeDetailScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Column(modifier = Modifier.weight(1f).clickable { SoundUtil.playBeep(); showTimePicker = true }) {
-                            Text("Temporizador", style = MaterialTheme.typography.labelSmall)
-                            Text(text = timeString, style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.ExtraBold, color = if (totalSecondsLeft == 0) Color.Red else MaterialTheme.colorScheme.primary)
+                        // Controles de ajuste rápido (+/- 1 min) + Display del tiempo
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            IconButton(
+                                onClick = { 
+                                    SoundUtil.playBeep()
+                                    if (totalSecondsLeft >= 60) totalSecondsLeft -= 60 
+                                },
+                                modifier = Modifier.size(40.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.TwoTone.RemoveCircleOutline, 
+                                    contentDescription = "Menos 1 min",
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                            
+                            Column(
+                                modifier = Modifier
+                                    .clickable { SoundUtil.playBeep(); showTimePicker = true }
+                                    .padding(horizontal = 8.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text("Temporizador", style = MaterialTheme.typography.labelSmall)
+                                Text(
+                                    text = timeString, 
+                                    style = MaterialTheme.typography.headlineLarge, 
+                                    fontWeight = FontWeight.ExtraBold, 
+                                    color = if (totalSecondsLeft == 0) Color.Red else MaterialTheme.colorScheme.primary
+                                )
+                            }
+                            
+                            IconButton(
+                                onClick = { 
+                                    SoundUtil.playBeep()
+                                    totalSecondsLeft += 60 
+                                },
+                                modifier = Modifier.size(40.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.TwoTone.AddCircleOutline, 
+                                    contentDescription = "Más 1 min",
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
                         }
 
                         if (totalSecondsLeft == 0) {

@@ -56,19 +56,19 @@ object SoundUtil {
             alarmPlayer = MediaPlayer.create(context.applicationContext, R.raw.z)
             alarmPlayer?.isLooping = true
             
-            // Configuración moderna de audio
+            // Configuración moderna de audio optimizada para streaming / web
             val audioAttributes = AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_ALARM)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .build()
             
             alarmPlayer?.setAudioAttributes(audioAttributes)
             
-            // Aseguramos volumen máximo
+            // Aseguramos volumen máximo en el canal de música/multimedia
             val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
             audioManager.setStreamVolume(
-                AudioManager.STREAM_ALARM,
-                audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM),
+                AudioManager.STREAM_MUSIC,
+                audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
                 AudioManager.FLAG_SHOW_UI
             )
             
@@ -94,10 +94,8 @@ object SoundUtil {
     }
 
     fun playTimerFinishedSound() {
-        // Mantenemos esta para la prueba rápida, pero usando el nuevo sonido una vez
-        // (Nota: playTimerFinishedSound se usa en el botón de PROBAR SONIDO)
         if (toneGenerator == null) {
-            toneGenerator = ToneGenerator(AudioManager.STREAM_ALARM, 100)
+            toneGenerator = ToneGenerator(AudioManager.STREAM_MUSIC, 100)
         }
         Thread {
             val tones = listOf(ToneGenerator.TONE_DTMF_1, ToneGenerator.TONE_DTMF_5, ToneGenerator.TONE_DTMF_9, ToneGenerator.TONE_DTMF_A)

@@ -161,7 +161,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    let allRecipes = [], currentView = 'list', searchQuery = '', activeTag = '', currentOpenId = null;
+    let allRecipes = [], currentView = 'list', searchQuery = '', activeTag = '', activeCategory = '', currentOpenId = null;
     let favorites = JSON.parse(localStorage.getItem('web_favs') || '[]');
     let checkedIngs = JSON.parse(localStorage.getItem('web_checked') || '{}');
     let healthLog = JSON.parse(localStorage.getItem('web_health_log') || '{}');
@@ -232,7 +232,16 @@
     function render() {
         const c = document.getElementById('main-content'); c.innerHTML = '';
         if (currentView === 'list' || currentView === 'favs') {
-            c.innerHTML = `<div class="search-box"><i data-lucide="search"></i><input type="text" id="search-input" placeholder="Buscar plato o ingrediente..." value="${searchQuery}"></div><div class="filter-row">${["Sana", "Perder peso", "Músculo", "Diabéticos"].map(t => `<div class="chip ${activeTag===t?'active':''}" onclick="toggleTag('${t}')">${t}</div>`).join('')}</div><div class="filter-row">${["Aperitivos", "Ensaladas", "Legumbres", "Sopas", "Arroces", "Pastas", "Verduras", "Pescados", "Carnes", "Postres", "Salsas"].map(f => `<div class="chip secondary" onclick="filterByCat('${f}')">${f}</div>`).join('')}</div><div id="recipe-list"></div>`;
+            c.innerHTML = `
+                <div class="search-box"><i data-lucide="search"></i><input type="text" id="search-input" placeholder="Buscar plato o ingrediente..." value="${searchQuery}"></div>
+                <div class="filter-row">
+                    ${["Sana", "Perder peso", "Músculo", "Diabéticos"].map(t => `<div class="chip ${activeTag===t?'active':''}" onclick="toggleTag('${t}')">${t}</div>`).join('')}
+                </div>
+                <div class="filter-row">
+                    ${["Aperitivos", "Ensaladas", "Legumbres", "Sopas", "Arroces", "Pastas", "Verduras", "Pescados", "Carnes", "Postres", "Salsas"].map(f => `<div class="chip secondary ${activeCategory.toLowerCase() === f.toLowerCase() ? 'active' : ''}" onclick="filterByCat('${f}')">${f}</div>`).join('')}
+                </div>
+                <div id="recipe-list"></div>
+            `;
             document.getElementById('search-input').oninput = (e) => { searchQuery = e.target.value; renderList(); };
             renderList();
         } else if (currentView === 'menu') renderMenu(c);
@@ -245,6 +254,7 @@
         const filtered = allRecipes.filter(r => {
             const q = searchQuery.toLowerCase().trim();
             const matchSearch = !q || r.title.toLowerCase().includes(q) || (r.ingredients && r.ingredients.some(i => i.toLowerCase().includes(q)));
+
             let matchTag = true;
             if (activeTag) {
                 const t = activeTag.toLowerCase();
@@ -252,8 +262,16 @@
                 const inTags = r.healthTags && r.healthTags.some(tag => tag.toLowerCase().includes(t));
                 matchTag = inGoals || inTags;
             }
+
+            let matchCat = true;
+            if (activeCategory) {
+                const rCat = (r.category || "").toLowerCase().trim();
+                const targetCat = activeCategory.toLowerCase().trim();
+                matchCat = rCat === targetCat || rCat.includes(targetCat);
+            }
+
             const matchFav = currentView !== 'favs' || favorites.includes(r.id || r.title);
-            return matchSearch && matchTag && matchFav;
+            return matchSearch && matchTag && matchCat && matchFav;
         });
         div.innerHTML = filtered.map(r => `<div class="recipe-card" onclick="openRecipe('${(r.id||r.title).toString().replace(/'/g,"\\'")}')"><div class="recipe-info"><h3>${r.title}</h3><p>${r.category}</p></div><div style="display:flex; align-items:center; gap:10px;"><div class="fav-btn ${favorites.includes(r.id||r.title)?'active':''}" onclick="event.stopPropagation(); toggleFav('${(r.id||r.title).toString().replace(/'/g,"\\'")}')"><i data-lucide="heart" fill="${favorites.includes(r.id||r.title)?'currentColor':'none'}"></i></div><i data-lucide="chevron-right" color="#DDD"></i></div></div>`).join('');
         lucide.createIcons();
@@ -382,7 +400,7 @@
     }
 
     function toggleTag(t) { activeTag = activeTag === t ? '' : t; render(); }
-    function filterByCat(c) { searchQuery = c; render(); }
+    function filterByCat(c) { activeCategory = activeCategory === c ? '' : c; render(); }
     function toggleFav(id) { if(favorites.includes(id)) favorites = favorites.filter(f => f !== id); else favorites.push(id); localStorage.setItem('web_favs', JSON.stringify(favorites)); renderList(); }
     function toggleFavCurrent() { toggleFav(currentOpenId); openRecipe(currentOpenId); }
     function closeModal() { if(timerInterval) { clearInterval(timerInterval); timerInterval = null; } document.getElementById('alarm-sound').pause(); document.getElementById('recipe-modal').style.display = 'none'; }

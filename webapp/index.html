@@ -127,6 +127,15 @@
         .refresh-btn:hover { opacity: 1; background: var(--primary-light); transform: rotate(180deg); }
 
         .notes-area { width: 100%; border: 1px solid #DDD; border-radius: 12px; padding: 15px; min-height: 100px; font-family: inherit; font-size: 0.95rem; margin-top: 10px; box-sizing: border-box; }
+
+        /* Estilos para Tips Científicos e Información Legal */
+        .science-tip { background: linear-gradient(135deg, #E0F7FA 0%, #B2EBF2 100%); border-radius: 16px; padding: 16px; margin: 15px 0; border-left: 5px solid var(--primary); display: flex; gap: 12px; align-items: flex-start; }
+        .science-tip i { color: var(--primary-dark); }
+        .science-text { font-size: 0.85rem; font-weight: 600; color: #006064; line-height: 1.4; }
+
+        .legal-banner { background: #FFF9C4; padding: 15px; border-radius: 12px; margin-bottom: 20px; font-size: 0.75rem; color: #5D4037; border: 1px solid #FBC02D; text-align: left; }
+        .footer-links { text-align: center; padding: 20px; font-size: 0.8rem; color: #888; }
+        .footer-links a { color: var(--primary); text-decoration: none; margin: 0 10px; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -137,6 +146,11 @@
         <div class="brand-label">DE JOSEMAN</div>
     </div>
     <div class="content" id="main-content"></div>
+    <div class="footer-links">
+        <a href="#" onclick="showHelp()">AYUDA</a> |
+        <a href="#" onclick="showPrivacy()">PRIVACIDAD</a> |
+        <a href="#" onclick="showLegal()">LEGAL</a>
+    </div>
     <div class="bottom-nav">
         <div class="nav-item active" onclick="switchView('list', this)"><i data-lucide="book-open"></i><span>RECETARIO</span></div>
         <div class="nav-item" onclick="switchView('favs', this)"><i data-lucide="heart"></i><span>FAVORITOS</span></div>
@@ -152,6 +166,14 @@
         <div style="display:flex; gap:10px;"><div id="m-fav-btn" class="fav-btn" onclick="toggleFavCurrent()"></div><button class="chip" onclick="shareRecipe()"><i data-lucide="share-2"></i></button></div>
     </div>
     <div class="modal-content" id="m-content-area"></div>
+</div>
+
+<div id="legal-modal" class="modal">
+    <div class="modal-header">
+        <button class="chip" onclick="closeLegal()"><i data-lucide="x"></i></button>
+        <div style="font-weight:900; text-transform:uppercase; flex:1; text-align:center;">INFORMACIÓN Y LEGAL</div>
+    </div>
+    <div class="modal-content" id="legal-content-area" style="font-size: 0.9rem; line-height: 1.6;"></div>
 </div>
 
 <audio id="alarm-sound" src="./z.mp3" loop preload="auto"></audio>
@@ -223,6 +245,10 @@
         const c = document.getElementById('main-content'); c.innerHTML = '';
         if (currentView === 'list' || currentView === 'favs') {
             c.innerHTML = `
+                <div class="legal-banner">
+                    <i data-lucide="info" size="14"></i>
+                    <b>AVISO:</b> Esta aplicación tiene fines informativos y educativos. No constituye asesoramiento médico. Consulta a un profesional de la salud antes de cambiar tu dieta.
+                </div>
                 <div class="search-box"><i data-lucide="search"></i><input type="text" id="search-input" placeholder="Buscar plato o ingrediente..." value="${searchQuery}"></div>
                 <div class="filter-row">
                     ${["Sana", "Perder peso", "Músculo", "Diabéticos"].map(t => `<div class="chip ${activeTag===t?'active':''}" onclick="toggleTag('${t}')">${t}</div>`).join('')}
@@ -308,7 +334,20 @@
 
             <div class="section-h">INGREDIENTES (Toca para marcar)</div>
             <div>${(r.ingredients||[]).map(i => `<div class="list-item" onclick="toggleIng('${i.replace(/'/g,"\\'")}')"><div class="ing-check ${checked.includes(i)?'active':''}"><i data-lucide="check" size="14"></i></div><span class="ing-text ${checked.includes(i)?'checked':''}">${i}</span></div>`).join('')}</div>
-            <div class="section-h">PREPARACIÓN</div><div>${(r.instructions||[]).map((ins, idx) => `<div class="list-item"><b>${idx+1}.</b><span>${cleanText(ins)}</span></div>`).join('')}</div>
+
+            <div class="section-h">CONSEJOS CIENCIA 2025</div>
+            <div id="science-tips-area">
+                ${(r.instructions || []).filter(ins => ins.includes("TIP") || ins.includes("CONSEJO") || ins.includes("CIENCIA")).map(tip => `
+                    <div class="science-tip">
+                        <i data-lucide="zap"></i>
+                        <div class="science-text">${tip}</div>
+                    </div>
+                `).join('') || '<p style="font-size:0.8rem; color:#888;">No hay consejos específicos para esta receta.</p>'}
+            </div>
+
+            <div class="section-h">PREPARACIÓN</div>
+            <div>${(r.instructions||[]).filter(ins => !ins.includes("TIP") && !ins.includes("CONSEJO") && !ins.includes("CIENCIA")).map((ins, idx) => `<div class="list-item"><b>${idx+1}.</b><span>${cleanText(ins)}</span></div>`).join('')}</div>
+
             <div class="section-h">MIS NOTAS PERSONALES</div><textarea class="notes-area" id="recipe-notes">${notes}</textarea>
             <button class="chip active" style="width:100%; margin-top:10px; padding:15px;" onclick="saveNotes()">GUARDAR MIS NOTAS 📝</button>
         `;
@@ -406,6 +445,42 @@
     function addNutritionWeb(k,p,h,f) { const t = new Date().toLocaleDateString(); if(!healthLog[t]) healthLog[t]={kcal:0,prot:0,hc:0,fat:0}; healthLog[t].kcal+=k; healthLog[t].prot+=p; healthLog[t].hc+=h; healthLog[t].fat+=f; localStorage.setItem('web_health_log', JSON.stringify(healthLog)); closeModal(); switchView('health'); }
     function shareRecipe() { const r = allRecipes.find(x => (x.id||x.title) === currentOpenId); if(r && navigator.share) navigator.share({ title: r.title, text: `Mira esta receta: ${r.title}\n\nIngredientes:\n${r.ingredients.join('\n')}` }); }
     function saveNotes() { userNotes[currentOpenId] = document.getElementById('recipe-notes').value; localStorage.setItem('web_notes', JSON.stringify(userNotes)); alert("¡Notas guardadas! 📝"); }
+
+    function showLegal() {
+        document.getElementById('legal-content-area').innerHTML = `
+            <h2>Información Legal</h2>
+            <p><b>Propiedad:</b> Esta web/app es un proyecto personal de Joseman.</p>
+            <p><b>Descargo de Responsabilidad:</b> La información proporcionada en CocinaREcetas Pro, incluyendo los consejos nutricionales y técnicos (Ciencia 2025), tiene fines puramente informativos y educativos. <b>No somos médicos, nutricionistas ni profesionales de la salud.</b></p>
+            <p>El uso de la información contenida en esta plataforma es bajo su propio riesgo. Siempre consulte con un médico o profesional cualificado antes de iniciar cualquier dieta o programa de ejercicio, especialmente si padece condiciones preexistentes como diabetes.</p>
+        `;
+        document.getElementById('legal-modal').style.display = 'block';
+        lucide.createIcons();
+    }
+
+    function showPrivacy() {
+        document.getElementById('legal-content-area').innerHTML = `
+            <h2>Política de Privacidad</h2>
+            <p><b>Datos:</b> CocinaREcetas Pro no recopila datos personales en sus servidores. Toda tu información (favoritos, notas, consumos de salud) se guarda <b>localmente en tu dispositivo</b> (LocalStorage).</p>
+            <p><b>Firebase:</b> Utilizamos Firebase solo para la sincronización de recetas públicas.</p>
+            <p><b>Cookies:</b> No utilizamos cookies de rastreo ni publicitarias.</p>
+        `;
+        document.getElementById('legal-modal').style.display = 'block';
+        lucide.createIcons();
+    }
+
+    function showHelp() {
+        document.getElementById('legal-content-area').innerHTML = `
+            <h2>Ayuda y Uso</h2>
+            <p><b>Buscador:</b> Puedes buscar por nombre de plato o por ingrediente principal.</p>
+            <p><b>Filtros Inteligentes:</b> Al seleccionar un filtro (Sana, Perder Peso, etc.), las recetas mostrarán consejos científicos específicos para ese objetivo.</p>
+            <p><b>Planificador:</b> Genera un menú semanal equilibrado basado en tus necesidades calóricas.</p>
+            <p><b>Mi Salud:</b> Registra lo que comes para llevar un control de tus macros y calorías diarias.</p>
+        `;
+        document.getElementById('legal-modal').style.display = 'block';
+        lucide.createIcons();
+    }
+
+    function closeLegal() { document.getElementById('legal-modal').style.display = 'none'; }
 
     init();
 </script>

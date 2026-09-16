@@ -301,6 +301,10 @@
             }, 1000);
         }
     }
+    function adjustWebTimer(amount) {
+        timerSeconds = Math.max(0, timerSeconds + amount);
+        updateTimerDisplay();
+    }
     function updateTimerDisplay() { const m = Math.floor(timerSeconds / 60), s = timerSeconds % 60; document.getElementById('web-timer-display').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }
 
     function renderHealth(c) {

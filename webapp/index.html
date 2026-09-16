@@ -387,8 +387,16 @@
             const rLunch = allRecipes.find(x => x.title === d.lunch);
             const rDinner = allRecipes.find(x => x.title === d.dinner);
 
-            const kLunch = rLunch?.nutrition?.perServing?.kcal ? Math.round(rLunch.nutrition.perServing.kcal) + " kcal" : "";
-            const kDinner = rDinner?.nutrition?.perServing?.kcal ? Math.round(rDinner.nutrition.perServing.kcal) + " kcal" : "";
+            const kLunch = rLunch?.nutrition?.perServing?.kcal ? Math.round(rLunch.nutrition.perServing.kcal) : null;
+            const pLunch = rLunch?.nutrition?.perServing?.protein_g ? Math.round(rLunch.nutrition.perServing.protein_g) : null;
+            const hLunch = rLunch?.nutrition?.perServing?.carbohydrate_g ? Math.round(rLunch.nutrition.perServing.carbohydrate_g) : null;
+
+            const kDinner = rDinner?.nutrition?.perServing?.kcal ? Math.round(rDinner.nutrition.perServing.kcal) : null;
+            const pDinner = rDinner?.nutrition?.perServing?.protein_g ? Math.round(rDinner.nutrition.perServing.protein_g) : null;
+            const hDinner = rDinner?.nutrition?.perServing?.carbohydrate_g ? Math.round(rDinner.nutrition.perServing.carbohydrate_g) : null;
+
+            const infoLunch = kLunch !== null ? `⚡ ${kLunch} kcal | 💪 ${pLunch || 0}g prot | 🍞 ${hLunch || 0}g carb` : "";
+            const infoDinner = kDinner !== null ? `⚡ ${kDinner} kcal | 💪 ${pDinner || 0}g prot | 🍞 ${hDinner || 0}g carb` : "";
 
             return `
             <div class="day-card" style="padding: 20px;">
@@ -402,7 +410,7 @@
                     <div class="meal-data">
                         <b>Almuerzo Sugerido</b>
                         <span>${d.lunch}</span>
-                        ${kLunch ? `<span style="display:block; font-size:0.75rem; color:#64748B; font-weight:bold; margin-top:2px;">⚡ ${kLunch}</span>` : ''}
+                        ${infoLunch ? `<span style="display:block; font-size:0.75rem; color:#64748B; font-weight:bold; margin-top:4px;">${infoLunch}</span>` : ''}
                     </div>
                     <button class="chip" style="margin: 0; padding: 4px 8px; font-size: 0.65rem; background: #E2E8F0; z-index: 5;" onclick="event.stopPropagation(); changeSingleMeal(${i}, 'lunch')">
                         <i data-lucide="refresh-cw" style="width: 10px; height: 10px; margin: 0;"></i> Cambiar
@@ -414,7 +422,7 @@
                     <div class="meal-data">
                         <b>Cena Sugerida</b>
                         <span>${d.dinner}</span>
-                        ${kDinner ? `<span style="display:block; font-size:0.75rem; color:#64748B; font-weight:bold; margin-top:2px;">⚡ ${kDinner}</span>` : ''}
+                        ${infoDinner ? `<span style="display:block; font-size:0.75rem; color:#64748B; font-weight:bold; margin-top:4px;">${infoDinner}</span>` : ''}
                     </div>
                     <button class="chip" style="margin: 0; padding: 4px 8px; font-size: 0.65rem; background: #E2E8F0; z-index: 5;" onclick="event.stopPropagation(); changeSingleMeal(${i}, 'dinner')">
                         <i data-lucide="refresh-cw" style="width: 10px; height: 10px; margin: 0;"></i> Cambiar

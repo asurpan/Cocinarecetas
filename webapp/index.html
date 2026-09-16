@@ -381,7 +381,7 @@
 
     function renderMenu(c) {
         const menu = JSON.parse(localStorage.getItem('web_menu') || '[]');
-        c.innerHTML = `<div style="text-align:center; margin-bottom:20px;"><button class="chip active" onclick="generateMenu()">REGENERAR MENÚ SEMANAL 🔄</button></div><div id="weekly-days"></div>`;
+        c.innerHTML = `<div style="text-align:center; margin-bottom:20px;"><button class="chip active" onclick="generateMenu()">REGENERAR MENÚ COMPLETO 🔄</button></div><div id="weekly-days"></div>`;
         const dNames = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
         document.getElementById('weekly-days').innerHTML = menu.map((d, i) => `
             <div class="day-card" style="padding: 20px;">
@@ -389,13 +389,21 @@
                     <span class="day-name">${dNames[i]}</span>
                     <i data-lucide="calendar-check" size="18" style="color: var(--primary);"></i>
                 </div>
-                <div class="meal-slot" onclick="openRecipeByName('${d.lunch.replace(/'/g,"\\'")}')">
+
+                <div class="meal-slot" style="position: relative;" onclick="openRecipeByName('${d.lunch.replace(/'/g,"\\'")}')">
                     <i data-lucide="sun" size="20"></i>
                     <div class="meal-data"><b>Almuerzo Sugerido</b><span>${d.lunch}</span></div>
+                    <button class="chip" style="margin: 0; padding: 4px 8px; font-size: 0.65rem; background: #E2E8F0; z-index: 5;" onclick="event.stopPropagation(); changeSingleMeal(${i}, 'lunch')">
+                        <i data-lucide="refresh-cw" style="width: 10px; height: 10px; margin: 0;"></i> Cambiar
+                    </button>
                 </div>
-                <div class="meal-slot" onclick="openRecipeByName('${d.dinner.replace(/'/g,"\\'")}')">
+
+                <div class="meal-slot" style="position: relative;" onclick="openRecipeByName('${d.dinner.replace(/'/g,"\\'")}')">
                     <i data-lucide="moon" size="20"></i>
                     <div class="meal-data"><b>Cena Sugerida</b><span>${d.dinner}</span></div>
+                    <button class="chip" style="margin: 0; padding: 4px 8px; font-size: 0.65rem; background: #E2E8F0; z-index: 5;" onclick="event.stopPropagation(); changeSingleMeal(${i}, 'dinner')">
+                        <i data-lucide="refresh-cw" style="width: 10px; height: 10px; margin: 0;"></i> Cambiar
+                    </button>
                 </div>
             </div>`).join('');
         lucide.createIcons();
@@ -409,6 +417,16 @@
             m.push({ lunch: l.title, dinner: d.title });
         }
         localStorage.setItem('web_menu', JSON.stringify(m)); if(renderView) render();
+    }
+
+    function changeSingleMeal(dayIndex, mealType) {
+        const menu = JSON.parse(localStorage.getItem('web_menu') || '[]');
+        if (menu.length > 0) {
+            const randomRecipe = allRecipes[Math.floor(Math.random() * allRecipes.length)];
+            menu[dayIndex][mealType] = randomRecipe.title;
+            localStorage.setItem('web_menu', JSON.stringify(menu));
+            render();
+        }
     }
 
     function showLegal() { document.getElementById('legal-title').innerText = "AVISO LEGAL"; document.getElementById('legal-content-area').innerHTML = `<div class="info-card"><h2>No es Consejo Médico</h2><p>Esta plataforma es puramente informativa. Los protocolos "Ciencia 2025" se basan en estudios generales de nutrición y bio-hacker culinario. No sustituyen la opinión de un profesional médico.</p></div>`; document.getElementById('legal-modal').style.display = 'block'; }

@@ -10,14 +10,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.CalendarMonth
-import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.FavoriteBorder
-import androidx.compose.material.icons.rounded.RestartAlt
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.*
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
@@ -55,6 +49,7 @@ fun RecipeListScreen(
     var showOnlyFavorites by remember { mutableStateOf(false) }
     var recipeToHide by remember { mutableStateOf<Recipe?>(null) }
     var showResetDialog by remember { mutableStateOf(false) }
+    var showMenu by remember { mutableStateOf(false) } // Para el menú de los 3 puntos
 
     val healthTags = listOf(
         "Sana", "Perder peso", "Músculo", "Diabéticos"
@@ -71,60 +66,58 @@ fun RecipeListScreen(
                 title = { 
                     Text(
                         "CocinaREcetas", 
-                        style = MaterialTheme.typography.titleSmall, 
+                        style = MaterialTheme.typography.titleLarge, // Más grande y profesional
                         fontWeight = FontWeight.Black,
                         maxLines = 1,
-                        fontSize = 15.sp // Un poco más pequeña para que quepa todo
+                        color = MaterialTheme.colorScheme.onPrimary
                     ) 
                 },
                 actions = {
-                    IconButton(onClick = {
-                        SoundUtil.playBeep()
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://asurpan.github.io/Cocinarecetas/privacy.html"))
-
-                        context.startActivity(intent)
-                    }) {
-                        Icon(Icons.Rounded.Info, contentDescription = "Legal", tint = MaterialTheme.colorScheme.onPrimary)
+                    IconButton(onClick = { SoundUtil.playBeep(); onWeeklyMenuClick() }) {
+                        Icon(Icons.Rounded.CalendarMonth, "Menú Semanal", tint = MaterialTheme.colorScheme.onPrimary)
                     }
-                    IconButton(onClick = {
-                        SoundUtil.playBeep()
-                        onWeeklyMenuClick()
-                    }) {
-                        Icon(
-                            imageVector = Icons.Rounded.CalendarMonth,
-                            contentDescription = "Menú Semanal",
-                            tint = MaterialTheme.colorScheme.onPrimary
-                        )
+                    IconButton(onClick = { SoundUtil.playBeep(); onHealthClick() }) {
+                        Icon(Icons.Rounded.Check, "Salud", tint = MaterialTheme.colorScheme.onPrimary)
                     }
-                    IconButton(onClick = {
-                        SoundUtil.playBeep()
-                        onHealthClick()
-                    }) {
-                        Icon(
-                            imageVector = Icons.Rounded.Check,
-                            contentDescription = "Mi Salud",
-                            tint = MaterialTheme.colorScheme.onPrimary
-                        )
-                    }
-                    IconButton(onClick = {
-                        SoundUtil.playBeep()
-                        showOnlyFavorites = !showOnlyFavorites
-                    }) {
+                    IconButton(onClick = { SoundUtil.playBeep(); showOnlyFavorites = !showOnlyFavorites }) {
                         Icon(
                             imageVector = if (showOnlyFavorites) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
-                            contentDescription = "Ver Favoritos",
+                            contentDescription = "Favoritos",
                             tint = if (showOnlyFavorites) Color.Red else MaterialTheme.colorScheme.onPrimary
                         )
                     }
-                    IconButton(onClick = {
-                        SoundUtil.playBeep()
-                        showResetDialog = true
-                    }) {
-                        Icon(
-                            imageVector = Icons.Rounded.RestartAlt,
-                            contentDescription = "Resetear App",
-                            tint = MaterialTheme.colorScheme.onPrimary
-                        )
+                    
+                    // --- MENÚ DE TRES PUNTOS PARA LO MENOS FRECUENTE ---
+                    Box {
+                        IconButton(onClick = { SoundUtil.playBeep(); showMenu = true }) {
+                            Icon(
+                                imageVector = Icons.Filled.MoreVert, 
+                                contentDescription = "Más", 
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = showMenu,
+                            onDismissRequest = { showMenu = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("Información Legal") },
+                                onClick = { 
+                                    showMenu = false
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://asurpan.github.io/Cocinarecetas/privacy.html"))
+                                    context.startActivity(intent)
+                                },
+                                leadingIcon = { Icon(Icons.Rounded.Info, null) }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Resetear App") },
+                                onClick = { 
+                                    showMenu = false
+                                    showResetDialog = true 
+                                },
+                                leadingIcon = { Icon(Icons.Rounded.RestartAlt, null) }
+                            )
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(

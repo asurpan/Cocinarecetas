@@ -214,22 +214,36 @@ fun RecipeDetailScreen(
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(Icons.TwoTone.Lightbulb, contentDescription = null, tint = Color(0xFF33691E))
+                                    Icon(Icons.TwoTone.Psychology, contentDescription = null, tint = Color(0xFF33691E))
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text("CIENCIA FÁCIL PARA TI", fontWeight = FontWeight.Black, color = Color(0xFF33691E))
                                 }
                                 Spacer(modifier = Modifier.height(8.dp))
                                 scienceInstructions.forEach { tip ->
+                                    val readableTip = tip
+                                        .replace("TIP CIENCIA 2025 (Pérdida de peso):", "EL TRUCO DEL DÍA DESPUÉS:")
+                                        .replace("CONSEJO ALMIDÓN RESISTENTE:", "EL TRUCO DEL DÍA DESPUÉS:")
+                                        .replace("TIP ADELGAZAMIENTO 2025:", "EL FRENO DEL HAMBRE:")
+                                        .replace("CIENCIA DIABETES 2025:", "AZÚCAR BAJO CONTROL:")
+                                        .replace("TIP SALUD:", "PROTOCOLO SALUD:")
+                                        .replace("TIP MUSCULACIÓN 2025:", "MÚSCULO DE ÉLITE:")
+                                        .replace("CIENCIA SALUD 2025:", "LONGEVIDAD ACTIVA:")
+                                    
                                     Text(
-                                        text = tip.replace("TIP CIENCIA 2025 (Pérdida de peso):", "EL TRUCO DEL DÍA DESPUÉS:")
-                                                  .replace("TIP ADELGAZAMIENTO 2025:", "EL FRENO DEL HAMBRE:")
-                                                  .replace("CIENCIA DIABETES 2025:", "AZÚCAR BAJO CONTROL:"),
+                                        text = readableTip,
                                         style = MaterialTheme.typography.bodySmall,
                                         fontWeight = FontWeight.Bold,
                                         color = Color(0xFF33691E),
                                         modifier = Modifier.padding(vertical = 4.dp)
                                     )
                                 }
+                                Text(
+                                    text = "Fuentes: Nature Metabolism 2024 / Cornell University",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    fontSize = 8.sp,
+                                    color = Color(0xFF689F38),
+                                    modifier = Modifier.padding(top = 8.dp)
+                                )
                             }
                         }
                     }

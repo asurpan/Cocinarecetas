@@ -127,7 +127,46 @@ object RecipeSanitizer {
         fixed = fixed.replace(Regex("""\bpage\s+\d+\b""", RegexOption.IGNORE_CASE), "")
         fixed = fixed.replace("---", "")
 
+        // 1. Unir fragmentos de 1-3 letras separados por espacios que NO sean preposiciones/artículos
+        // Ej: "la sa lubi as" -> "las alubias"
+        // Este regex busca secuencias de palabras cortas y las une si no son "stop words"
+        val stopWords = setOf("se", "el", "la", "un", "en", "de", "al", "su", "no", "si", "lo", "le", "me", "te", "va", "ve", "una", "los", "las", "por", "con", "que")
+        
+        // Primero unimos letras sueltas (repetir para colapsar cadenas largas)
+        val singleLetterPattern = Regex("""(?<=\b\w)\s+(?=\w\b)""")
+        repeat(5) {
+            fixed = fixed.replace(singleLetterPattern, "")
+        }
+
+        // Luego intentamos unir bloques de 2-3 letras de forma robusta si NO son stop words
+        val extendedStopWords = stopWords + setOf(
+            "del", "para", "dos", "tres", "sus", "les", "mas", "más", "o", "y", "a", "u", 
+            "sal", "ajo", "gr", "g", "ml", "kg", "sin", "tan", "muy", "ser", "son", "era", "fue", "ver", "dar", "uno", "bien"
+        )
+        repeat(5) {
+            fixed = fixed.replace(Regex("""\b([a-zA-ZñÑáéíóúÁÉÍÓÚ]+)\s+([a-zA-ZñÑáéíóúÁÉÍÓÚ]+)\b""")) { match ->
+                val w1 = match.groupValues[1]
+                val w2 = match.groupValues[2]
+                val w1Lower = w1.lowercase()
+                val w2Lower = w2.lowercase()
+                
+                val isChunk1 = w1.length in 2..3 && !extendedStopWords.contains(w1Lower)
+                val isChunk2 = w2.length in 2..3 && !extendedStopWords.contains(w2Lower)
+                
+                if ((isChunk1 && !extendedStopWords.contains(w2Lower)) || (isChunk2 && !extendedStopWords.contains(w1Lower))) {
+                    w1 + w2
+                } else {
+                    match.value
+                }
+            }
+        }
+
         val heavyFixes = mapOf(
+            "Sed ejan" to "Se dejan",
+            "la sa lubi as" to "las alubias",
+            "en rem ojod" to "en remojo d",
+            "uran teto" to "urante todo",
+            "no ch e" to "noche",
             "car doco ngua ntes" to "cardo con guantes",
             "dur ante un ah orae nagu acon" to "durante una hora en agua con",
             "has taqu eque de \"\"al dente\"\"" to "hasta que quede \"al dente\"",
@@ -293,24 +332,6 @@ object RecipeSanitizer {
         fixed = fixed.replace(Regex("""\blech\s+uga\b""", RegexOption.IGNORE_CASE), "lechuga")
         fixed = fixed.replace(Regex("""\besc\s+arol\s+a\b""", RegexOption.IGNORE_CASE), "escarola")
         fixed = fixed.replace(Regex("""\bserra\s+no\b""", RegexOption.IGNORE_CASE), "serrano")
-
-        fixed = fixed.replace(Regex("""\b([b-df-hj-np-tv-z]{1,2}[aeiou]{1,2})\s+([b-df-hj-np-tv-z]{1,2}[aeiou]{0,2})\b""", RegexOption.IGNORE_CASE)) { match ->
-            val w1 = match.groupValues[1].lowercase()
-            val w2 = match.groupValues[2].lowercase()
-            val stopWords = setOf("se", "el", "la", "un", "en", "de", "al", "su", "no", "si", "lo", "le", "me", "te", "va", "ve")
-            if (stopWords.contains(w1) || stopWords.contains(w2)) {
-                match.value
-            } else {
-                match.groupValues[1] + match.groupValues[2]
-            }
-        }
-
-        val singleLetterPattern = Regex("""(?<=\b\w)\s+(?=\w\b)""")
-        repeat(5) {
-            val next = fixed.replace(singleLetterPattern, "")
-            if (next == fixed) return@repeat
-            fixed = next
-        }
 
         fixed = fixed.replace(Regex("""(?<=\d)\s+(?=\d)"""), "")
         fixed = fixed.replace(Regex("""\s+([,.:;])"""), "$1")

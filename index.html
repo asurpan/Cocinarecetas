@@ -203,6 +203,20 @@
         </p>
     </footer>
 
-    <script>lucide.createIcons();</script>
+    <script>
+        // Detección inteligente de iOS / iPhone / iPad
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        if (isIOS) {
+            const apkBtn = document.querySelector('.btn-apk');
+            if (apkBtn) {
+                apkBtn.style.display = 'none'; // Ocultar por completo si es iPhone
+            }
+            const tagline = document.querySelector('.tagline');
+            if (tagline) {
+                tagline.innerText += " (Optimizada para tu iPhone)";
+            }
+        }
+        lucide.createIcons();
+    </script>
 </body>
 </html>

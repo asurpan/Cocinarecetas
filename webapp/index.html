@@ -103,6 +103,27 @@
 
         .health-hero { background: white; border-radius: 28px; padding: 24px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 24px; }
         .plant-diversity-card { background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%); padding: 20px; border-radius: 24px; text-align: center; border: 1px solid #86EFAC; margin-bottom: 24px; }
+
+        /* VITAL PROFILE */
+        .profile-card { background: white; border-radius: 24px; padding: 24px; margin-bottom: 24px; border: 1px solid #E2E8F0; }
+        .profile-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #F1F5F9; }
+        .profile-row:last-child { border-bottom: none; }
+        .profile-label { font-weight: 800; color: #64748B; font-size: 0.85rem; }
+        .profile-value { font-weight: 900; color: var(--primary-dark); font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+        .profile-input { border: none; background: #F8FAFC; padding: 8px 12px; border-radius: 10px; font-weight: 900; color: var(--primary-dark); width: 60px; text-align: center; font-family: inherit; }
+        .gender-selector { display: flex; gap: 8px; }
+        .gender-btn { padding: 6px 12px; border-radius: 10px; font-size: 0.75rem; font-weight: 900; border: 1px solid #E2E8F0; cursor: pointer; }
+        .gender-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* WEEKLY MENU IMPROVED */
+        .day-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid var(--primary-light); }
+        .day-name { font-weight: 900; color: var(--primary-dark); letter-spacing: 1px; }
+        .meal-slot { background: white; border-radius: 18px; padding: 15px; margin-bottom: 12px; border: 1px solid #F1F5F9; transition: 0.2s; cursor: pointer; display: flex; align-items: center; gap: 12px; }
+        .meal-slot:hover { border-color: var(--primary); transform: translateX(5px); }
+        .meal-slot i { color: var(--primary); opacity: 0.6; }
+        .meal-data { flex: 1; }
+        .meal-data b { display: block; font-size: 0.65rem; text-transform: uppercase; color: #94A3B8; margin-bottom: 2px; }
+        .meal-data span { font-weight: 800; font-size: 0.9rem; color: #1E293B; }
     </style>
 </head>
 <body>
@@ -159,6 +180,7 @@
     let healthLog = JSON.parse(localStorage.getItem('web_health_log') || '{}');
     let checkedIngs = JSON.parse(localStorage.getItem('web_checked') || '{}');
     let userNotes = JSON.parse(localStorage.getItem('web_notes') || '{}');
+    let userProfile = JSON.parse(localStorage.getItem('web_profile') || '{"age":35,"weight":75,"gender":"H"}');
     let timerInterval = null, timerSeconds = 0;
 
     async function init() {
@@ -323,6 +345,27 @@
                 </div>
                 <div style="display:flex; justify-content:center; gap:10px;"><button class="chip" onclick="adjustWebKcal(-100)">-100</button><button class="chip active" onclick="adjustWebKcal(100)">+100</button></div>
             </div>
+
+            <div class="section-h">PERFIL VITAL</div>
+            <div class="profile-card">
+                <div class="profile-row">
+                    <span class="profile-label">EDAD</span>
+                    <input type="number" class="profile-input" id="prof-age" value="${userProfile.age}" onchange="updateProfileData()">
+                </div>
+                <div class="profile-row">
+                    <span class="profile-label">PESO (KG)</span>
+                    <input type="number" class="profile-input" id="prof-weight" value="${userProfile.weight}" onchange="updateProfileData()">
+                </div>
+                <div class="profile-row">
+                    <span class="profile-label">SEXO</span>
+                    <div class="gender-selector">
+                        <div class="gender-btn ${userProfile.gender==='H'?'active':''}" onclick="setGender('H')">HOMBRE</div>
+                        <div class="gender-btn ${userProfile.gender==='M'?'active':''}" onclick="setGender('M')">MUJER</div>
+                    </div>
+                </div>
+                <button class="btn-consumo" style="margin-top: 15px; padding: 12px; font-size: 0.9rem;" onclick="saveProfile()">GUARDAR CAMBIOS VITALES</button>
+            </div>
+
             <div class="plant-diversity-card">
                 <div class="plant-counter">${Math.min(30, favorites.length + 5)} / 30</div>
                 <div style="font-weight:900; font-size:0.8rem;">DIVERSIDAD DE PLANTAS SEMANAL</div>
@@ -338,13 +381,22 @@
 
     function renderMenu(c) {
         const menu = JSON.parse(localStorage.getItem('web_menu') || '[]');
-        c.innerHTML = `<div style="text-align:center; margin-bottom:20px;"><button class="chip active" onclick="generateMenu()">REGENERAR MENÚ</button></div><div id="weekly-days"></div>`;
+        c.innerHTML = `<div style="text-align:center; margin-bottom:20px;"><button class="chip active" onclick="generateMenu()">REGENERAR MENÚ SEMANAL 🔄</button></div><div id="weekly-days"></div>`;
         const dNames = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
         document.getElementById('weekly-days').innerHTML = menu.map((d, i) => `
-            <div class="day-card">
-                <div class="day-header"><span class="day-name">${dNames[i]}</span></div>
-                <div class="meal-slot" onclick="openRecipeByName('${d.lunch}')"><div class="meal-data"><b>Almuerzo</b><span>${d.lunch}</span></div></div>
-                <div class="meal-slot" onclick="openRecipeByName('${d.dinner}')"><div class="meal-data"><b>Cena</b><span>${d.dinner}</span></div></div>
+            <div class="day-card" style="padding: 20px;">
+                <div class="day-header">
+                    <span class="day-name">${dNames[i]}</span>
+                    <i data-lucide="calendar-check" size="18" style="color: var(--primary);"></i>
+                </div>
+                <div class="meal-slot" onclick="openRecipeByName('${d.lunch.replace(/'/g,"\\'")}')">
+                    <i data-lucide="sun" size="20"></i>
+                    <div class="meal-data"><b>Almuerzo Sugerido</b><span>${d.lunch}</span></div>
+                </div>
+                <div class="meal-slot" onclick="openRecipeByName('${d.dinner.replace(/'/g,"\\'")}')">
+                    <i data-lucide="moon" size="20"></i>
+                    <div class="meal-data"><b>Cena Sugerida</b><span>${d.dinner}</span></div>
+                </div>
             </div>`).join('');
         lucide.createIcons();
     }
@@ -387,6 +439,18 @@
     function toggleFavCurrent() { toggleFav(currentOpenId); openRecipe(currentOpenId); }
     function closeModal() { if(timerInterval) { clearInterval(timerInterval); timerInterval = null; } document.getElementById('alarm-sound').pause(); document.getElementById('recipe-modal').style.display = 'none'; }
     function closeLegal() { document.getElementById('legal-modal').style.display = 'none'; }
+
+    function setGender(g) { userProfile.gender = g; render(); }
+    function updateProfileData() {
+        userProfile.age = parseInt(document.getElementById('prof-age').value) || userProfile.age;
+        userProfile.weight = parseInt(document.getElementById('prof-weight').value) || userProfile.weight;
+    }
+    function saveProfile() {
+        updateProfileData();
+        localStorage.setItem('web_profile', JSON.stringify(userProfile));
+        alert("¡Perfil Vital actualizado!");
+    }
+
     function adjustWebKcal(v) { const t = new Date().toLocaleDateString(); if(!healthLog[t]) healthLog[t]={kcal:0,prot:0,hc:0,fat:0}; healthLog[t].kcal=Math.max(0,healthLog[t].kcal+v); localStorage.setItem('web_health_log', JSON.stringify(healthLog)); render(); }
     function addNutritionWeb(k,p,h) { const t = new Date().toLocaleDateString(); if(!healthLog[t]) healthLog[t]={kcal:0,prot:0,hc:0,fat:0}; healthLog[t].kcal+=k; healthLog[t].prot+=p; healthLog[t].hc+=h; localStorage.setItem('web_health_log', JSON.stringify(healthLog)); alert("¡Sincronizado!"); closeModal(); switchView('health'); }
     function toggleIng(ing) { if (!checkedIngs[currentOpenId]) checkedIngs[currentOpenId] = []; if (checkedIngs[currentOpenId].includes(ing)) checkedIngs[currentOpenId] = checkedIngs[currentOpenId].filter(x => x !== ing); else checkedIngs[currentOpenId].push(ing); localStorage.setItem('web_checked', JSON.stringify(checkedIngs)); openRecipe(currentOpenId); }

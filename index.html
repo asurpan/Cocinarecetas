@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO / SAO OPTIMIZATION -->
+    <title>CocinaREcetas Pro | La Revolución de la Bio-Cocina 2025</title>
+    <meta name="description" content="Descarga la app definitiva de cocina inteligente. Recetas optimizadas con ciencia nutricional 2025 para pérdida de peso, diabetes y rendimiento muscular. Creado por Joseman.">
+    <meta name="keywords" content="recetas, cocina, salud, dieta, perder peso, diabetes, musculo, nutrición 2025, bio-hacker, joseman, sevilla, app cocina">
+    <meta name="author" content="Joseman">
+
+    <!-- Open Graph (WhatsApp, Social Media) -->
+    <meta property="og:title" content="CocinaREcetas Pro | Bio-Cocina Inteligente">
+    <meta property="og:description" content="1461 recetas con protocolos científicos para transformar tu salud. ¡Descarga la APK o úsala en la Web!">
+    <meta property="og:image" content="recetas-removebg-preview.png">
+    <meta property="og:url" content="https://asurpan.github.io/Cocinarecetas/">
+    <meta property="og:type" content="website">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --primary: #00ACC1;
+            --primary-dark: #00838F;
+            --secondary: #43A047;
+            --accent: #FFEB3B;
+            --bg: #0F172A;
+            --surface: #1E293B;
+            --text: #F8FAFC;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+            background: radial-gradient(circle at center, #1E293B 0%, #0F172A 100%);
+            overflow: hidden;
+        }
+
+        .logo-container {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+        h1 { font-size: 2.8rem; font-weight: 900; margin: 0; letter-spacing: -1px; text-transform: uppercase; background: linear-gradient(to right, #00ACC1, #BEF264); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .tagline { font-size: 1.2rem; color: #94A3B8; margin-top: 10px; max-width: 600px; font-weight: 500; }
+
+        .btn-group { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 320px; margin-top: 40px; }
+
+        .btn {
+            padding: 18px 30px;
+            border-radius: 20px;
+            font-weight: 900;
+            text-decoration: none;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn-apk { background: var(--primary); color: white; }
+        .btn-apk:hover { background: var(--primary-dark); transform: scale(1.05); }
+
+        .btn-web { background: white; color: var(--bg); }
+        .btn-web:hover { background: #E2E8F0; transform: scale(1.05); }
+
+        .info-section { padding: 80px 20px; max-width: 900px; margin: 0 auto; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 40px; }
+
+        .card {
+            background: var(--surface);
+            padding: 30px;
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.3s;
+        }
+        .card:hover { border-color: var(--primary); transform: translateY(-5px); }
+        .card i { color: var(--primary); margin-bottom: 20px; }
+        .card h3 { margin: 0 0 15px; font-size: 1.2rem; text-transform: uppercase; color: var(--accent); }
+        .card p { color: #94A3B8; font-size: 0.95rem; margin: 0; }
+
+        .instruction-box { background: #000; border-radius: 20px; padding: 25px; margin-top: 30px; text-align: left; }
+        .instruction-box h4 { margin-top: 0; color: white; display: flex; align-items: center; gap: 8px; }
+        .step { margin-bottom: 12px; font-size: 0.9rem; color: #CBD5E1; display: flex; gap: 10px; }
+        .step b { color: var(--primary); }
+
+        footer { padding: 40px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); color: #64748B; font-size: 0.8rem; }
+        footer a { color: var(--primary); text-decoration: none; font-weight: 700; margin: 0 10px; }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2.2rem; }
+            .tagline { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero">
+        <img src="recetas-removebg-preview.png" alt="Logo CocinaREcetas" class="logo-container">
+        <h1>CocinaREcetas Pro</h1>
+        <div class="brand-label">EL ARSENAL DE JOSEMAN</div>
+        <p class="tagline">La primera plataforma de Bio-Cocina 2025. 1461 recetas optimizadas con ciencia metabólica para transformar tu cuerpo.</p>
+
+        <div class="btn-group">
+            <a href="./app/release/app-release.apk" class="btn btn-apk">
+                <i data-lucide="download"></i> DESCARGAR APP (APK)
+            </a>
+            <a href="./webapp/index.html" class="btn btn-web">
+                <i data-lucide="smartphone"></i> WEB APP (iPHONE / WEB)
+            </a>
+        </div>
+
+        <div style="margin-top: 30px; font-size: 0.75rem; color: #64748B;">
+            <i data-lucide="check-circle" size="14" style="vertical-align: middle;"></i> Versión 3.0 Estable | Sin anuncios | 100% Privado
+        </div>
+    </div>
+
+    <div class="info-section">
+        <div class="grid">
+            <div class="card">
+                <i data-lucide="zap" size="32"></i>
+                <h3>Ciencia 2025</h3>
+                <p>Protocolos de almidón resistente y secuenciación metabólica integrados en cada receta.</p>
+            </div>
+            <div class="card">
+                <i data-lucide="activity" size="32"></i>
+                <h3>Filtros Inteligentes</h3>
+                <p>Opciones específicas para Diabetes, Pérdida de Peso, Músculo y Longevidad.</p>
+            </div>
+            <div class="card">
+                <i data-lucide="shield-check" size="32"></i>
+                <h3>100% Privado</h3>
+                <p>Tus datos no salen de tu móvil. No rastreamos, no vendemos info. Solo cocina pura.</p>
+            </div>
+        </div>
+
+        <div class="instruction-box">
+            <h4><i data-lucide="info"></i> GUÍA DE INSTALACIÓN</h4>
+            <div class="step"><b>ANDROID:</b> Descarga la APK, abre el archivo y permite "Instalar desde fuentes desconocidas". ¡Listo!</div>
+            <div class="step"><b>iPHONE:</b> Pulsa "Web App", luego el botón compartir <i data-lucide="share" size="14"></i> en Safari y elige "Añadir a pantalla de inicio".</div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 CocinaREcetas Pro. Creado con pasión por Joseman.</p>
+        <p>
+            <a href="privacy.html">Privacidad</a> |
+            <a href="terms.html">Condiciones</a>
+        </p>
+    </footer>
+
+    <script>lucide.createIcons();</script>
+</body>
+</html>

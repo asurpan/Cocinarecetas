@@ -384,13 +384,8 @@
         c.innerHTML = `<div style="text-align:center; margin-bottom:20px;"><button class="chip active" onclick="generateMenu()">REGENERAR MENÚ COMPLETO 🔄</button></div><div id="weekly-days"></div>`;
         const dNames = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
         document.getElementById('weekly-days').innerHTML = menu.map((d, i) => {
-            const rBreakfast = allRecipes.find(x => x.title === d.breakfast);
             const rLunch = allRecipes.find(x => x.title === d.lunch);
             const rDinner = allRecipes.find(x => x.title === d.dinner);
-
-            const kBreakfast = rBreakfast?.nutrition?.perServing?.kcal ? Math.round(rBreakfast.nutrition.perServing.kcal) : null;
-            const pBreakfast = rBreakfast?.nutrition?.perServing?.protein_g ? Math.round(rBreakfast.nutrition.perServing.protein_g) : null;
-            const hBreakfast = rBreakfast?.nutrition?.perServing?.carbohydrate_g ? Math.round(rBreakfast.nutrition.perServing.carbohydrate_g) : null;
 
             const kLunch = rLunch?.nutrition?.perServing?.kcal ? Math.round(rLunch.nutrition.perServing.kcal) : null;
             const pLunch = rLunch?.nutrition?.perServing?.protein_g ? Math.round(rLunch.nutrition.perServing.protein_g) : null;
@@ -400,7 +395,6 @@
             const pDinner = rDinner?.nutrition?.perServing?.protein_g ? Math.round(rDinner.nutrition.perServing.protein_g) : null;
             const hDinner = rDinner?.nutrition?.perServing?.carbohydrate_g ? Math.round(rDinner.nutrition.perServing.carbohydrate_g) : null;
 
-            const infoBreakfast = kBreakfast !== null ? `⚡ ${kBreakfast} kcal | 💪 ${pBreakfast || 0}g prot | 🍞 ${hBreakfast || 0}g carb` : "";
             const infoLunch = kLunch !== null ? `⚡ ${kLunch} kcal | 💪 ${pLunch || 0}g prot | 🍞 ${hLunch || 0}g carb` : "";
             const infoDinner = kDinner !== null ? `⚡ ${kDinner} kcal | 💪 ${pDinner || 0}g prot | 🍞 ${hDinner || 0}g carb` : "";
 
@@ -411,16 +405,14 @@
                     <i data-lucide="calendar-check" size="18" style="color: var(--primary);"></i>
                 </div>
 
-                <div class="meal-slot" style="position: relative;" onclick="openRecipeByName('${(d.breakfast || '').replace(/'/g,"\\'")}')">
-                    <i data-lucide="coffee" size="20"></i>
+                <!-- Desayuno Fijo de Bio-Iniciación (No es una receta del catálogo) -->
+                <div class="meal-slot" style="position: relative; cursor: default; border-color: rgba(0,172,193,0.15);" onclick="event.stopPropagation()">
+                    <i data-lucide="coffee" size="20" style="color: var(--secondary);"></i>
                     <div class="meal-data">
-                        <b>Desayuno Sugerido</b>
-                        <span>${d.breakfast || 'Desayuno Saludable'}</span>
-                        ${infoBreakfast ? `<span style="display:block; font-size:0.75rem; color:#64748B; font-weight:bold; margin-top:4px;">${infoBreakfast}</span>` : ''}
+                        <b>Desayuno de Bio-Iniciación Fijo</b>
+                        <span style="color: var(--secondary); font-weight: 900;">🍳 2 Huevos + 🥑 Aguacate / ☕ Café solo</span>
+                        <span style="display:block; font-size:0.75rem; color:#43A047; font-weight:bold; margin-top:4px;">⚡ 320 kcal | 💪 16g prot | 🍞 2g carb (¡Cero Picos de Glucosa!)</span>
                     </div>
-                    <button class="chip" style="margin: 0; padding: 4px 8px; font-size: 0.65rem; background: #E2E8F0; z-index: 5;" onclick="event.stopPropagation(); changeSingleMeal(${i}, 'breakfast')">
-                        <i data-lucide="refresh-cw" style="width: 10px; height: 10px; margin: 0;"></i> Cambiar
-                    </button>
                 </div>
 
                 <div class="meal-slot" style="position: relative;" onclick="openRecipeByName('${d.lunch.replace(/'/g,"\\'")}')">
@@ -453,12 +445,10 @@
 
     function generateMenu(renderView = true) {
         const m = [];
-        // Filtramos aperitivos/postres o recetas ligeras para desayunos si existiera categoría, si no elegimos del total
         for (let i = 0; i < 7; i++) {
-            const b = allRecipes[Math.floor(Math.random() * allRecipes.length)];
             const l = allRecipes[Math.floor(Math.random() * allRecipes.length)];
             const d = allRecipes[Math.floor(Math.random() * allRecipes.length)];
-            m.push({ breakfast: b.title, lunch: l.title, dinner: d.title });
+            m.push({ lunch: l.title, dinner: d.title });
         }
         localStorage.setItem('web_menu', JSON.stringify(m)); if(renderView) render();
     }
@@ -468,6 +458,10 @@
         if (menu.length > 0) {
             const randomRecipe = allRecipes[Math.floor(Math.random() * allRecipes.length)];
             menu[dayIndex][mealType] = randomRecipe.title;
+            localStorage.setItem('web_menu', JSON.stringify(menu));
+            render();
+        }
+    }
             localStorage.setItem('web_menu', JSON.stringify(menu));
             render();
         }

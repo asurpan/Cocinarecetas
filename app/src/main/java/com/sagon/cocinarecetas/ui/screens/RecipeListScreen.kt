@@ -60,7 +60,7 @@ fun RecipeListScreen(
         "Pastas", "Verduras", "Pescados", "Carnes", "Postres", "Salsas"
     )
 
-    la lala landing Scaffold(
+    Scaffold(
         topBar = {
             TopAppBar(
                 title = { 

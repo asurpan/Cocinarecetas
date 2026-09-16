@@ -107,6 +107,15 @@ object RecipeSanitizer {
                      .replace(Regex("""\bpage\s+\d+\b""", RegexOption.IGNORE_CASE), "")
                      .replace("---", "")
 
+        // Corregir prefijos "AL" separados (Errores de OCR comunes)
+        fixed = fixed.replace(Regex("""\bA\s+las\b""", RegexOption.IGNORE_CASE), "Alas")
+                     .replace(Regex("""\bA\s+lbondigas\b""", RegexOption.IGNORE_CASE), "Albondigas")
+                     .replace(Regex("""\bA\s+lbóndigas\b""", RegexOption.IGNORE_CASE), "Albondigas")
+                     .replace(Regex("""\bA\s+lcachofas\b""", RegexOption.IGNORE_CASE), "Alcachofas")
+                     .replace(Regex("""\bA\s+lubias\b""", RegexOption.IGNORE_CASE), "Alubias")
+                     .replace(Regex("""\bA\s+lmejas\b""", RegexOption.IGNORE_CASE), "Almejas")
+                     .replace(Regex("""\bperasa\b""", RegexOption.IGNORE_CASE), "peras a")
+
         // Reglas de pegado comunes detectadas en Escalfar Huevos y otras
         fixed = fixed.replace(Regex("""\baguacon\b""", RegexOption.IGNORE_CASE), "agua con")
                      .replace(Regex("""\bechalos\b""", RegexOption.IGNORE_CASE), "echa los")

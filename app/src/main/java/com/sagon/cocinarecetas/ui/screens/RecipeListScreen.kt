@@ -71,9 +71,10 @@ fun RecipeListScreen(
                 title = { 
                     Text(
                         "CocinaREcetas", 
-                        style = MaterialTheme.typography.titleMedium, 
+                        style = MaterialTheme.typography.titleSmall, 
                         fontWeight = FontWeight.Black,
-                        maxLines = 1
+                        maxLines = 1,
+                        fontSize = 15.sp // Un poco más pequeña para que quepa todo
                     ) 
                 },
                 actions = {
@@ -125,6 +126,11 @@ fun RecipeListScreen(
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                )
             )
         }
     ) { padding ->

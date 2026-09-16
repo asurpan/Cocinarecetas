@@ -1,5 +1,6 @@
 package com.sagon.cocinarecetas.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -23,6 +24,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import android.content.Intent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.input.pointer.PointerEventType
@@ -157,6 +159,79 @@ fun RecipeDetailScreen(
                         NutrientItem("Kcal", "${recipe.nutrition.perServing.kcal?.toInt() ?: "---"}")
                         NutrientItem("Proteína", "${recipe.nutrition.perServing.protein_g?.toInt() ?: "---"}g")
                         NutrientItem("Carbos", "${recipe.nutrition.perServing.carbohydrate_g?.toInt() ?: "---"}g")
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // --- EL SEMÁFORO DEL ORDEN (BIO-SECUENCIACIÓN) ---
+                    Text(
+                        text = "EL SEMÁFORO DEL ORDEN (CÓMO COMER)",
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Black,
+                        color = MaterialTheme.colorScheme.primary,
+                        letterSpacing = 1.sp
+                    )
+                    Text(
+                        "Sigue este orden para evitar el cansancio y no guardar grasa:",
+                        fontSize = 11.sp,
+                        color = Color.Gray,
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    )
+                    
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.Black.copy(alpha = 0.05f), MaterialTheme.shapes.medium)
+                            .padding(12.dp)
+                    ) {
+                        Row(modifier = Modifier.fillMaxWidth().height(12.dp)) {
+                            Box(modifier = Modifier.weight(0.4f).fillMaxHeight().background(Color(0xFF43A047))) // Vegetales
+                            Spacer(modifier = Modifier.width(2.dp))
+                            Box(modifier = Modifier.weight(0.4f).fillMaxHeight().background(Color(0xFF1E88E5))) // Proteína
+                            Spacer(modifier = Modifier.width(2.dp))
+                            Box(modifier = Modifier.weight(0.2f).fillMaxHeight().background(Color(0xFFFB8C00))) // Arroz/Pasta
+                        }
+                        Row(modifier = Modifier.fillMaxWidth().padding(top = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+                            Text("1º VEGETALES", fontSize = 8.sp, fontWeight = FontWeight.Black)
+                            Text("2º PROTEÍNA", fontSize = 8.sp, fontWeight = FontWeight.Black)
+                            Text("3º ARROZ / PASTA", fontSize = 8.sp, fontWeight = FontWeight.Black)
+                        }
+                    }
+
+                    // --- PROTOCOLOS DE CIENCIA FÁCIL ---
+                    val scienceInstructions = recipe.instructions.filter { 
+                        it.contains("TIP", ignoreCase = true) || 
+                        it.contains("CONSEJO", ignoreCase = true) || 
+                        it.contains("CIENCIA", ignoreCase = true) 
+                    }
+                    
+                    if (scienceInstructions.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFFF0F4C3)),
+                            border = BorderStroke(2.dp, Color(0xFFC0CA33))
+                        ) {
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(Icons.TwoTone.Lightbulb, contentDescription = null, tint = Color(0xFF33691E))
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text("CIENCIA FÁCIL PARA TI", fontWeight = FontWeight.Black, color = Color(0xFF33691E))
+                                }
+                                Spacer(modifier = Modifier.height(8.dp))
+                                scienceInstructions.forEach { tip ->
+                                    Text(
+                                        text = tip.replace("TIP CIENCIA 2025 (Pérdida de peso):", "EL TRUCO DEL DÍA DESPUÉS:")
+                                                  .replace("TIP ADELGAZAMIENTO 2025:", "EL FRENO DEL HAMBRE:")
+                                                  .replace("CIENCIA DIABETES 2025:", "AZÚCAR BAJO CONTROL:"),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFF33691E),
+                                        modifier = Modifier.padding(vertical = 4.dp)
+                                    )
+                                }
+                            }
+                        }
                     }
 
                     val parsedMinutes = remember(recipe.cookingTime) {

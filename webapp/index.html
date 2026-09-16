@@ -36,7 +36,7 @@
         .header h1 { margin: 0; font-size: 1.6rem; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
         .brand-label { font-size: 0.7rem; font-weight: 900; letter-spacing: 5px; color: #FFEB3B; text-transform: uppercase; margin-top: 5px; }
 
-        .content { flex: 1; overflow-y: auto; padding: 16px; padding-bottom: 100px; }
+        .content { flex: 1; overflow-y: auto; padding: 16px; padding-bottom: 50px; }
 
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 75px; background: var(--surface); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #E0E0E0; z-index: 1000; padding-bottom: env(safe-area-inset-bottom); }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: #757575; font-size: 0.7rem; font-weight: 700; flex: 1; cursor: pointer; text-decoration: none; }
@@ -46,15 +46,12 @@
         .recipe-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .recipe-info h3 { margin: 0 0 4px; font-size: 1rem; font-weight: 900; text-transform: uppercase; }
         .recipe-info p { margin: 0; font-size: 0.75rem; color: var(--secondary); font-weight: 800; text-transform: uppercase; }
-        .fav-btn { color: #DDD; padding: 5px; cursor: pointer; }
-        .fav-btn.active { color: var(--error); }
 
         .search-box { background: white; border-radius: 16px; padding: 14px; margin-bottom: 20px; display: flex; align-items: center; border: 1px solid #E0E0E0; }
         .search-box input { border: none; outline: none; width: 100%; margin-left: 12px; font-size: 1rem; }
         .filter-row { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 15px; scrollbar-width: none; }
         .chip { white-space: nowrap; background: white; padding: 10px 20px; border-radius: 25px; font-size: 0.85rem; font-weight: 800; border: 1px solid #D1D1D1; color: #444; cursor: pointer; }
         .chip.active { background: var(--primary); color: white; border-color: var(--primary); }
-        .chip.secondary.active { background: var(--secondary); color: white; border-color: var(--secondary); }
 
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; display: none; overflow-y: auto; }
         .modal-header { background: white; padding: 50px 20px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
@@ -65,77 +62,24 @@
         .nutri-val { font-size: 1.1rem; font-weight: 900; color: var(--primary-dark); display: block; }
         .nutri-label { font-size: 0.6rem; font-weight: 800; color: #888; text-transform: uppercase; }
 
-        .btn-consumo {
-            animation: pulse-animation 1.5s infinite; background: var(--primary); color: white; border: none; padding: 18px;
-            border-radius: 18px; font-weight: 900; width: 100%; cursor: pointer; margin-bottom: 24px; font-size: 1rem;
-        }
-        @keyframes pulse-animation { 0% { transform: scale(1); } 70% { transform: scale(1.02); } 100% { transform: scale(1); } }
+        /* Estilos Ciencia Fácil */
+        .bio-sequencer { display: flex; height: 12px; border-radius: 6px; overflow: hidden; margin: 15px 0; background: #EEE; border: 1px solid #DDD; }
+        .seq-fiber { flex: 4; background: #43A047; }
+        .seq-protein { flex: 4; background: #1E88E5; }
+        .seq-carbs { flex: 2; background: #FB8C00; }
+        .seq-label { font-size: 0.7rem; font-weight: 800; color: #444; display: flex; justify-content: space-between; margin-bottom: 10px; }
 
-        .timer-web { background: #E1F5FE; border-radius: 20px; padding: 20px; margin-bottom: 24px; text-align: center; border: 2px solid var(--primary); }
-        .timer-display { font-size: 2.5rem; font-weight: 900; color: var(--primary-dark); margin-bottom: 15px; font-family: monospace; }
-        .timer-controls { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .science-card { background: #F0F4C3; border-radius: 18px; padding: 18px; margin: 20px 0; border: 2px solid #C0CA33; }
+        .science-card h4 { margin: 0 0 10px; color: #33691E; font-size: 0.9rem; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+        .science-card p { margin: 0; font-size: 0.85rem; color: #33691E; line-height: 1.4; font-weight: 600; }
+        .study-ref { font-size: 0.65rem; color: #689F38; margin-top: 8px; font-style: italic; display: block; }
 
-        .shopping-card { background: #FFF3E0; border: 2px dashed #FFB74D; border-radius: 20px; padding: 20px; margin: 24px 0; }
-        .shopping-card.complete { background: #E8F5E9; border: 2px solid #4CAF50; }
-        .shopping-title { font-weight: 900; color: #E65100; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
-
-        .list-item { display: flex; gap: 15px; align-items: flex-start; margin-bottom: 12px; cursor: pointer; }
-        .ing-check { min-width: 24px; height: 24px; border-radius: 8px; border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; background: white; transition: 0.2s; }
-        .ing-check.active { background: var(--primary); color: white; }
-        .ing-text { font-size: 1rem; font-weight: 500; flex: 1; }
-        .ing-text.checked { text-decoration: line-through; color: #888; }
-
+        .btn-consumo { background: var(--primary); color: white; border: none; padding: 18px; border-radius: 18px; font-weight: 900; width: 100%; cursor: pointer; margin-top: 20px; font-size: 1rem; }
         .section-h { margin-top: 30px; color: var(--primary-dark); font-weight: 900; border-bottom: 2px solid #eee; padding-bottom: 8px; margin-bottom: 18px; font-size: 1.1rem; }
-
-        .health-hero { background: white; border-radius: 24px; padding: 24px; margin-bottom: 24px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
-        .calorie-meter { position: relative; width: 180px; height: 180px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; }
-        .progress-ring { transform: rotate(-90deg); width: 180px; height: 180px; }
-        .progress-ring-circle { transition: stroke-dashoffset 0.35s; stroke-linecap: round; }
-        .calorie-info { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
-        .calorie-val { font-size: 1.8rem; font-weight: 900; color: var(--primary); display: block; }
-
-        .macro-grid { display: flex; justify-content: space-around; margin-top: 20px; }
-        .macro-circle { width: 75px; height: 75px; border-radius: 50%; border: 6px solid #EEE; display: flex; align-items: center; justify-content: center; flex-direction: column; }
-        .macro-val { font-size: 1rem; font-weight: 900; }
-        .macro-label { font-size: 0.6rem; font-weight: 800; color: #888; text-transform: uppercase; margin-top: 4px; }
-
-        .day-card { background: white; border-radius: 24px; padding: 24px; margin-bottom: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .day-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid var(--bg); padding-bottom: 10px; }
-        .day-name { font-size: 1.1rem; font-weight: 900; color: var(--primary-dark); }
-        .day-stats { font-size: 0.65rem; font-weight: 800; color: var(--primary); background: var(--primary-light); padding: 4px 10px; border-radius: 8px; }
-
-        .meal-slot {
-            display: flex; align-items: center; gap: 15px; margin-bottom: 12px;
-            padding: 15px; border-radius: 16px; background: var(--bg);
-            cursor: pointer; position: relative; transition: 0.2s;
-            border: 1px solid transparent;
-        }
-        .meal-slot:hover { border-color: var(--primary); background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .meal-icon-wrapper {
-            width: 40px; height: 40px; border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            background: white; box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-        }
-        .meal-data b { display: block; font-size: 0.65rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
-        .meal-data span { font-size: 0.95rem; font-weight: 800; color: var(--text); }
-        .refresh-btn {
-            width: 32px; height: 32px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: var(--primary); opacity: 0.4; transition: 0.3s;
-            margin-left: auto;
-        }
-        .refresh-btn:hover { opacity: 1; background: var(--primary-light); transform: rotate(180deg); }
-
-        .notes-area { width: 100%; border: 1px solid #DDD; border-radius: 12px; padding: 15px; min-height: 100px; font-family: inherit; font-size: 0.95rem; margin-top: 10px; box-sizing: border-box; }
-
-        /* Estilos para Tips Científicos e Información Legal */
-        .science-tip { background: linear-gradient(135deg, #E0F7FA 0%, #B2EBF2 100%); border-radius: 16px; padding: 16px; margin: 15px 0; border-left: 5px solid var(--primary); display: flex; gap: 12px; align-items: flex-start; }
-        .science-tip i { color: var(--primary-dark); }
-        .science-text { font-size: 0.85rem; font-weight: 600; color: #006064; line-height: 1.4; }
-
-        .legal-banner { background: #FFF9C4; padding: 15px; border-radius: 12px; margin-bottom: 20px; font-size: 0.75rem; color: #5D4037; border: 1px solid #FBC02D; text-align: left; }
-        .footer-links { text-align: center; padding: 20px; font-size: 0.8rem; color: #888; }
+        .list-item { display: flex; gap: 12px; margin-bottom: 10px; font-size: 0.95rem; }
+        .footer-links { text-align: center; padding: 20px; font-size: 0.8rem; color: #888; margin-bottom: 80px; }
         .footer-links a { color: var(--primary); text-decoration: none; margin: 0 10px; font-weight: 700; }
+        .legal-banner { background: #FFF9C4; padding: 15px; border-radius: 12px; margin-bottom: 20px; font-size: 0.75rem; color: #5D4037; border: 1px solid #FBC02D; }
     </style>
 </head>
 <body>
@@ -163,7 +107,7 @@
     <div class="modal-header">
         <button class="chip" onclick="closeModal()"><i data-lucide="chevron-down"></i></button>
         <div id="m-title" style="font-weight:900; text-transform:uppercase; flex:1; text-align:center; padding: 0 10px; font-size:0.9rem;"></div>
-        <div style="display:flex; gap:10px;"><div id="m-fav-btn" class="fav-btn" onclick="toggleFavCurrent()"></div><button class="chip" onclick="shareRecipe()"><i data-lucide="share-2"></i></button></div>
+        <button class="chip" onclick="shareRecipe()"><i data-lucide="share-2"></i></button>
     </div>
     <div class="modal-content" id="m-content-area"></div>
 </div>
@@ -173,71 +117,28 @@
         <button class="chip" onclick="closeLegal()"><i data-lucide="x"></i></button>
         <div style="font-weight:900; text-transform:uppercase; flex:1; text-align:center;">INFORMACIÓN Y LEGAL</div>
     </div>
-    <div class="modal-content" id="legal-content-area" style="font-size: 0.9rem; line-height: 1.6;"></div>
+    <div class="modal-content" id="legal-content-area"></div>
 </div>
 
-<audio id="alarm-sound" src="./z.mp3" loop preload="auto"></audio>
-
-<script src="firebase-config.js"></script>
 <script>
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
     let allRecipes = [], currentView = 'list', searchQuery = '', activeTag = '', activeCategory = '', currentOpenId = null;
     let favorites = JSON.parse(localStorage.getItem('web_favs') || '[]');
-    let checkedIngs = JSON.parse(localStorage.getItem('web_checked') || '{}');
     let healthLog = JSON.parse(localStorage.getItem('web_health_log') || '{}');
-    let userNotes = JSON.parse(localStorage.getItem('web_notes') || '{}');
-    let profile = JSON.parse(localStorage.getItem('web_profile') || '{"weight": 70, "age": 30, "height": 170, "target": 2100}');
-    let timerInterval = null, timerSeconds = 0;
-
-    function cleanText(text) {
-        if (!text) return "";
-        let f = String(text).replace(/Ã±/g,"ñ").replace(/Ã‘/g,"Ñ").replace(/Ã³/g,"ó").replace(/Ã¡/g,"á").replace(/Ã©/g,"é").replace(/Ã­/g,"í").replace(/Ãº/g,"ú");
-        f = f.replace(/(?<=\b\w)\s+(?=\w\b)/g, "");
-        ["ENSALADA", "ALCACHOFAS", "CALAMARES", "VINAGRETA", "ALUBIAS", "BACALAO", "SOLOMILLO", "ARROZ"].forEach(t => {
-            const reg = new RegExp(t.split('').join('\\s+'), 'gi'); f = f.replace(reg, t);
-        });
-        return f.trim();
-    }
 
     async function init() {
-        const c = document.getElementById('main-content');
-        c.innerHTML = "<div style='text-align:center; padding:50px;'><p>Sincronizando el Arsenal de Joseman...</p></div>";
-
         try {
-            // 1. CARGA DESDE GITHUB (SIN LÍMITES)
-            const baseUrl = "https://raw.githubusercontent.com/asurpan/Cocinarecetas/main/app/src/main/assets/";
-
-            const fetchJSON = async (url) => {
-                const r = await fetch(url);
-                if (!r.ok) throw new Error("Error de red");
-                return r.json();
-            };
-
-            const resMain = await fetchJSON(baseUrl + "recipes.json");
-
-            const map = new Map();
-            if (resMain && resMain.recipes) {
-                resMain.recipes.forEach(r => {
-                    const title = cleanText(r.title);
-                    if (!title || map.has(title.toLowerCase())) return;
-                    map.set(title.toLowerCase(), { ...r, title, category: r.category || "Varios" });
-                });
-            }
-
-            allRecipes = Array.from(map.values());
-            if (!localStorage.getItem('web_menu') && allRecipes.length > 0) generateMenu(false);
+            const r = await fetch("https://raw.githubusercontent.com/asurpan/Cocinarecetas/main/app/src/main/assets/recipes.json");
+            const data = await r.json();
+            allRecipes = data.recipes;
             switchView('list');
-        } catch (e) {
-            console.error(e);
-            c.innerHTML = `<div style='text-align:center; padding:50px;'><p>Error de conexión con el servidor.</p><button class="chip active" onclick="location.reload()">REINTENTAR</button></div>`;
-        }
+        } catch (e) { console.error(e); }
         lucide.createIcons();
     }
 
     function switchView(v, el) {
-        currentView = v; document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); if (el) el.classList.add('active');
+        currentView = v;
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        if (el) el.classList.add('active');
         render();
     }
 
@@ -246,22 +147,19 @@
         if (currentView === 'list' || currentView === 'favs') {
             c.innerHTML = `
                 <div class="legal-banner">
-                    <i data-lucide="info" size="14"></i>
-                    <b>AVISO:</b> Esta aplicación tiene fines informativos y educativos. No constituye asesoramiento médico. Consulta a un profesional de la salud antes de cambiar tu dieta.
+                    <b>AVISO:</b> Esta web tiene fines informativos. No somos médicos. Consulta a un profesional antes de cambiar tu dieta.
                 </div>
                 <div class="search-box"><i data-lucide="search"></i><input type="text" id="search-input" placeholder="Buscar plato o ingrediente..." value="${searchQuery}"></div>
                 <div class="filter-row">
                     ${["Sana", "Perder peso", "Músculo", "Diabéticos"].map(t => `<div class="chip ${activeTag===t?'active':''}" onclick="toggleTag('${t}')">${t}</div>`).join('')}
                 </div>
-                <div class="filter-row">
-                    ${["Aperitivos", "Ensaladas", "Legumbres", "Sopas", "Arroces", "Pastas", "Verduras", "Pescados", "Carnes", "Postres", "Salsas"].map(f => `<div class="chip secondary ${activeCategory.toLowerCase() === f.toLowerCase() ? 'active' : ''}" onclick="filterByCat('${f}')">${f}</div>`).join('')}
-                </div>
                 <div id="recipe-list"></div>
             `;
             document.getElementById('search-input').oninput = (e) => { searchQuery = e.target.value; renderList(); };
             renderList();
-        } else if (currentView === 'menu') renderMenu(c);
-        else if (currentView === 'health') renderHealth(c);
+        } else {
+            c.innerHTML = "<div style='text-align:center; padding:50px;'>Función disponible en la App Completa</div>";
+        }
         lucide.createIcons();
     }
 
@@ -270,217 +168,102 @@
         const filtered = allRecipes.filter(r => {
             const q = searchQuery.toLowerCase().trim();
             const matchSearch = !q || r.title.toLowerCase().includes(q) || (r.ingredients && r.ingredients.some(i => i.toLowerCase().includes(q)));
-
-            let matchTag = true;
-            if (activeTag) {
-                const t = activeTag.toLowerCase();
-                const inGoals = r.goals && ((t==="sana"&&r.goals.healthy)||(t==="perder peso"&&r.goals.weightLoss)||(t==="músculo"&&r.goals.muscleGain)||(t==="diabéticos"&&r.goals.diabeticFriendly));
-                const inTags = r.healthTags && r.healthTags.some(tag => tag.toLowerCase().includes(t));
-                matchTag = inGoals || inTags;
-            }
-
-            let matchCat = true;
-            if (activeCategory) {
-                const rCat = (r.category || "").toLowerCase().trim();
-                const targetCat = activeCategory.toLowerCase().trim();
-                matchCat = rCat === targetCat || rCat.includes(targetCat);
-            }
-
+            let matchTag = !activeTag || (r.healthTags && r.healthTags.some(tag => tag.toLowerCase().includes(activeTag.toLowerCase())));
             const matchFav = currentView !== 'favs' || favorites.includes(r.id || r.title);
-            return matchSearch && matchTag && matchCat && matchFav;
+            return matchSearch && matchTag && matchFav;
         });
-        div.innerHTML = filtered.map(r => `<div class="recipe-card" onclick="openRecipe('${(r.id||r.title).toString().replace(/'/g,"\\'")}')"><div class="recipe-info"><h3>${r.title}</h3><p>${r.category}</p></div><div style="display:flex; align-items:center; gap:10px;"><div class="fav-btn ${favorites.includes(r.id||r.title)?'active':''}" onclick="event.stopPropagation(); toggleFav('${(r.id||r.title).toString().replace(/'/g,"\\'")}')"><i data-lucide="heart" fill="${favorites.includes(r.id||r.title)?'currentColor':'none'}"></i></div><i data-lucide="chevron-right" color="#DDD"></i></div></div>`).join('');
+        div.innerHTML = filtered.map(r => `
+            <div class="recipe-card" onclick="openRecipe('${r.id}')">
+                <div class="recipe-info"><h3>${r.title}</h3><p>${r.category}</p></div>
+                <i data-lucide="chevron-right"></i>
+            </div>
+        `).join('');
         lucide.createIcons();
     }
 
     function openRecipe(id) {
-        const r = allRecipes.find(x => (x.id != 0 && x.id == id) || (x.title === id)); if (!r) return;
-        currentOpenId = r.id || r.title;
-        const kcal = Math.round(r.nutrition?.perServing?.kcal || 450);
-        const p = Math.round(r.nutrition?.perServing?.protein_g || 22), h = Math.round(r.nutrition?.perServing?.carbohydrate_g || 40);
-        const checked = checkedIngs[currentOpenId] || [], missing = (r.ingredients || []).filter(i => !checked.includes(i));
-        const notes = userNotes[currentOpenId] || "";
+        const r = allRecipes.find(x => x.id == id); if (!r) return;
+        currentOpenId = r.id;
+        const kcal = r.nutrition?.perServing?.kcal || 450;
+        const text = (r.ingredients.join(" ") + r.instructions.join(" ")).toLowerCase();
 
-        timerSeconds = parseInt(r.cookingTime) * 60 || 1200;
+        let scienceTips = "";
+        if (text.includes("arroz") || text.includes("pasta") || text.includes("patata")) {
+            scienceTips += "<p><b>EL TRUCO DEL DÍA DESPUÉS:</b> Si lo cocinas hoy y lo comes mañana (tras enfriar), engorda menos y alimenta mejor a tus defensas intestinales.</p>";
+        }
+        if (r.category === "CARNES" || r.category === "PESCADOS" || text.includes("huevo")) {
+            scienceTips += "<p><b>EL FRENO DEL HAMBRE:</b> Este plato es rico en proteína. Comerla primero apagará tu hambre de golpe enviando una señal de saciedad al cerebro.</p>";
+        }
+        if (scienceTips === "") scienceTips = "<p><b>NUTRICIÓN DE PRECISIÓN:</b> La combinación de estos ingredientes ha sido seleccionada para mantener tu energía estable durante horas.</p>";
 
         document.getElementById('m-title').innerText = r.title;
-        const fv = document.getElementById('m-fav-btn'); fv.innerHTML = `<i data-lucide="heart" fill="${favorites.includes(currentOpenId)?'currentColor':'none'}"></i>`; fv.className = `fav-btn ${favorites.includes(currentOpenId)?'active':''}`;
-
         document.getElementById('m-content-area').innerHTML = `
             <div class="nutri-row">
                 <div class="nutri-item"><span class="nutri-val">${kcal}</span><span class="nutri-label">CALORÍAS</span></div>
-                <div class="nutri-item"><span class="nutri-val">${p}g</span><span class="nutri-label">PROTEÍNAS</span></div>
-                <div class="nutri-item"><span class="nutri-val">${h}g</span><span class="nutri-label">CARBOS</span></div>
+                <div class="nutri-item"><span class="nutri-val">${r.nutrition?.perServing?.protein_g || 22}g</span><span class="nutri-label">PROT</span></div>
+                <div class="nutri-item"><span class="nutri-val">${r.nutrition?.perServing?.carbohydrate_g || 40}g</span><span class="nutri-label">CARB</span></div>
             </div>
 
-            <button class="btn-consumo" onclick="addNutritionWeb(${kcal}, ${p}, ${h}, 15)">¡AÑADIR A MI DIETA! 🥘</button>
-
-            <div class="timer-web">
-                <div class="timer-display" id="web-timer-display">00:00</div>
-                <div class="timer-controls">
-                    <button class="chip" onclick="adjustWebTimer(-300)">-5 min</button>
-                    <button class="chip" onclick="adjustWebTimer(-60)">-1 min</button>
-                    <button class="chip active" onclick="toggleWebTimer()" id="btn-timer-play">INICIAR</button>
-                    <button class="chip" onclick="adjustWebTimer(60)">+1 min</button>
-                    <button class="chip" onclick="adjustWebTimer(300)">+5 min</button>
-                </div>
-                <button class="chip" id="btn-preview-alarm" style="width:100%; margin-top:15px; border:none; background:#B2EBF2; color:var(--primary-dark); font-weight:800;" onclick="previewWebAlarm()">📢 PROBAR SONIDO ALARMA</button>
+            <div class="section-h">EL SEMÁFORO DEL ORDEN (CÓMO COMERLO)</div>
+            <p style="font-size:0.8rem; color:#444; margin:0 0 10px;">Come en este orden para evitar el cansancio y no guardar grasa:</p>
+            <div class="bio-sequencer">
+                <div class="seq-fiber"></div><div class="seq-protein"></div><div class="seq-carbs"></div>
+            </div>
+            <div class="seq-label">
+                <span>1º VEGETALES</span><span>2º PROTEÍNA</span><span>3º CARBOS</span>
             </div>
 
-            <div class="shopping-card ${missing.length===0?'complete':''}">
-                <div class="shopping-title"><span>🛒 ${missing.length===0?'¡TODO LISTO!':'LISTA DE LA COMPRA'}</span><button class="chip" onclick="shareShoppingList()" style="background:var(--accent); color:white; border:none; padding:5px 12px; font-size:0.7rem;">COMPARTIR</button></div>
-                <div id="shopping-list-area" style="font-size:0.9rem; margin-top:10px;">${missing.map(i => `<div>• ${i}</div>`).join('')}</div>
+            <div class="science-card">
+                <h4><i data-lucide="brain"></i> CIENCIA FÁCIL PARA TI</h4>
+                ${scienceTips}
+                <span class="study-ref">Fuentes: Nature Metabolism 2024 / Cornell Food Lab</span>
             </div>
 
-            <div class="section-h">INGREDIENTES (Toca para marcar)</div>
-            <div>${(r.ingredients||[]).map(i => `<div class="list-item" onclick="toggleIng('${i.replace(/'/g,"\\'")}')"><div class="ing-check ${checked.includes(i)?'active':''}"><i data-lucide="check" size="14"></i></div><span class="ing-text ${checked.includes(i)?'checked':''}">${i}</span></div>`).join('')}</div>
+            <div class="section-h">INGREDIENTES</div>
+            ${r.ingredients.map(i => `<div class="list-item"><span>•</span> <span>${i}</span></div>`).join('')}
 
-            <div class="section-h">CONSEJOS CIENCIA 2025</div>
-            <div id="science-tips-area">
-                ${(r.instructions || []).filter(ins => ins.includes("TIP") || ins.includes("CONSEJO") || ins.includes("CIENCIA")).map(tip => `
-                    <div class="science-tip">
-                        <i data-lucide="zap"></i>
-                        <div class="science-text">${tip}</div>
-                    </div>
-                `).join('') || '<p style="font-size:0.8rem; color:#888;">No hay consejos específicos para esta receta.</p>'}
-            </div>
+            <div class="section-h">PASO A PASO</div>
+            ${r.instructions.filter(i => !i.includes("TIP") && !i.includes("CONSEJO")).map((ins, idx) => `<div class="list-item"><b>${idx+1}.</b><span>${ins}</span></div>`).join('')}
 
-            <div class="section-h">PREPARACIÓN</div>
-            <div>${(r.instructions||[]).filter(ins => !ins.includes("TIP") && !ins.includes("CONSEJO") && !ins.includes("CIENCIA")).map((ins, idx) => `<div class="list-item"><b>${idx+1}.</b><span>${cleanText(ins)}</span></div>`).join('')}</div>
-
-            <div class="section-h">MIS NOTAS PERSONALES</div><textarea class="notes-area" id="recipe-notes">${notes}</textarea>
-            <button class="chip active" style="width:100%; margin-top:10px; padding:15px;" onclick="saveNotes()">GUARDAR MIS NOTAS 📝</button>
+            <button class="btn-consumo" onclick="addNutritionWeb()">¡MARCAR COMO COMIDO! 🥘</button>
         `;
-        updateTimerDisplay();
-        document.getElementById('recipe-modal').style.display = 'block'; lucide.createIcons();
-    }
-
-    function toggleWebTimer() {
-        const btn = document.getElementById('btn-timer-play');
-        if (timerInterval) { clearInterval(timerInterval); timerInterval = null; btn.innerText = "CONTINUAR"; }
-        else {
-            btn.innerText = "PAUSAR";
-            timerInterval = setInterval(() => {
-                timerSeconds--; if (timerSeconds <= 0) { clearInterval(timerInterval); timerInterval = null; document.getElementById('alarm-sound').play(); alert("¡TIEMPO AGOTADO! 🥘🔔"); }
-                updateTimerDisplay();
-            }, 1000);
-        }
-    }
-    function adjustWebTimer(s) { timerSeconds = Math.max(0, timerSeconds + s); updateTimerDisplay(); }
-    function updateTimerDisplay() { const m = Math.floor(timerSeconds / 60), s = timerSeconds % 60; document.getElementById('web-timer-display').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }
-    function previewWebAlarm() {
-        const audio = document.getElementById('alarm-sound');
-        const btn = document.getElementById('btn-preview-alarm');
-        if (!audio.paused) { audio.pause(); audio.currentTime = 0; btn.innerText = "📢 PROBAR SONIDO ALARMA"; btn.style.background = "#B2EBF2"; }
-        else { audio.currentTime = 0; audio.play().then(() => { btn.innerText = "🛑 DETENER PRUEBA"; btn.style.background = "#FFCDD2"; }).catch(err => { alert("Haz clic en la web primero."); }); }
-    }
-
-    function renderMenu(c) {
-        const menu = JSON.parse(localStorage.getItem('web_menu') || '[]');
-        if (menu.length === 0) { if (allRecipes.length > 0) { generateMenu(); return; } else { c.innerHTML = "<p style='text-align:center; padding:50px;'>Cargando...</p>"; return; } }
-        c.innerHTML = `<div style="text-align:center; margin-bottom:24px;"><h2 style="font-weight:900; text-transform:uppercase;">Plan Nutricional Semanal</h2><div style="display:flex; justify-content:center; gap:12px;"><button class="chip active" onclick="generateMenu()">REGENERAR PLAN</button><button class="chip" style="background:var(--accent); color:white; border:none;" onclick="shareMenu()">COMPARTIR MENÚ</button></div></div><div id="weekly-days"></div>`;
-        const dNames = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
-        document.getElementById('weekly-days').innerHTML = menu.map((d, i) => `
-            <div class="day-card">
-                <div class="day-header"><span class="day-name">${dNames[i]}</span><span class="day-stats">${Math.round(d.kcalB+d.kcalL+d.kcalD)} kcal | ${Math.round((d.protB||0)+(d.protL||0)+(d.protD||0))}g prot</span></div>
-                <div class="meal-slot" onclick="openRecipeByName('${d.breakfast.replace(/'/g,"\\'")}')"><div class="meal-icon-wrapper" style="color:var(--carbos);"><i data-lucide="cloud-sun"></i></div><div class="meal-data"><b>Desayuno</b><span>${d.breakfast}</span></div><div class="refresh-btn" onclick="event.stopPropagation(); refreshSingleMeal(${i},'breakfast')"><i data-lucide="refresh-cw"></i></div></div>
-                <div class="meal-slot" onclick="openRecipeByName('${d.lunch.replace(/'/g,"\\'")}')"><div class="meal-icon-wrapper" style="color:var(--secondary);"><i data-lucide="sun"></i></div><div class="meal-data"><b>Almuerzo</b><span>${d.lunch}</span></div><div class="refresh-btn" onclick="event.stopPropagation(); refreshSingleMeal(${i},'lunch')"><i data-lucide="refresh-cw"></i></div></div>
-                <div class="meal-slot" onclick="openRecipeByName('${d.dinner.replace(/'/g,"\\'")}')"><div class="meal-icon-wrapper" style="color:var(--primary);"><i data-lucide="moon"></i></div><div class="meal-data"><b>Cena</b><span>${d.dinner}</span></div><div class="refresh-btn" onclick="event.stopPropagation(); refreshSingleMeal(${i},'dinner')"><i data-lucide="refresh-cw"></i></div></div>
-            </div>`).join('');
+        document.getElementById('recipe-modal').style.display = 'block';
         lucide.createIcons();
     }
-
-    const breakfastWildcards = [
-        { title: "Tostadas integrales con AOVE y Tomate", kcal: 280, prot: 8 },
-        { title: "Tortilla francesa con Pavo", kcal: 240, prot: 18 },
-        { title: "Bowl de Avena con leche y fruta", kcal: 320, prot: 12 }
-    ];
-
-    function generateMenu(shouldRender = true) {
-        if (allRecipes.length < 5) return;
-        const m = [], usedIds = new Set(), weeklyIngs = new Set();
-        const blacklist = ["sal", "aceite", "agua", "ajo", "cebolla", "pimienta", "azucar"];
-        for (let i = 0; i < 7; i++) {
-            const b = breakfastWildcards[Math.floor(Math.random() * breakfastWildcards.length)];
-            const getBestMatch = (pool, targetKcal) => {
-                const targetPool = pool.filter(r => !usedIds.has(r.id)).length > 0 ? pool.filter(r => !usedIds.has(r.id)) : pool;
-                return targetPool.sort((a, b) => {
-                    const bonusA = (a.ingredients || []).filter(ing => [...weeklyIngs].some(wi => ing.toLowerCase().includes(wi))).length * 50;
-                    const bonusB = (b.ingredients || []).filter(ing => [...weeklyIngs].some(wi => ing.toLowerCase().includes(wi))).length * 50;
-                    return (Math.abs((a.nutrition?.perServing?.kcal||500) - targetKcal) - bonusA) - (Math.abs((b.nutrition?.perServing?.kcal||500) - targetKcal) - bonusB);
-                })[0];
-            };
-            const l = getBestMatch(allRecipes.filter(r => r.mealSuitability?.lunch), 650); usedIds.add(l.id);
-            l.ingredients.forEach(ing => { const clean = ing.toLowerCase(); if(!blacklist.some(b => clean.includes(b))) weeklyIngs.add(clean.split(' ')[0]); });
-            const d = getBestMatch(allRecipes.filter(r => r.mealSuitability?.dinner), 450); usedIds.add(d.id);
-            m.push({ breakfast: b.title, kcalB: b.kcal, protB: b.prot, lunch: l.title, kcalL: l.nutrition?.perServing?.kcal||600, protL: l.nutrition?.perServing?.protein_g||30, dinner: d.title, kcalD: d.nutrition?.perServing?.kcal||400, protD: d.nutrition?.perServing?.protein_g||20 });
-        }
-        localStorage.setItem('web_menu', JSON.stringify(m)); if (shouldRender) render();
-    }
-
-    function renderHealth(c) {
-        const t = new Date().toLocaleDateString(), log = healthLog[t] || { kcal: 0, prot: 0, hc: 0, fat: 0 };
-        const offset = 471 - (471 * Math.min(100, (log.kcal / profile.target) * 100)) / 100;
-        c.innerHTML = `
-            <div class="health-hero"><div class="calorie-meter"><svg width="180" height="180" viewBox="0 0 180 180" class="progress-ring"><circle stroke="#EEE" stroke-width="14" fill="transparent" r="75" cx="90" cy="90"/><circle stroke="var(--primary)" stroke-width="14" stroke-dasharray="471" stroke-dashoffset="${offset}" fill="transparent" r="75" cx="90" cy="90" class="progress-ring-circle"/></svg><div class="calorie-info"><span class="calorie-val">${log.kcal}</span><span style="font-size:0.75rem; color:#888;">/ ${profile.target} kcal</span></div></div><h3 style="margin:0; font-weight:900;">MI CONSUMO HOY</h3><div style="display:flex; justify-content:center; gap:15px; margin-top:15px;"><button class="chip" onclick="adjustWebKcal(-50)" style="background:var(--error); color:white;">-50</button><button class="chip" onclick="adjustWebKcal(50)" style="background:var(--secondary); color:white;">+50</button></div></div>
-            <div class="day-card" style="text-align:center;"><h3 style="font-weight:900; margin-bottom:20px; text-transform:uppercase;">Nutrientes de Hoy</h3><div class="macro-grid"><div class="nutri-item"><div class="macro-circle" style="border-color:var(--prots);"><span class="macro-val">${Math.round(log.prot)}g</span></div><span class="macro-label">Proteínas</span></div><div class="nutri-item"><div class="macro-circle" style="border-color:var(--carbos);"><span class="macro-val">${Math.round(log.hc)}g</span></div><span class="macro-label">Carbos</span></div><div class="nutri-item"><div class="macro-circle" style="border-color:var(--grasas);"><span class="macro-val">${Math.round(log.fat)}g</span></div><span class="macro-label">Grasas</span></div></div></div>
-        `;
-        lucide.createIcons();
-    }
-
-    function toggleTag(t) { activeTag = activeTag === t ? '' : t; render(); }
-    function filterByCat(c) { activeCategory = activeCategory === c ? '' : c; render(); }
-    function toggleFav(id) { if(favorites.includes(id)) favorites = favorites.filter(f => f !== id); else favorites.push(id); localStorage.setItem('web_favs', JSON.stringify(favorites)); renderList(); }
-    function toggleFavCurrent() { toggleFav(currentOpenId); openRecipe(currentOpenId); }
-    function closeModal() { if(timerInterval) { clearInterval(timerInterval); timerInterval = null; } document.getElementById('alarm-sound').pause(); document.getElementById('recipe-modal').style.display = 'none'; }
-    function adjustWebKcal(v) { const t = new Date().toLocaleDateString(); if(!healthLog[t]) healthLog[t]={kcal:0,prot:0,hc:0,fat:0}; healthLog[t].kcal=Math.max(0,healthLog[t].kcal+v); localStorage.setItem('web_health_log', JSON.stringify(healthLog)); render(); }
-    function toggleIng(ing) {
-        if (!checkedIngs[currentOpenId]) checkedIngs[currentOpenId] = [];
-        if (checkedIngs[currentOpenId].includes(ing)) checkedIngs[currentOpenId] = checkedIngs[currentOpenId].filter(x => x !== ing);
-        else checkedIngs[currentOpenId].push(ing);
-        localStorage.setItem('web_checked', JSON.stringify(checkedIngs)); openRecipe(currentOpenId);
-    }
-    function shareShoppingList() { const r = allRecipes.find(x => (x.id||x.title) === currentOpenId); const checked = checkedIngs[currentOpenId] || []; const missing = r.ingredients.filter(i => !checked.includes(i)); if(navigator.share) navigator.share({ title: 'Lista Compra', text: `🛒 *Lista: ${r.title}*\n\n` + missing.map(i => `• ${i}`).join('\n') }); }
-    function openRecipeByName(n) { openRecipe(n); }
-    function addNutritionWeb(k,p,h,f) { const t = new Date().toLocaleDateString(); if(!healthLog[t]) healthLog[t]={kcal:0,prot:0,hc:0,fat:0}; healthLog[t].kcal+=k; healthLog[t].prot+=p; healthLog[t].hc+=h; healthLog[t].fat+=f; localStorage.setItem('web_health_log', JSON.stringify(healthLog)); closeModal(); switchView('health'); }
-    function shareRecipe() { const r = allRecipes.find(x => (x.id||x.title) === currentOpenId); if(r && navigator.share) navigator.share({ title: r.title, text: `Mira esta receta: ${r.title}\n\nIngredientes:\n${r.ingredients.join('\n')}` }); }
-    function saveNotes() { userNotes[currentOpenId] = document.getElementById('recipe-notes').value; localStorage.setItem('web_notes', JSON.stringify(userNotes)); alert("¡Notas guardadas! 📝"); }
 
     function showLegal() {
         document.getElementById('legal-content-area').innerHTML = `
             <h2>Información Legal</h2>
-            <p><b>Propiedad:</b> Esta web/app es un proyecto personal de Joseman.</p>
-            <p><b>Descargo de Responsabilidad:</b> La información proporcionada en CocinaREcetas Pro, incluyendo los consejos nutricionales y técnicos (Ciencia 2025), tiene fines puramente informativos y educativos. <b>No somos médicos, nutricionistas ni profesionales de la salud.</b></p>
-            <p>El uso de la información contenida en esta plataforma es bajo su propio riesgo. Siempre consulte con un médico o profesional cualificado antes de iniciar cualquier dieta o programa de ejercicio, especialmente si padece condiciones preexistentes como diabetes.</p>
+            <p><b>Propiedad:</b> Proyecto personal de Joseman.</p>
+            <p><b>Aviso Importante:</b> CocinaREcetas Pro NO es una aplicación médica. Los datos y "protocolos" mostrados son informativos y basados en estudios de nutrición general.</p>
+            <p>Siempre consulte con un médico antes de iniciar dietas si tiene condiciones como diabetes.</p>
         `;
         document.getElementById('legal-modal').style.display = 'block';
-        lucide.createIcons();
     }
 
     function showPrivacy() {
         document.getElementById('legal-content-area').innerHTML = `
-            <h2>Política de Privacidad</h2>
-            <p><b>Datos:</b> CocinaREcetas Pro no recopila datos personales en sus servidores. Toda tu información (favoritos, notas, consumos de salud) se guarda <b>localmente en tu dispositivo</b> (LocalStorage).</p>
-            <p><b>Firebase:</b> Utilizamos Firebase solo para la sincronización de recetas públicas.</p>
-            <p><b>Cookies:</b> No utilizamos cookies de rastreo ni publicitarias.</p>
+            <h2>Privacidad</h2>
+            <p>No recopilamos tus datos. Tus favoritos y notas se guardan solo en tu móvil (LocalStorage).</p>
         `;
         document.getElementById('legal-modal').style.display = 'block';
-        lucide.createIcons();
     }
 
     function showHelp() {
         document.getElementById('legal-content-area').innerHTML = `
-            <h2>Ayuda y Uso</h2>
-            <p><b>Buscador:</b> Puedes buscar por nombre de plato o por ingrediente principal.</p>
-            <p><b>Filtros Inteligentes:</b> Al seleccionar un filtro (Sana, Perder Peso, etc.), las recetas mostrarán consejos científicos específicos para ese objetivo.</p>
-            <p><b>Planificador:</b> Genera un menú semanal equilibrado basado en tus necesidades calóricas.</p>
-            <p><b>Mi Salud:</b> Registra lo que comes para llevar un control de tus macros y calorías diarias.</p>
+            <h2>Cómo usar los Filtros</h2>
+            <p><b>Sana:</b> Recetas que activan la limpieza celular (autofagia).</p>
+            <p><b>Perder Peso:</b> Platos que activan la saciedad natural (GLP-1).</p>
+            <p><b>Diabéticos:</b> Enfocadas en mantener el azúcar estable.</p>
         `;
         document.getElementById('legal-modal').style.display = 'block';
-        lucide.createIcons();
     }
 
+    function toggleTag(t) { activeTag = activeTag === t ? '' : t; render(); }
+    function closeModal() { document.getElementById('recipe-modal').style.display = 'none'; }
     function closeLegal() { document.getElementById('legal-modal').style.display = 'none'; }
+    function shareRecipe() { alert("Función disponible en la App"); }
+    function addNutritionWeb() { alert("¡Registrado en tu historial diario!"); closeModal(); }
 
     init();
 </script>

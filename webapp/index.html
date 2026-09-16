@@ -383,7 +383,14 @@
         const menu = JSON.parse(localStorage.getItem('web_menu') || '[]');
         c.innerHTML = `<div style="text-align:center; margin-bottom:20px;"><button class="chip active" onclick="generateMenu()">REGENERAR MENÚ COMPLETO 🔄</button></div><div id="weekly-days"></div>`;
         const dNames = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
-        document.getElementById('weekly-days').innerHTML = menu.map((d, i) => `
+        document.getElementById('weekly-days').innerHTML = menu.map((d, i) => {
+            const rLunch = allRecipes.find(x => x.title === d.lunch);
+            const rDinner = allRecipes.find(x => x.title === d.dinner);
+
+            const kLunch = rLunch?.nutrition?.perServing?.kcal ? Math.round(rLunch.nutrition.perServing.kcal) + " kcal" : "";
+            const kDinner = rDinner?.nutrition?.perServing?.kcal ? Math.round(rDinner.nutrition.perServing.kcal) + " kcal" : "";
+
+            return `
             <div class="day-card" style="padding: 20px;">
                 <div class="day-header">
                     <span class="day-name">${dNames[i]}</span>
@@ -392,7 +399,11 @@
 
                 <div class="meal-slot" style="position: relative;" onclick="openRecipeByName('${d.lunch.replace(/'/g,"\\'")}')">
                     <i data-lucide="sun" size="20"></i>
-                    <div class="meal-data"><b>Almuerzo Sugerido</b><span>${d.lunch}</span></div>
+                    <div class="meal-data">
+                        <b>Almuerzo Sugerido</b>
+                        <span>${d.lunch}</span>
+                        ${kLunch ? `<span style="display:block; font-size:0.75rem; color:#64748B; font-weight:bold; margin-top:2px;">⚡ ${kLunch}</span>` : ''}
+                    </div>
                     <button class="chip" style="margin: 0; padding: 4px 8px; font-size: 0.65rem; background: #E2E8F0; z-index: 5;" onclick="event.stopPropagation(); changeSingleMeal(${i}, 'lunch')">
                         <i data-lucide="refresh-cw" style="width: 10px; height: 10px; margin: 0;"></i> Cambiar
                     </button>
@@ -400,12 +411,17 @@
 
                 <div class="meal-slot" style="position: relative;" onclick="openRecipeByName('${d.dinner.replace(/'/g,"\\'")}')">
                     <i data-lucide="moon" size="20"></i>
-                    <div class="meal-data"><b>Cena Sugerida</b><span>${d.dinner}</span></div>
+                    <div class="meal-data">
+                        <b>Cena Sugerida</b>
+                        <span>${d.dinner}</span>
+                        ${kDinner ? `<span style="display:block; font-size:0.75rem; color:#64748B; font-weight:bold; margin-top:2px;">⚡ ${kDinner}</span>` : ''}
+                    </div>
                     <button class="chip" style="margin: 0; padding: 4px 8px; font-size: 0.65rem; background: #E2E8F0; z-index: 5;" onclick="event.stopPropagation(); changeSingleMeal(${i}, 'dinner')">
                         <i data-lucide="refresh-cw" style="width: 10px; height: 10px; margin: 0;"></i> Cambiar
                     </button>
                 </div>
-            </div>`).join('');
+            </div>`;
+        }).join('');
         lucide.createIcons();
     }
 

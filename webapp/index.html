@@ -541,50 +541,93 @@
         // --- DICCIONARIO ESPAÑOL PARA SEGMENTACIÓN INTELIGENTE (WEB) ---
         const spanishWords = new Set([
             "el", "la", "los", "las", "un", "una", "unos", "unas", "y", "e", "o", "u", "pero", "mas", "sino",
-            "de", "del", "a", "al", "con", "en", "por", "para", "se", "su", "sus", "mi", "tu", "que", "si", "no",
+            "de", "del", "a", "al", "con", "en", "por", "para", "se", "su", "sus", "mi", "tu", "tus", "que", "si", "no",
             "como", "donde", "cuando", "quien", "cual", "cuanto", "este", "esta", "estos", "estas", "ese", "esa",
             "esos", "esas", "yo", "tu", "ella", "nosotros", "vosotros", "ellos", "me", "te", "nos", "os",
-            "ser", "estar", "haber", "hacer", "ir", "ver", "dar", "decir", "poder", "querer", "saber", "poner",
+            "ser", "estar", "haber", "hacer", "ir", "ver", "dar", "decir", "poder", "querer", "saber", "poner", "parecer",
             "aceite", "agua", "sal", "pimienta", "cebolla", "ajo", "ajos", "tomate", "harina", "huevo", "huevos", "leche",
-            "carne", "pollo", "pescado", "arroz", "pasta", "patatas", "patata", "verdura", "fruta", "frutas",
-            "sarten", "cazuela", "horno", "fuego", "minutos", "minuto", "hora", "horas", "cucharada", "vaso",
-            "bien", "muy", "mas", "menos", "poco", "mucho", "todo", "todos", "toda", "todas", "algun", "algunos",
+            "carne", "pollo", "pescado", "arroz", "pasta", "patatas", "patata", "verdura", "verduras", "fruta", "frutas",
+            "sarten", "cazuela", "horno", "fuego", "minutos", "minuto", "hora", "horas", "cucharada", "cucharadas", "vaso",
+            "bien", "muy", "poco", "mucho", "todo", "todos", "toda", "todas",
             "vez", "veces", "despues", "luego", "ahora", "antes", "mientras", "durante", "hasta", "desde",
             "picar", "cortar", "rehogar", "sofreir", "cocer", "hervir", "freir", "asar", "añadir", "mezclar", "servir",
             "limpiar", "pelar", "aliñar", "sazonar", "escurrir", "triturar", "batir", "rectificar", "adornar", "cubrir",
             "regar", "tapar", "dejar", "porque", "paraque", "aunque", "siempre", "nunca", "tambien", "tampoco",
-            "vinagre", "vino", "blanco", "tinto", "pimenton", "dulce", "picante", "perejil", "laurel", "clavo", "canela",
-            "frio", "caliente", "fuego", "lento", "suave", "fuerte", "medio", "punto", "pizca", "chorro", "unidades",
-            "trozos", "picado", "picada", "entero", "entera", "rallado", "rallada", "queso", "jamon", "formar", "forma"
+            "vinagre", "vino", "blanco", "tinto", "pimenton", "perejil", "laurel", "canela", "clavo",
+            "picado", "picada", "molido", "entero", "entera", "rallado", "rallada", "queso", "jamon",
+            "hecho", "hecha", "puesto", "puesta", "añadido", "mezclado", "formar", "forma",
+            "secuenciacion", "nutrientes", "perdida", "peso", "glucosa", "insulina", "almidon", "resistente", "prioriza", "saciedad", "quemagrasas",
+            "ciencia", "pico", "picos", "orden", "fibra", "proteina", "grasa", "grasas", "carbohidratos", "absorcion", "digestion", "metabolismo", "energia", "saludable", "nutricional",
+            "antelacion", "dejalo", "dejalos", "enfriar", "nevera", "comerlo", "puedes", "recalentarlo", "esto", "crea", "alimenta", "bacterias", "reduce", "impacto", "calorico",
+            "vegetales", "despues", "final", "aplana", "curva", "azucar", "azucares", "evitando", "cansancio", "almacenamiento", "manzana", "mejora", "sensibilidad", "frena", "azucares",
+            "caminar", "musculos", "musculo", "muscular", "absorban", "necesidad", "inyecciones", "extra", "añade", "especia", "semilla", "objetivo", "comer", "plantas", "distintas", "semana", "microbiota", "fuerte",
+            "zoodles", "bolonesa", "soja", "tallarines", "bacalao", "champinones", "pinones", "pina", "sandia", "kiwi", "pavo", "merluza", "frijoles", "enchiladas", "nachos", "guacamole", "gallo",
+            "sobre", "bajo", "entre", "hacia", "hasta", "para", "por", "segun", "sin", "tras", "durante", "mediante", "del", "al"
         ]);
 
-        let fixed = text;
+        function normalize(t) {
+            return t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/ñ/g, "n");
+        }
 
-        // 1. Segmentación Inteligente: Separar palabras pegadas usando el diccionario
-        fixed = fixed.split(" ").map(word => {
-            if (word.length > 7 && !spanishWords.has(word.toLowerCase())) {
-                for (let i = 2; i < word.length - 2; i++) {
-                    const p1 = word.substring(0, i).toLowerCase();
-                    const p2 = word.substring(i).toLowerCase();
-                    if (spanishWords.has(p1) && (spanishWords.has(p2) || p2.length < 3)) {
-                        return word.substring(0, i) + " " + word.substring(i);
+        function autoSplit(word) {
+            const norm = normalize(word);
+            if (word.length < 3 || spanishWords.has(norm)) return word;
+            for (let i = word.length - 1; i >= 1; i--) {
+                const prefix = norm.substring(0, i);
+                if (spanishWords.has(prefix) || (prefix.length === 1 && "yaeou".includes(prefix))) {
+                    const rest = word.substring(i);
+                    const splitRest = rest.length >= 3 ? autoSplit(rest) : rest;
+                    const normRest = normalize(splitRest);
+                    if (spanishWords.has(normRest) || splitRest.includes(" ") || (normRest.length < 3 && spanishWords.has(normRest))) {
+                        return word.substring(0, i) + " " + splitRest;
                     }
                 }
             }
             return word;
-        }).join(" ");
+        }
 
-        // 2. Limpieza de fragmentos OCR basura y códigos extraños
+        let fixed = text.normalize("NFC");
+
+        // Reglas de frases Ciencia 2025
+        const targets = [
+            [/antelaci.n\s*y?\s*d.jalos?/gi, (m) => m.toLowerCase().endsWith('s') ? "antelación y déjalos" : "antelación y déjalo"],
+            [/reduceelpicodeglucosa/gi, "reduce el pico de glucosa"],
+            [/pastadeesta/gi, "pasta de esta"],
+            [/quemagrasasyreduce/gi, "quemagrasas y reduce"],
+            [/impactocal.rico/gi, "impacto calórico"],
+            [/antesdecomerlo/gi, "antes de comerlo"],
+            [/puedesrecalentarlo/gi, "puedes recalentarlo"],
+            [/mejoralasensibilidad/gi, "mejora la sensibilidad"],
+            [/frenalaabsorci.n/gi, "frena la absorción"],
+            [/curvadeaz.car/gi, "curva de azúcar"],
+            [/evitandoelcansancio/gi, "evitando el cansancio"],
+            [/almacenamientodegrasa/gi, "almacenamiento de grasa"],
+            [/siemprelosvegetales/gi, "siempre los vegetales"],
+            [/laprote.naygrasas/gi, "la proteína y grasas"],
+            [/ydejaloscarbohidratos/gi, "y deja los carbohidratos"],
+            [/paraelfinal/gi, "para el final"],
+            [/tusbacterias/gi, "tus bacterias"],
+            [/tusm.sculos/gi, "tus músculos"]
+        ];
+
+        targets.forEach(([reg, rep]) => {
+            fixed = fixed.replace(reg, rep);
+        });
+
+        // Split joined words
+        fixed = fixed.split(" ").map(w => autoSplit(w)).join(" ");
+
+        // Limpieza de fragmentos OCR basura
         fixed = fixed.replace(/\bdoc\s+[a-zA-Z0-9]+\b/gi, "")
                      .replace(/\bpage\s+\d+\b/gi, "")
                      .replace(/---/g, "");
 
-        // 3. Unir letras sueltas que deberían ir juntas (m a c h a c a r -> machacar)
+        // Unir letras sueltas
         for(let i=0; i<3; i++) {
             fixed = fixed.replace(/(\b\w)\s+(?=\w\b)/g, "$1");
         }
 
-        // 4. Diccionario de correcciones de OCR específicas y pegados comunes
+        // Diccionario de correcciones de OCR específicas
         const fixes = [
             [/\bA\s+L\s+B[ÓO]NDIGAS\b/gi, "ALBÓNDIGAS"],
             [/\bAL\s+B[ÓO]NDIGAS\b/gi, "ALBÓNDIGAS"],

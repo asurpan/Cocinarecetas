@@ -12,8 +12,7 @@ interface RecipeDao {
     @Query("""
         SELECT * FROM recipes 
         WHERE isDeletedLocally = 0
-        AND (title LIKE '%' || :searchQuery || '%' OR ingredients LIKE '%' || :searchQuery || '%') 
-        AND (:category = '' OR category LIKE :category)
+        AND (:searchQuery IS NOT NULL OR :category IS NOT NULL)
         ORDER BY isFavorite DESC, title ASC
     """)
     fun searchRecipes(searchQuery: String, category: String = ""): Flow<List<Recipe>>

@@ -1,6 +1,366 @@
 {
     "recipes": [
         {
+            "id": "receta_alubias_baked_beans",
+            "title": "ALUBIAS EN SALSA DE TOMATE TIPO HEINZ (BAKED BEANS)",
+            "ingredients": [
+                "1 bote grande de alubias blancas cocidas (400-500 g)",
+                "400 g de tomate triturado de lata",
+                "1 cebolla mediana picada muy fina",
+                "2o3 dientes de ajo picados",
+                "2 cucharadas de kétchup",
+                "1o2 cucharadas de tomate concentrado",
+                "1a2 cucharadas de azúcar moreno o miel",
+                "1 cucharada de vinagre",
+                "1 cucharada de salsa Worcestershire (salsa Perrins)",
+                "1 cucharadita de pimentón dulce",
+                "Una pizca de ajo en polvo, cebolla en polvo y sal al gusto",
+                "Aceite de oliva",
+                "Opcional: una pizca de cayena o tabasco si te gusta con picante"
+            ],
+            "instructions": [
+                "CIENCIA SALUD 2025: Las alubias blancas son ricas en fibra soluble. Al cocinarlas en esta salsa casera, evitas los conservantes industriales de las latas comerciales y mantienes el control sobre el índice glucémico.",
+                "Sofreír la base: Calienta un chorro de aceite de oliva en una sarténa fuego medio. Añade la cebolla y los ajos picados. Cocina hasta que la cebolla esté tierna y transparente.",
+                "Añadir especias y sabor: Agrega el pimentón dulce, el tomate concentrado y remueve rápido durante unos segundos para que no se queme.",
+                "Hacer la salsa: Incorpora el tomate triturado, el kétchup, el azúcar moreno, el vinagre, la salsa Worcestershire y la sal. Cocina a fuego medio-bajo durante unos 20 minutos para que la salsa reduzca y pierda la acidez.",
+                "Triturar (opcional): Si prefieres una textura más fina y uniforme similar a la de bote comercial, pasa la salsa por la batidora.",
+                "Juntar con las alubias: Añade las alubias blancas (bien lavadas y escurridas si son de bote) a la salsa.",
+                "Cocinar el conjunto: Deja que todo junto hierva a fuego suave durante 10 minutos más para que las alubias absorban todo el sabor de la salsa.",
+                "TIP SALUD: Para reducir el pico de glucosa del azúcar moreno, acompaña estas alubias con una ración de vegetales verdes o espinacas como primer plato."
+            ],
+            "category": "LEGUMBRES",
+            "healthTags": [
+                "Sana",
+                "Fibra"
+            ],
+            "isFavorite": false,
+            "isDeletedLocally": false,
+            "notes": "Versión casera de las famosas Baked Beans con el toque exacto de salsa Worcestershire.",
+            "cookingTime": "40 min",
+            "imageUrl": null,
+            "isMainDish": false,
+            "servings": 4,
+            "menuMeta": {
+                "role": "",
+                "mealTypes": [],
+                "isStandaloneMeal": false,
+                "isSuitableForBreakfast": false,
+                "isSuitableForLunch": false,
+                "isSuitableForDinner": false,
+                "isSuitableForSnack": false,
+                "isSuitableForDessert": false,
+                "isSuitableForAperitif": false,
+                "selectionPriority": ""
+            },
+            "nutritionProfile": {
+                "tags": [],
+                "warnings": []
+            },
+            "nutritionPerServing": {
+                "servings_used_for_estimate": null,
+                "coverage": null,
+                "kcal": null,
+                "protein_g": null,
+                "carbohydrate_g": null,
+                "fat_g": null,
+                "fiber_g": null,
+                "sugars_g": null,
+                "saturated_fat_g": null,
+                "sodium_mg": null,
+                "status": ""
+            },
+            "dietary": {
+                "vegetarian": null,
+                "vegan": null,
+                "containsGluten": null,
+                "containsDairy": null,
+                "containsEgg": null,
+                "containsFish": null,
+                "containsShellfish": null,
+                "containsNuts": null,
+                "containsAddedSugar": null,
+                "glutenFree": null,
+                "dairyFree": null,
+                "eggFree": null,
+                "containsMeat": null
+            },
+            "mealSuitability": {
+                "breakfast": false,
+                "morningSnack": false,
+                "lunch": false,
+                "afternoonSnack": false,
+                "dinner": false,
+                "dessert": false,
+                "accompaniment": false,
+                "aperitif": false,
+                "standaloneMeal": false,
+                "side": false,
+                "sauce": false
+            },
+            "goals": {
+                "healthy": true,
+                "weightLoss": false,
+                "muscleGain": true,
+                "diabeticFriendly": false,
+                "highProtein": false,
+                "highFiber": null,
+                "lowCarb": false,
+                "lowSodium": null
+            },
+            "nutritionQuality": {
+                "calorieClass": "",
+                "proteinClass": "",
+                "estimationCoverage": null,
+                "reliability": "",
+                "usableForAutomaticMenuBalancing": false
+            },
+            "menuConstraints": {
+                "canBeBreakfast": false,
+                "canBeSnack": false,
+                "canBeMainLunch": false,
+                "canBeMainDinner": false,
+                "canBeDessert": false,
+                "canBeAccompaniment": false,
+                "canBeAperitif": false,
+                "mustNotBeUsedAsStandaloneMeal": false,
+                "maxOccurrencesPerWeek": 2
+            },
+            "nutrition": {
+                "perServing": {
+                    "kcal": null,
+                    "protein_g": null,
+                    "carbohydrate_g": null,
+                    "fat_g": null,
+                    "fiber_g": null,
+                    "sugars_g": null,
+                    "saturated_fat_g": null,
+                    "sodium_mg": null
+                },
+                "per100g": {
+                    "kcal": null,
+                    "protein_g": null,
+                    "carbohydrate_g": null,
+                    "fat_g": null,
+                    "fiber_g": null,
+                    "sugars_g": null,
+                    "saturated_fat_g": null,
+                    "sodium_mg": null
+                },
+                "estimate": {
+                    "status": "",
+                    "coverage": null,
+                    "reliability": "",
+                    "laboratoryVerified": false
+                }
+            },
+            "portionScaling": {
+                "supported": false,
+                "baseServings": 4,
+                "defaultMultiplier": 1.0,
+                "allowedMultiplierRange": [],
+                "method": "",
+                "fieldsScaled": [],
+                "formula": "",
+                "warning": ""
+            },
+            "menuEngine": {
+                "primaryRole": "",
+                "mealSlots": [],
+                "standaloneMeal": false,
+                "componentOnly": false,
+                "nutritionReliableEnoughForBalancing": false,
+                "maxWeeklyOccurrences": 2
+            },
+            "menuRules": {
+                "canBeBreakfast": false,
+                "canBeMainMeal": false,
+                "canBeSnack": false,
+                "canBeDessert": false,
+                "canBeSide": false,
+                "canBeSauce": false,
+                "mustNotBeUsedAsStandaloneMeal": false,
+                "requiresPairingForBalancedMeal": false
+            }
+        },
+        {
+            "id": "receta_frijoles_refritos_amanecer",
+            "title": "FRIJOLES REFRITOS AMANECER MEXICANO",
+            "ingredients": [
+                "500 g de frijoles negros o bayos cocidos",
+                "1/2 taza del caldo de cocción de los frijoles",
+                "80 g de manteca de cerdo (o aceite si se prefiere más ligero)",
+                "1/2 cebolla blanca finamente picada",
+                "1 diente de ajo picado",
+                "1 chile de árbol picado (opcional para un toque auténtico)",
+                "100 g de queso costeñoo fresco desmoronado para decorar",
+                "Totopos para acompañar"
+            ],
+            "instructions": [
+                "CIENCIA SALUD 2025: Los frijoles refritos son una fuente excelente de fibra prebiótica. Al cocinarlos y refrigerarlos previamente, multiplicas su almidón resistente alimentando bacterias clave para tu salud metabólica.",
+                "En una sartén grande, calienta la manteca de cerdo a fuego medio hasta que esté bien derretida y caliente. Añade la cebolla picada y el ajo, sofriendo hasta que la cebolla se vuelva transparente y adquiera un tono dorado aromático.",
+                "Agrega el chile de árbol si deseas el toque tradicional de restaurante mexicano Amanecer y remueve por un minuto.",
+                "Vierte los frijoles cocidos junto con su caldo de coccióna la sartén. Deja que rompan a hervir y cocínalos durante 5 minutos para que absorban los sabores del sofrito.",
+                "Con la ayuda de un machacador de frijoles o patatas, aplasta los frijoles con fuerza dentro de la sartén de forma continua hasta obtener una textura de puré suave, cremosa y homogénea pero con cuerpo.",
+                "Reduce el fuego a bajo y cocina sin dejar de remover de forma envolvente hasta que el puré espese y comience a despegarse fácilmente de las paredes y del fondo de la sartén.",
+                "Sirve bien caliente en un plato hondo, decorando la superficie con abundante queso fresco desmoronado por encima y acompaña con totopos crujientes a los lados.",
+                "TIP SALUD: Empieza comiendo siempre los vegetales (fibra) o legumbres, después la proteína y grasas, y deja los carbohidratos simples (como los totopos) para el final. Este orden aplana tu curva de azúcar, evitando el cansancio post-comida."
+            ],
+            "category": "LEGUMBRES",
+            "healthTags": [
+                "Carbohidratos",
+                "Sana",
+                "Proteínas"
+            ],
+            "isFavorite": false,
+            "isDeletedLocally": false,
+            "notes": "Receta secreta de frijoles refritos estilo restaurante mexicano Amanecer.",
+            "cookingTime": "20 min",
+            "imageUrl": null,
+            "isMainDish": false,
+            "servings": 4,
+            "menuMeta": {
+                "role": "",
+                "mealTypes": [],
+                "isStandaloneMeal": false,
+                "isSuitableForBreakfast": false,
+                "isSuitableForLunch": false,
+                "isSuitableForDinner": false,
+                "isSuitableForSnack": false,
+                "isSuitableForDessert": false,
+                "isSuitableForAperitif": false,
+                "selectionPriority": ""
+            },
+            "nutritionProfile": {
+                "tags": [],
+                "warnings": []
+            },
+            "nutritionPerServing": {
+                "servings_used_for_estimate": null,
+                "coverage": null,
+                "kcal": null,
+                "protein_g": null,
+                "carbohydrate_g": null,
+                "fat_g": null,
+                "fiber_g": null,
+                "sugars_g": null,
+                "saturated_fat_g": null,
+                "sodium_mg": null,
+                "status": ""
+            },
+            "dietary": {
+                "vegetarian": null,
+                "vegan": null,
+                "containsGluten": null,
+                "containsDairy": null,
+                "containsEgg": null,
+                "containsFish": null,
+                "containsShellfish": null,
+                "containsNuts": null,
+                "containsAddedSugar": null,
+                "glutenFree": null,
+                "dairyFree": null,
+                "eggFree": null,
+                "containsMeat": null
+            },
+            "mealSuitability": {
+                "breakfast": false,
+                "morningSnack": false,
+                "lunch": false,
+                "afternoonSnack": false,
+                "dinner": false,
+                "dessert": false,
+                "accompaniment": false,
+                "aperitif": false,
+                "standaloneMeal": false,
+                "side": false,
+                "sauce": false
+            },
+            "goals": {
+                "healthy": true,
+                "weightLoss": false,
+                "muscleGain": true,
+                "diabeticFriendly": true,
+                "highProtein": false,
+                "highFiber": null,
+                "lowCarb": false,
+                "lowSodium": null
+            },
+            "nutritionQuality": {
+                "calorieClass": "",
+                "proteinClass": "",
+                "estimationCoverage": null,
+                "reliability": "",
+                "usableForAutomaticMenuBalancing": false
+            },
+            "menuConstraints": {
+                "canBeBreakfast": false,
+                "canBeSnack": false,
+                "canBeMainLunch": false,
+                "canBeMainDinner": false,
+                "canBeDessert": false,
+                "canBeAccompaniment": false,
+                "canBeAperitif": false,
+                "mustNotBeUsedAsStandaloneMeal": false,
+                "maxOccurrencesPerWeek": 2
+            },
+            "nutrition": {
+                "perServing": {
+                    "kcal": null,
+                    "protein_g": null,
+                    "carbohydrate_g": null,
+                    "fat_g": null,
+                    "fiber_g": null,
+                    "sugars_g": null,
+                    "saturated_fat_g": null,
+                    "sodium_mg": null
+                },
+                "per100g": {
+                    "kcal": null,
+                    "protein_g": null,
+                    "carbohydrate_g": null,
+                    "fat_g": null,
+                    "fiber_g": null,
+                    "sugars_g": null,
+                    "saturated_fat_g": null,
+                    "sodium_mg": null
+                },
+                "estimate": {
+                    "status": "",
+                    "coverage": null,
+                    "reliability": "",
+                    "laboratoryVerified": false
+                }
+            },
+            "portionScaling": {
+                "supported": false,
+                "baseServings": 4,
+                "defaultMultiplier": 1.0,
+                "allowedMultiplierRange": [],
+                "method": "",
+                "fieldsScaled": [],
+                "formula": "",
+                "warning": ""
+            },
+            "menuEngine": {
+                "primaryRole": "",
+                "mealSlots": [],
+                "standaloneMeal": false,
+                "componentOnly": false,
+                "nutritionReliableEnoughForBalancing": false,
+                "maxWeeklyOccurrences": 2
+            },
+            "menuRules": {
+                "canBeBreakfast": false,
+                "canBeMainMeal": false,
+                "canBeSnack": false,
+                "canBeDessert": false,
+                "canBeSide": false,
+                "canBeSauce": false,
+                "mustNotBeUsedAsStandaloneMeal": false,
+                "requiresPairingForBalancedMeal": false
+            }
+        },
+        {
             "id": "receta_0001",
             "title": "ASAR PIMIENTOS",
             "ingredients": [
@@ -56664,7 +57024,7 @@
         },
         {
             "id": "receta_0276",
-            "title": "ARROZ CUATRO DEL ICIAS",
+            "title": "ARROZ CUATRO DELICIAS",
             "ingredients": [
                 "4 tazas de arroz",
                 "200 g de jamón cocido",
@@ -155223,7 +155583,7 @@
         },
         {
             "id": "receta_0751",
-            "title": "DEL ICIAS DE BONITO",
+            "title": "DELICIAS DE BONITO",
             "ingredients": [
                 "1 kg de bonito",
                 "Unas ramitas de perejil",
@@ -219210,7 +219570,7 @@
                 "Trabar. Ligar una salsa, crema, etc., por medio de huevos, féculas, etcétera.",
                 "Trinchar. Cortar limpiamente un género.",
                 "Volován. Corteza hueca de hojaldre con tapa para rellenar.",
-                "Inicio vocabulario Índice por temasÍndicepor temas Volver al sumario ● Recetas Básicas ● saladas ● dulces ● ENSALADAs ● Verduras y hortalizas ● Patatas ● Arroces ● Pastas ● Legumbres: ❍ ALUBIAS ❍ Garbanzos ❍ Lentejas ❍ Otras legumbres ● Sopas y cremas ● Huevos ● Carnes: ● Vacu no ● Cerdo ● Cordero ● CONEJO ● Aves y caza: ❍ Aves de corr al: pollo y pavo ❍ Caza ● Pescados y mariscos ● Postres Saladas Asar pimientos Caldo de carne desalar bacalao Escalfar huevos Fumet de pescado Índice por temas Macerar y marinarPuré de patatas Salsa bechamel y velouté SALSA CON nata para carne Salsa de tomate Salsa española Salsa holandesa Salsa mahonesa, rosaytártara Salsa verde Salsa vinagreta Dulces Bizcocho caramelo Crema pastelera Cremas de frutas Crepes Fundir chocolate Índice por temas Merengue Mermelada Nata montada Pasta quebrada Aguacates rellenos de salmón Arrozfrío en ENSALADA Cogollos con atúny queso Cogollos del echugacon tomate ENSALADA A la menta ENSALADA A la vinagreta de azafrán ENSALADA aragonesa ENSALADA caliente de pescado ENSALADA cariñosa ENSALADA CON nueces ENSALADA CON queso ENSALADA CON refrito de baconÍndicepor temas ENSALADA CON salsa de YOGUR ENSALADA CON vinagreta de aguacate ENSALADA de aguacate y PLÁTANO ENSALADA de aguacates ENSALADA de berenjenas y bacalao ENSALADA de berros ENSALADA de cardo al aroma de mandarina ENSALADA de champiñones ENSALADA de cítricos ENSALADA de colores ENSALADA de endibias ENSALADA de endibias y pollo ENSALADA de escarola ENSALADA de escarola con vieiras ENSALADA de espárragos trigueros ENSALADA de espárragos y huevos ENSALADA de espinacas y zanahorias ENSALADA de frituras ENSALADA de guisantes Índice por temas ENSALADA de guisantes y habas ENSALADA de jamón serrano ENSALADA de JUDÍAS verdes ENSALADA de la ribera ENSALADA de manzana ENSALADA de mollejas de pato y codillo de cerdo ENSALADA de mollejas y jamón ENSALADA de mozzarella ENSALADA de naranjas ENSALADA de pepino ENSALADA de peras ENSALADA de pimiento morróny bacalao ENSALADA de queso azul ENSALADA de queso y tomate ENSALADA de remolacha ENSALADA de setas ENSALADA de soja ENSALADA de temporada ENSALADA de tomate y apioÍndicepor temas ENSALADA de tomate y bacalao ENSALADA de uvas con queso ENSALADA de vainascon bacalao ENSALADA de vainas y aguacates ENSALADA de vainas y paté ENSALADA de Valencia ENSALADA de verduras con frutas ENSALADA de verduras y bacalao ENSALADA de vieiras con mollejas ENSALADA de zanahorias ENSALADA Juan Mari ENSALADA mixta ENSALADA multicolor ENSALADA variada ensaladilla casera Hinojo RELLENO de ENSALADA Lechuga primavera Moje de La SerenaPlátanos rellenos Índice por temas Tomates con aguacates Acelgas bellavista Acelgas con anchoas Acelgas en adobo Acelgas rellenas de carne Ajos tiernos con mollejas y huevos escalfados ALBÓNDIGAS de la huerta Alcachofas al horno ALCACHOFAs con calabaza ALCACHOFAs con jamón ALCACHOFAs con mollejas ALCACHOFAs con patatas ALCACHOFAs con tomate ALCACHOFAs en salsa ALCACHOFAs en vinagreta ALCACHOFAs rebozadas con crema de acelgas Índice por temas Berenjenas con anchoas Berenjena con guisantes Berenjenas gratinadas Berenjenas rellenas de atún Berenjenas rellenas de bacalao Berenjenas rellenas de verduras Berenjenas rellenas dos salsas Boronía Borrajas con guisantes Borrajas gratinadas Brécolcon baconBrécolcon patatas Budín de verduras Calabacína la crema de queso Calabacines rellenos de ajoarriero Calabacines rellenos de gambas Calabaza gratinada Cardo con ALMEJAS Cardo con calamares Índice por temas Cardo con costilla de cerdo Cardo con nueces gratinado Cardo RELLENO Carpaccio vegetal Cebollas rellenas de jamóny carne Champiñones en salsa Charlota de berenjenas y mollejas Cóctel de espárragos Coles de bruselas con jamón Coles de bruselas gratinadas Coliflor con azafrán Coliflor con bacalao Coliflor con espinacas Coliflor con jamón Coliflor con mahonesa Coliflor con vinagreta Coliflor con vino de montil la Coliflor gratinada con piñones Coliflor rebozada Índice por temas Crepes de verdura Crepes rellenos de setas Empanada de ALCACHOFAs Empanadillas de verduras endibias braseadas ENDIBIAS CON salsa de queso endibias gratinadas con mejillones ENSALADA de pochas Escabeche de guisantes Escalivada Espárragos blancos y verdes a la plancha espárragos con bechamel espárragos con salmónEspárragos en cazuela Espinacas a la crema Espinacas con gambas Espinacas en salsa Fritada de pimientos Guisantes con ALMEJASÍndicepor temas Guisantes con gambas Guisantes con huevos escalfados Guisantes con mollejas Habasa la salmantina Habas con calabacín Habas con guisantes Habas frescas con salmón ahumado Habas frescas guisadas Hojaldre de puerros Hojaldre de verduras Hojaldre de acelgas JUDÍAS verdes a la andaluza JUDÍAS verdes con espárragosJUDÍAS verdes con gambasJUDÍAS verdes con jamónJUDÍAS verdes con tomateJUDÍAS verdes en salsaJUDÍAS verdes salteadas La saña de pimientos verdes y rojosÍndicepor temas Menestra de espárragos y pencas Menestra de verduras rebozadas Nabos gratinados Panaché de verduras PASTEL de ALCACHOFAs PASTEL de calabaza PASTEL de espinacas con crema del en tejas PASTEL de puerros con tomate PASTEL de verduras Pencas de acelgas con gambas Pencasmozárabes Pimientos rellenos en hojaldre Pimientos verdes rellenos Pistoa la asturiana Pisto de Calahorra Pisto manchego Pochascon ALAS de patocon fitadas Pochascon Almejas por rusalda Índice por temas Puerros con bechamel Puerros con jamón gratinados Puerros en vinagreta Quiche de espárragos Ragout de vainas Rollitos de endibias Sanjacobos de calabacín Setas gratinadas Tarta de endibias Tarta de requesóncon verduras Tarta de tomate Tartaletas de tomate y mostaza Tartaletas de verduras Terrina de verduras con queso Tomates con huevos al horno Tomates dos gustos Tomates nevados Tomates rellenos de atún Tomates rellenos de polloÍndicepor temas Vainascon mejillones Vainascon salsa española Verduritas crudas Volovanes de setas Zanahorias con bacalao Zanahorias con panceta Patatas ALBÓNDIGAS de patatas Cestitas de puré de patatas ENSALADA de patatas asadas Estofado de patatas con costillar de cerdo Nidos de patatas Patatas a la aragonesa Patatas a la cazuela Patatas a la española Patatas a la riojana Patatas al hornoÍndicepor temas Patatas con ALMEJAS gratinadas Patatas con bacalao Patatas con espinacas y bacalao Patatas con gambas y espinacas Patatas con hinojo y habas Patatas con queso Patatas con rape Patatas con salsa de berros Patatas con vinagreta picante Patatas en salsa verde con ALMEJAS Patatas gratinadas Patatas guisadas Patatas mediterráneas Patatas rellenas Patatas rellenas de chistorra Patatas salteadas Pimientos rellenos de patata Sorpresas de patata Soufflé de patata y salchichas Índice por temas Tarta de patata y cebolla Arroza la marinera Arroza la milanesa Arroza la zamorana Arroz al cava Arroz al forn Arroz blanco con uvas Arroz con ALMEJAS Arroz con calabacines Arroz con calamares al azafrán Arroz con champiñones Arroz con cordero Arroz con embutidos Arroz con mejillones Arroz con verduras y ALMEJAS Arroz con verduras y raboÍndicepor temas Arroz cuatro del icias Arroz familiar Arroz frito Arroz gratinado Arroz hervido en salsa verde Arroz integr al con verduras Arroz negro con calamares Arroz pescador Empedrat ENSALADA de arroz ENSALADA de arroz integr al con piña ENSALADA de arroz y PLÁTANO Paella de conejo Paella sencilla Potaje de arroz con garbanzos Canelones con espinacas Índice por temas Canelones de bonito Canelones de carne Canelones de mejillones Canelones rebozados Canelones rellenos de paté Canelones rellenos de pescado Canelones rellenos de verdura Cintasa la crema Cintascon tomate y queso Cintascon verduras Coditos con brécol ENSALADA de macarrones ENSALADA de pasta de colores ENSALADA de pasta y bonito fresco ENSALADA de pasta y cordero Espaguetis a la al bahaca Espaguetis con ciruelas pasas Espaguetis con gambas y espinacas Espaguetis con huevoÍndicepor temas Espaguetis con kokotxas Espirales con anchoas Espirales de pasta con mollejas de pato Fideoscon ALMEJAS Hojaldre RELLENO La saña de atún La saña de calabacines La saña de pescado y marisco La saña de primavera La saña de verduras La sañafría de vera no Macarronesal queso Macarrones con bacalao Macarrones con carne Macarrones con leche Macarrones con tomate Macarrones marineros Pasta con habas Pasta con marisco y piñonesÍndicepor temas Pasta con nata y aceitunas negras Pasta con oreja de cerdo Pasta con setas Pasta picantita Pasta salteada con atún Pasta salteada con setas y huevo escalfado PASTEL de pasta Pizzaa tugusto Pizza de bonito y queso Pizza de brécol Pizza de rabo de vaca Pizza marinera Pizza napolitana Pizzas falsas Ravioli con salsa de pimientos Salteado de pasta y verduras Tallarines boloñesa Tallarines con carne Tallarines con pescado Índice por temas Tallarines revueltos Volován de pasta Legumbres ALUBIAS ALUBIAS blancas con calamares ALUBIAS blancas con choriceros ALUBIAS blancas con JUDÍAS ALUBIAS blancas con sangrecillas ALUBIAS blancas con vieiras ALUBIAS blancas fritas Alubias con calabaza Alubias con cola de cerdo Alubias con puré de berza Alubias con zancarrón de cordero ALUBIAS estofadas ALUBIAS negras con bolitas de carne ALUBIAS negras con verduras Índice por temas Cocido de ALUBIAS blancas ENSALADA de ALUBIAS blancas ENSALADA de ALUBIAS blancas con bacalao JUDÍAS blancas con ALAS de patoJUDÍAS blancas en ENSALADA tibiaJUDÍAS estofadas con tomillo JUDÍAS guisadas Potaje de ALUBIAS coloradas con bacalao Garbanzos Bolitas de garbanzos ENSALADA de garbanzos pelados ENSALADA de garbanzos y sardinas Garbanzos al azafrán Garbanzos con ALMEJAS Garbanzos con arroz y espinacas Garbanzos con bacalao Garbanzos con mejillón Garbanzos con pollo en escabeche Índice por temas Garbanzos con salmón Garbanzos con tomates Garbanzos con tortas de pan Garbanzos con tortellini Garbanzos con tropiezos Garbanzos fritos con huevos Lentejas ENSALADA DE en tejas Lentejas con al itas de pollo Lentejas con cuellos de cordero Lentejas con foie-gras Lentejas con mollejas Lentejas con verduras Lentejas guisadas Lentejas posaderas Otras legumbres ENSALADA DE LEGUMBREs con jamónÍndicepor temas ENSALADA DE LEGUMBREs y soja Habas secascon pulpo Potaje canario POTAJE CASTELLANO Potaje con bacalao Caldo gallego Con somé al aroma de ajoConsomé de pasta con soméfrío Crema de acelgas con pencas Crema de apio Crema de calabacín con salmón Crema de calabaza Crema de champiñón Crema de coliflor Crema de espárragos con ALMEJASÍndicepor temas Crema de espárragos verdes con vieiras Crema de guisantes con tropiezos Crema del en tejascon codorniz Crema de mejillones Crema de níspero Crema de pavo Crema de puerros con espárragos Gazpacho de triguerosPuré de apio y zanahoriaPuré de berenjenasPurédel egumbres con refritoPuré de ortigas Sopa casera Sopa con huevo y pimentón Sopa de aguacate Sopa de arroz Sopa de arroz con caldo Sopa de arroz con rape Sopa de azafránÍndicepor temas Sopa de berros Sopa de bonito Sopa de calabacín Sopa de calabaza Sopa de cebolla Sopa de cebolla con fideos Sopa de coliflor Sopa de espárragos con gambas Sopa de garbanzos Sopa de higadillos SOPA del en tejascon arroz Sopa de melóny gambas Sopa de pasta Sopa de pescado Sopa de tapioca Sopa de tomate Sopa de tomate campestre Sopa de zanahorias Sopafría de pepinoÍndicepor temas Sopafría de tomate ALAS finas hierbas Sopa italiana de verduras Sopa juliana de aveSopa rápida de verduras Sopa riojana Sopa salamandroña Sopa sencil la Sopa tropic al Sopas de ajo tostadas Tipu la krema Vichyssoise al aroma de apio Huevos Cazuelitas de huevos escondidos Huevosa la reina Huevos al plato huevos con espárragos huevos con jamóny salsa holandesa Índice por temas huevos con salsa bretona Huevos duros gratinados Huevos en cazuela con tomate Huevos escalfados con champiñones Huevos escalfados y gratinados Huevos florentina Huevos fritos con chorizo en brick Huevos templados con gelatina Revuelto de anchoas y espárragos Revuelto de arroz con tropiezos Revuelto de bacalao con salsa de calamares Revuelto de espárragos y bacon Revuelto de gambas y setascon pimientos del piquil lo Revuelto de higadillos y mollejas de pollo Revuelto de jamón serrano Revuelto de la ngostinos con acelgas Revuelto de mollejas con fitadas Revuelto de pisto Revuelto de salmóny ajos frescos Índice por temas Revuelto de sesos Revuelto de verduras Tortil la al ESTILO de Burgos Tortil la con calabacines Tortil la con tomate Tortil la de anchoas Tortil la de coliflor Tortil la especi al de patata Tortil la rellena de bacalao Tortil la Sacromonte Volovanes con huevo Vacu no Al bóndigascon champiñonesAlbóndigascon queso Brazo de temera RELLENO Brocheta de carneÍndicepor temas CALDERILLO Callos y morros en salsa Carajaca Carne mechada Carpaccio de ternera con queso Carrilleras con salsa de queso Chuletas gratinadas con queso costilla de ternera asada Escalope milanesa Escalopes de ternera con salsa de ALMENDRAS Estofado de rabo de vaca Estofado de toro con verduras Falda de ternera al horno Falda de ternera estofada Filetes de hígado rellenos Filetes sorpresa Fricandó de ternera Guisote de rabo Hamburguesasal jerezÍndicepor temas Hamburguesas sorpresa Hígado de vacaa la mostaza Lengua de ternera a la jardinera Lengua de ternera en salsa Lengua en salsa de mostaza Lonchitas de ternera al txakoli Mollejas de ternera al cava Pimientos rellenos de rabo Pinchos de hígado Redondo frío con ensaladilla Riñoncitos fritos Rollitos de carne y quesoa la pimienta verdeSan jacobo de hígado Sesoscon salsa de tomate Sesos de ternera a la pimienta verde Sesos rebozados en fritada Ternera fríaa la bilbaínaÍndicepor temas Cerdo Cerdo con guarnición de frutas Chuletas con salsa españolaytuétano Chuletas de cerdo con MEMBRILLO Chuletas de cerdo con miel Chuletas de cerdo con salsa de perejil Chuletas de cerdo con salsa de tuétano Chuletas rellenas Cinta de cerdo asada con costra de sal codillo asado costilla de cerdo al tomillo costilla de cerdo asada Empanadillas de cerdo ENSALADA de solomil lo Flamenquines Jamón asado con salsasJamón serrano con salsa holandesa Jamón serrano RELLENO La saña de jamón serrano Índice por temas Lengua de cerdo en fritada Lengua de cerdo en cebollada Lomo de CERDO A la crema Lomo de cerdo al aroma de vodka Lomo de cerdo asado Lomo de cerdo con ALMENDRAS Magras de jamón con tomate Manitas de cerdo en fritada Manitas de cerdo guisadas Manitas de cerdo rellenas Medallones de cerdoPaté casero Pinchos morunos Quiche de jamón Rollitos de jamón Sanjacobos de cerdo Solomillitos de cerdo al cava Solomil lo a la normanda Solomil lo de cerdo al jerezÍndicepor temas Solomil lo de cerdo con cebolla con fitada Solomil lo de cerdo con ciruelas Terrina de jamón cocido Cordero Asaduril la de cordero al vino blanco Brocheta de cordero Chuletillas de cordero a la gabardina Chuletitas de cordero a la parrilla Chuletitas de cordero con manzanas Chuletitas de cordero con salsa cazadora Chuletitas de cordero en cebolladas Cochifrito Cordero al chilindrón Cordero al tomillo Cordero asado al vinagre Cordero con patatas Cordero con setasÍndicepor temas Cordero en salsa de choriceros costilla de cordero al romero Guiso de cordero Hígado de cordero salteado Manitas de cordero con rabo de vaca Manitas de cordero en salsa Mollejas de cordero al AJILLO Pierna de cordero a la naranja Pierna de cordero salteada Riñones de cordero al vino tinto con pastaRiñones de cordero en cebollados Sorpresas de mollejas y pistoCONEJO Conejo a la cerveza Conejo a la jardinera CONEJO al azafránCONEJO CON aceitunas CONEJO CON ALCACHOFAs Índice por temasCONEJO CON arroz y pimientos CONEJO CON ciruelas pasasCONEJO CON lentejas CONEJO CON mostaza CONEJO CON nuecesCONEJO CON pistoCONEJO de monte en menestra CONEJO en adoboCONEJO picante Guiso de conejo con majado Aves y caza Aves de corr al: pollo y pavo ALAS DE POLLO al AJILLO ALAS DE POLLO al brandy ALAS de pollo con brochetas de pimiento y tomate ALAS de pollo con jamónÍndicepor temasAlbóndigas de pollo Brocheta de pollo en adobo Brochetas de champiñones y polloCóctel de pollo y marisco Guiso de pollo con patatasMus lo de pavo RELLENO Muslos de pavo al limón Muslos de pavo estofados Muslos de POLLO A la barbacoa Muslos de pollo guisados Muslos de pollo picantes Muslos de pollo rellenos Pavo con calabacín Pavo en escabeche a la antigua Pechuga de pavo con mostaza Pechuga de pavo con pimientos Pechugas de pavo con puré de castañas Pechugas de pavo en salsa Pechugas de pollo agridulce Índice por temas Pechugas de pollo al oporto Pechugas de pollo con champiñones Pechugas de pollo rellenas Pechugas de pollo villeroi Pimientos rellenos de pollo y pavo POLLO A la andaluza POLLO A la canela POLLO A la florentina POLLO A la jardinera POLLO A la mostaza POLLO A la naranja pollo adobado pollo asado con bacon pollo asado con peras pollo asado con tomates pollo con berros pollo con guisantes pollo con pasta pollo con pimientos rojosÍndicepor temas pollo con piña pollo con uvas pollo con verduras pollo en escabeche pollo escalfado a la sidra pollo estofado de las Palmas pollo guisado con cerveza Pollos tomateros a la parrilla Rollitos de pollo Salpicón de pollo y cerdo Sanjacobos de pavo Supremas de pollo con plátanos Caza: Becadas, codornices, jabalíes, liebres, palomas, patos, perdices Becadasal costrón Brocheta de paloma y perdiz Civetdel iebre Codornices a la segoviana Índice por temas Codornices con pimientos verdes Codornices con tomate Codornices con uvas Codornices en fritada Codornices escabechadas Codornices salteadas ENSALADA de perdices con gazpachoJab al íestofado Lomo de jab al í marinado Magret de patoa la parrilla Magret de patocon vino espumoso Paloma asada Palomacon vinagre Paloma rellena Palomasal vino tinto Patoa la naranja Pato asado Pechuga de patoa la miel Perdices con chocolate Índice por temas Perdices rellenas Perdiz en ENSALADA CON atún Perdiz estofada ALBÓNDIGAS de bacalao en salsaAlbóndigas de verd el en salsa verde ALMEJAS al horno Almejas con espinacas Anchoas a la cazuela con cebolla Anchoas al papillote Anchoas rellenas Atún aromáticoAtún asadoAtún en fritada con vinagre Bacalao ajoarriero Bacalao al al ioli Bacalao al pil-pilÍndicepor temas Bacalao con migas Bacalao con salsa de pimientos verdes Bacalao con tomate Bacalao con vinagreta Bacalao fresco al horno Bacalao fresco con SALSA TÁRTARA Bacalao mechado Besugo al horno Bocaditos de anchoas con tomate Bonito con pimiento verde Bonito con salsa de chipirón Bonito en cebollado Bonito fresco al jerez Bonito macerado Boquerones malagueños Brochetas de pescado con verduras Buñuelos de bacalaoCab al la en adoboCab al la y mejillones en vinagreta caliente Índice por temas Calamares a la vinagreta negra Calamares al vino blanco Calamares con patatas Calamares en su tinta Calamares fritos Carpa al azafrán con ALMEJAS Carpaccio de atún fresco Carrilleras de rape con calabacínCazóncon tocineta cazuela de fideos cazuela del pescador Chicharro a la mostaza Chicharro bellavista Chicharro con tomate al horno Cogote de salmón al horno Colas de rape asadas con vinagre Con grioa la sidra con grio al azafrán con grio al pimentónÍndicepor temasCon griocon patatas y Almejas con griocon tomate con grio de primavera Croquetas de atún del icias de bonito Empanada de atún ENSALADA de bacalao ENSALADA de bonito fresco con anchoas y queso ENSALADA de chipirones y atún ENSALADA de pulpo ENSALADA de tomate con bonito marinado ENSALADA templada de rape ENSALADA tibia de vieiras Escalivada con bacalao Escalopes de mero al tomillo Escalopes de salmón con crema de JUDÍAS verdes Espuma de la ngostinos Fanecacon crema de mejillones Fanecacon setas y ALCACHOFAs Índice por temas Faneca en salga Filetes de gal lo a la florentina Filetes de gal lo al hinojo Filetes de gal lo al vino blanco Filetes de gal lo rellenos de espárragos Filetes de PESCADILLA rellenos Filetes de verd el al vino blanco Frito mixto de marGallineta con patatasGal lo a la parrillaGal lo con setas Gallosa la molinera Galloscon salsa de ALMEJAS Gambas al AJILLO Guiso de bacalao Guiso de mejillones Hojaldre de salmón Itxaskabra al aroma de pimentónJur el con anchoas Índice por temas Kokotxas club ranero Kokotxas con refrito picante Kokotxas de bacalao con guisantes La ngostinosal horno La saña de anchoas y tomate Lenguado al horno Lenguado en su jugo Locha al vapor con crema de verduras Lubina del norte Marmitako de bonito Mejillones a la marinera Mejillones a la pimienta verde Mejillones al horno Mejillones al jerez Mejillones con patatas Mejillones con queso gratinados Mejillones con cassé Mejillones en fritada Mejillones rellenos Índice por temas Merluza al curry Merluza al horno Merluza bellavista Merluza con marisco Merluza en ajadaa la gallega Merluza en salsa roja Meroa la naranja Mero al ESTILO canario Mero al vino blanco Merocon sofrito de tomate Mero en papillote Mojarra en adobo Mojarra en salsaa la riojana Mousse de pescado y pimientos PASTEL de gambas y mejillones PASTEL de pescado Pastelitos de bonito y pimientos Perlón cocido en salsa Perlón en salsa verdeÍndicepor temas PESCADILLA a la rabiosa PESCADILLA asada PESCADILLA con pisto PESCADILLA con setas PESCADILLA en cebollada PESCADILLA rellena Pescadillas con crema de queso Pescadito frito Pescado en hojaldre Pimientos del piquil lo rojos rellenos de chipirones Pimientos rellenos de PESCADILLA Pincho de pescado con refrito Pintarroja a la caseraPudín de pescado Pulpo guisado Ragout de pescado Rapea la americana Rape al angostado Rape con al medrasÍndicepor temas Rape en salsa Rape RELLENO de gambas Rayaa la sidra Rayacon salsa de cebolla Rayacon salsa de frambuesa Rayacon setas y guisantes Rodab al lo a la gallega Rodab al lo al horno Rodab al lo mediterráneo Rodajas de merluza al azafrán Rollitos de gal lo Salmóna la jardinera Salmóna la plancha con verduras Salmón al vapor Salmón con crema de puerros Salmón con patatas al horno Salmón con salsa de limón Salmón en escabeche Salmón fresco con refrito de sidraÍndicepor temas Salmonetes a la mantequilla Salmonetes al azafrán Salmonetes al horno Salmonetes con fritada de cebolla Salmonetes con tomate Salmonetes marinadosal horno Salmonetes sobre crema de guisantes Salpicón de mejillonesSan jacobos de anchoas al bardadosSan jacobos de rape Sardinas al horno Sardinas con tomate Sardinas fritas Sardinas guisadas Sardinas rebozadas Sardinas rellenas Sargo asado con patatas panadera Terrina de salmón con habasTol la con cebollitas Índice por temas Truchas a la cazuela Truchas a la naranja Truchasal horno Truchasal jerez Truchas con crema de berros Truchas escabechadas Truchas segovianas Txangurro al horno Ventresca de bonito al estragón Verd el y chicharro con cerveza Vieiras a la gallega Vieiras con COSTRA DE HOJALDRE Vieiras con queso Vieiras rellenas Volovanes de marisco Zarzue la de pescado y mariscos Índice por temas Arroz con leche gratinado Arroz dulce al azafrán Batido de chocolate Batido de macedonia Batido de peras Batido de plátano Batido de plátano chocolateado Batido de vera no Bienmellevo Biscuit de frambuesas Bizcocho 1-2-3 Bizcocho con dulce de leche Bizcocho de al mendra Bizcocho de café con salsa de naranja Bizcocho de frutos secos y café Bizcocho de pera con ALMENDRAS Bizcocho de YOGUR Bizcocho de YOGUR y chocolate Bomba heladaÍndicepor temas Brazo de gita no Brocheta de frutasBuñuelos de manzana Buñuelos de plátano caramelo de miel con queso frescoCítricosa la menta Compota Copa de espuma de requesón Copa de la casa Copa de melocotón Copas de galleta y melocotón Corona de fresas Coronadel imónconpuréplátano Cremaa la catalana Crema catalana con frambuesas Crema de aguacate Crepes de naranja y crepes pasas Cuajado de nuezCup de frutasÍndicepor temasCup de vino Empanadillas de frutas ENSALADA de frutas con miel Espuma de plátano Euskalgoxo Filloas Flan de café Flan de chocolate con Chantilly Flan de coco Flan de dulce de leche Flan de guindas Flan de manzana Flan de naranja Flan de pana la canela Flan de pancon mermelada Flan de tocino de melocotón Fritos dulces Fruta en papillote Frutas con YOGURÍndicepor temas Frutas escondidas Galletas de calabaza Galletas de maíz Helado de bizcocho y avellanas Helado de plátano con chocolate Hojaldre de crema Hojaldre de frutas Hojaldre de pasas y al baricoques Hojaldre frutado Kiwis gratinados Leche asada canaria Leche cuajada Leche frita Leche fritacon natillas Limones rellenos Macedonia de plátanos Manzanas a la crema Manzanas al caramelo Manzanas al vino tintoÍndicepor temas Manzanas asadas con salsa de vino Manzanas horneadas Melocotones con crema Melocotones con cuajada Melocotones rellenos Melón con canelaMelónconplátano Mona de pascua Mousse de chocolate Mousse de limón Mousse de naranja Mousse de turrón Moussefácil de limón Naranjas caramelizadas Naranjas con aceite de oliva Naranjas con crema y PLÁTANO Naranjas con miel Naranjas nevadas Naranjas rellenas Índice por temas Naranjas y PLÁTANOs gratinados Natillas con suspiros Nísperos asados Orejas Panecillos de Ávila Paparajotes PASTEL de bizcocho y pistachos PASTEL de chocolate y frambuesas PASTEL de galletas PASTEL de nueces PASTEL de peras PASTEL de queso con kiwi y PLÁTANO PASTEL de queso con melocotón PASTEL de uvaPeras a la crema Peras al vapor de menta Peras con crema al café Peras dulces con nata Pinchos de frutasÍndicepor temasPiña rellena Plátanos con galletas Plátanos con naranja al hornoPlátanos flambeados Profiteroles con caramelo y chocolate Pudín de fresasPudín de frutas del bosquePudín de manzana Pudín de manzana y PLÁTANO Quesada pasiega Rosa de piñay mandarina Rosada de plátanos Roscón de reyes Rosquillas de anís Rosquillas fritas Sandía rellena Sopa de frutas Sopa de leche y nueces Sorbete de chirimoya Índice por temas Soufflé casero Soufflé de mango Soufflé de melón Soufflé de naranja Tarta de ALMENDRAS Tarta de ángel Tarta de arroz con macedonia Tarta de arroz con pasas Tarta de coco Tarta de fresas Tarta de fresas con crema Tarta de fresas y frutos secos Tarta de frutas pasas Tarta de galletas Tarta de higos Tarta de kiwi Tarta de la ABUELA Tarta de limón Tarta de manzana Índice por temas Tarta de melocotón Tarta de melocotóncon ALMENDRAS Tarta de nata y chocolate Tarta de pasas y nueces Tarta de pera caramelizada Tarta de peras Tarta de piña con ALMENDRAS Tarta de piña con crema Tarta de plátanos Tarta de queso Tarta de queso y frutas Tarta de Santiago Tarta de uvas y PLÁTANOs Tartafácil de frutas Tartafácil de piña Tartafría de limón Tarta helada TartatatínTatín de plátanosÍndicepor temas Torrijasal vino tinto Tortil la Al aska Trufas de chocolate Inicio de página",
+                "Inicio vocabulario Índice por temasÍndicepor temas Volver al sumario ● Recetas Básicas ● saladas ● dulces ● ENSALADAs ● Verduras y hortalizas ● Patatas ● Arroces ● Pastas ● Legumbres: ❍ ALUBIAS ❍ Garbanzos ❍ Lentejas ❍ Otras legumbres ● Sopas y cremas ● Huevos ● Carnes: ● Vacu no ● Cerdo ● Cordero ● CONEJO ● Aves y caza: ❍ Aves de corr al: pollo y pavo ❍ Caza ● Pescados y mariscos ● Postres Saladas Asar pimientos Caldo de carne desalar bacalao Escalfar huevos Fumet de pescado Índice por temas Macerar y marinarPuré de patatas Salsa bechamel y velouté SALSA CON nata para carne Salsa de tomate Salsa española Salsa holandesa Salsa mahonesa, rosaytártara Salsa verde Salsa vinagreta Dulces Bizcocho caramelo Crema pastelera Cremas de frutas Crepes Fundir chocolate Índice por temas Merengue Mermelada Nata montada Pasta quebrada Aguacates rellenos de salmón Arrozfrío en ENSALADA Cogollos con atúny queso Cogollos del echugacon tomate ENSALADA A la menta ENSALADA A la vinagreta de azafrán ENSALADA aragonesa ENSALADA caliente de pescado ENSALADA cariñosa ENSALADA CON nueces ENSALADA CON queso ENSALADA CON refrito de baconÍndicepor temas ENSALADA CON salsa de YOGUR ENSALADA CON vinagreta de aguacate ENSALADA de aguacate y PLÁTANO ENSALADA de aguacates ENSALADA de berenjenas y bacalao ENSALADA de berros ENSALADA de cardo al aroma de mandarina ENSALADA de champiñones ENSALADA de cítricos ENSALADA de colores ENSALADA de endibias ENSALADA de endibias y pollo ENSALADA de escarola ENSALADA de escarola con vieiras ENSALADA de espárragos trigueros ENSALADA de espárragos y huevos ENSALADA de espinacas y zanahorias ENSALADA de frituras ENSALADA de guisantes Índice por temas ENSALADA de guisantes y habas ENSALADA de jamón serrano ENSALADA de JUDÍAS verdes ENSALADA de la ribera ENSALADA de manzana ENSALADA de mollejas de pato y codillo de cerdo ENSALADA de mollejas y jamón ENSALADA de mozzarella ENSALADA de naranjas ENSALADA de pepino ENSALADA de peras ENSALADA de pimiento morróny bacalao ENSALADA de queso azul ENSALADA de queso y tomate ENSALADA de remolacha ENSALADA de setas ENSALADA de soja ENSALADA de temporada ENSALADA de tomate y apioÍndicepor temas ENSALADA de tomate y bacalao ENSALADA de uvas con queso ENSALADA de vainascon bacalao ENSALADA de vainas y aguacates ENSALADA de vainas y paté ENSALADA de Valencia ENSALADA de verduras con frutas ENSALADA de verduras y bacalao ENSALADA de vieiras con mollejas ENSALADA de zanahorias ENSALADA Juan Mari ENSALADA mixta ENSALADA multicolor ENSALADA variada ensaladilla casera Hinojo RELLENO de ENSALADA Lechuga primavera Moje de La SerenaPlátanos rellenos Índice por temas Tomates con aguacates Acelgas bellavista Acelgas con anchoas Acelgas en adobo Acelgas rellenas de carne Ajos tiernos con mollejas y huevos escalfados ALBÓNDIGAS de la huerta Alcachofas al horno ALCACHOFAs con calabaza ALCACHOFAs con jamón ALCACHOFAs con mollejas ALCACHOFAs con patatas ALCACHOFAs con tomate ALCACHOFAs en salsa ALCACHOFAs en vinagreta ALCACHOFAs rebozadas con crema de acelgas Índice por temas Berenjenas con anchoas Berenjena con guisantes Berenjenas gratinadas Berenjenas rellenas de atún Berenjenas rellenas de bacalao Berenjenas rellenas de verduras Berenjenas rellenas dos salsas Boronía Borrajas con guisantes Borrajas gratinadas Brécolcon baconBrécolcon patatas Budín de verduras Calabacína la crema de queso Calabacines rellenos de ajoarriero Calabacines rellenos de gambas Calabaza gratinada Cardo con ALMEJAS Cardo con calamares Índice por temas Cardo con costilla de cerdo Cardo con nueces gratinado Cardo RELLENO Carpaccio vegetal Cebollas rellenas de jamóny carne Champiñones en salsa Charlota de berenjenas y mollejas Cóctel de espárragos Coles de bruselas con jamón Coles de bruselas gratinadas Coliflor con azafrán Coliflor con bacalao Coliflor con espinacas Coliflor con jamón Coliflor con mahonesa Coliflor con vinagreta Coliflor con vino de montil la Coliflor gratinada con piñones Coliflor rebozada Índice por temas Crepes de verdura Crepes rellenos de setas Empanada de ALCACHOFAs Empanadillas de verduras endibias braseadas ENDIBIAS CON salsa de queso endibias gratinadas con mejillones ENSALADA de pochas Escabeche de guisantes Escalivada Espárragos blancos y verdes a la plancha espárragos con bechamel espárragos con salmónEspárragos en cazuela Espinacas a la crema Espinacas con gambas Espinacas en salsa Fritada de pimientos Guisantes con ALMEJASÍndicepor temas Guisantes con gambas Guisantes con huevos escalfados Guisantes con mollejas Habasa la salmantina Habas con calabacín Habas con guisantes Habas frescas con salmón ahumado Habas frescas guisadas Hojaldre de puerros Hojaldre de verduras Hojaldre de acelgas JUDÍAS verdes a la andaluza JUDÍAS verdes con espárragosJUDÍAS verdes con gambasJUDÍAS verdes con jamónJUDÍAS verdes con tomateJUDÍAS verdes en salsaJUDÍAS verdes salteadas La saña de pimientos verdes y rojosÍndicepor temas Menestra de espárragos y pencas Menestra de verduras rebozadas Nabos gratinados Panaché de verduras PASTEL de ALCACHOFAs PASTEL de calabaza PASTEL de espinacas con crema del en tejas PASTEL de puerros con tomate PASTEL de verduras Pencas de acelgas con gambas Pencasmozárabes Pimientos rellenos en hojaldre Pimientos verdes rellenos Pistoa la asturiana Pisto de Calahorra Pisto manchego Pochascon ALAS de patocon fitadas Pochascon Almejas por rusalda Índice por temas Puerros con bechamel Puerros con jamón gratinados Puerros en vinagreta Quiche de espárragos Ragout de vainas Rollitos de endibias Sanjacobos de calabacín Setas gratinadas Tarta de endibias Tarta de requesóncon verduras Tarta de tomate Tartaletas de tomate y mostaza Tartaletas de verduras Terrina de verduras con queso Tomates con huevos al horno Tomates dos gustos Tomates nevados Tomates rellenos de atún Tomates rellenos de polloÍndicepor temas Vainascon mejillones Vainascon salsa española Verduritas crudas Volovanes de setas Zanahorias con bacalao Zanahorias con panceta Patatas ALBÓNDIGAS de patatas Cestitas de puré de patatas ENSALADA de patatas asadas Estofado de patatas con costillar de cerdo Nidos de patatas Patatas a la aragonesa Patatas a la cazuela Patatas a la española Patatas a la riojana Patatas al hornoÍndicepor temas Patatas con ALMEJAS gratinadas Patatas con bacalao Patatas con espinacas y bacalao Patatas con gambas y espinacas Patatas con hinojo y habas Patatas con queso Patatas con rape Patatas con salsa de berros Patatas con vinagreta picante Patatas en salsa verde con ALMEJAS Patatas gratinadas Patatas guisadas Patatas mediterráneas Patatas rellenas Patatas rellenas de chistorra Patatas salteadas Pimientos rellenos de patata Sorpresas de patata Soufflé de patata y salchichas Índice por temas Tarta de patata y cebolla Arroza la marinera Arroza la milanesa Arroza la zamorana Arroz al cava Arroz al forn Arroz blanco con uvas Arroz con ALMEJAS Arroz con calabacines Arroz con calamares al azafrán Arroz con champiñones Arroz con cordero Arroz con embutidos Arroz con mejillones Arroz con verduras y ALMEJAS Arroz con verduras y raboÍndicepor temas Arroz cuatro DELICIAS Arroz familiar Arroz frito Arroz gratinado Arroz hervido en salsa verde Arroz integr al con verduras Arroz negro con calamares Arroz pescador Empedrat ENSALADA de arroz ENSALADA de arroz integr al con piña ENSALADA de arroz y PLÁTANO Paella de conejo Paella sencilla Potaje de arroz con garbanzos Canelones con espinacas Índice por temas Canelones de bonito Canelones de carne Canelones de mejillones Canelones rebozados Canelones rellenos de paté Canelones rellenos de pescado Canelones rellenos de verdura Cintasa la crema Cintascon tomate y queso Cintascon verduras Coditos con brécol ENSALADA de macarrones ENSALADA de pasta de colores ENSALADA de pasta y bonito fresco ENSALADA de pasta y cordero Espaguetis a la al bahaca Espaguetis con ciruelas pasas Espaguetis con gambas y espinacas Espaguetis con huevoÍndicepor temas Espaguetis con kokotxas Espirales con anchoas Espirales de pasta con mollejas de pato Fideoscon ALMEJAS Hojaldre RELLENO La saña de atún La saña de calabacines La saña de pescado y marisco La saña de primavera La saña de verduras La sañafría de vera no Macarronesal queso Macarrones con bacalao Macarrones con carne Macarrones con leche Macarrones con tomate Macarrones marineros Pasta con habas Pasta con marisco y piñonesÍndicepor temas Pasta con nata y aceitunas negras Pasta con oreja de cerdo Pasta con setas Pasta picantita Pasta salteada con atún Pasta salteada con setas y huevo escalfado PASTEL de pasta Pizzaa tugusto Pizza de bonito y queso Pizza de brécol Pizza de rabo de vaca Pizza marinera Pizza napolitana Pizzas falsas Ravioli con salsa de pimientos Salteado de pasta y verduras Tallarines boloñesa Tallarines con carne Tallarines con pescado Índice por temas Tallarines revueltos Volován de pasta Legumbres ALUBIAS ALUBIAS blancas con calamares ALUBIAS blancas con choriceros ALUBIAS blancas con JUDÍAS ALUBIAS blancas con sangrecillas ALUBIAS blancas con vieiras ALUBIAS blancas fritas Alubias con calabaza Alubias con cola de cerdo Alubias con puré de berza Alubias con zancarrón de cordero ALUBIAS estofadas ALUBIAS negras con bolitas de carne ALUBIAS negras con verduras Índice por temas Cocido de ALUBIAS blancas ENSALADA de ALUBIAS blancas ENSALADA de ALUBIAS blancas con bacalao JUDÍAS blancas con ALAS de patoJUDÍAS blancas en ENSALADA tibiaJUDÍAS estofadas con tomillo JUDÍAS guisadas Potaje de ALUBIAS coloradas con bacalao Garbanzos Bolitas de garbanzos ENSALADA de garbanzos pelados ENSALADA de garbanzos y sardinas Garbanzos al azafrán Garbanzos con ALMEJAS Garbanzos con arroz y espinacas Garbanzos con bacalao Garbanzos con mejillón Garbanzos con pollo en escabeche Índice por temas Garbanzos con salmón Garbanzos con tomates Garbanzos con tortas de pan Garbanzos con tortellini Garbanzos con tropiezos Garbanzos fritos con huevos Lentejas ENSALADA DE en tejas Lentejas con al itas de pollo Lentejas con cuellos de cordero Lentejas con foie-gras Lentejas con mollejas Lentejas con verduras Lentejas guisadas Lentejas posaderas Otras legumbres ENSALADA DE LEGUMBREs con jamónÍndicepor temas ENSALADA DE LEGUMBREs y soja Habas secascon pulpo Potaje canario POTAJE CASTELLANO Potaje con bacalao Caldo gallego Con somé al aroma de ajoConsomé de pasta con soméfrío Crema de acelgas con pencas Crema de apio Crema de calabacín con salmón Crema de calabaza Crema de champiñón Crema de coliflor Crema de espárragos con ALMEJASÍndicepor temas Crema de espárragos verdes con vieiras Crema de guisantes con tropiezos Crema del en tejascon codorniz Crema de mejillones Crema de níspero Crema de pavo Crema de puerros con espárragos Gazpacho de triguerosPuré de apio y zanahoriaPuré de berenjenasPurédel egumbres con refritoPuré de ortigas Sopa casera Sopa con huevo y pimentón Sopa de aguacate Sopa de arroz Sopa de arroz con caldo Sopa de arroz con rape Sopa de azafránÍndicepor temas Sopa de berros Sopa de bonito Sopa de calabacín Sopa de calabaza Sopa de cebolla Sopa de cebolla con fideos Sopa de coliflor Sopa de espárragos con gambas Sopa de garbanzos Sopa de higadillos SOPA del en tejascon arroz Sopa de melóny gambas Sopa de pasta Sopa de pescado Sopa de tapioca Sopa de tomate Sopa de tomate campestre Sopa de zanahorias Sopafría de pepinoÍndicepor temas Sopafría de tomate ALAS finas hierbas Sopa italiana de verduras Sopa juliana de aveSopa rápida de verduras Sopa riojana Sopa salamandroña Sopa sencil la Sopa tropic al Sopas de ajo tostadas Tipu la krema Vichyssoise al aroma de apio Huevos Cazuelitas de huevos escondidos Huevosa la reina Huevos al plato huevos con espárragos huevos con jamóny salsa holandesa Índice por temas huevos con salsa bretona Huevos duros gratinados Huevos en cazuela con tomate Huevos escalfados con champiñones Huevos escalfados y gratinados Huevos florentina Huevos fritos con chorizo en brick Huevos templados con gelatina Revuelto de anchoas y espárragos Revuelto de arroz con tropiezos Revuelto de bacalao con salsa de calamares Revuelto de espárragos y bacon Revuelto de gambas y setascon pimientos del piquil lo Revuelto de higadillos y mollejas de pollo Revuelto de jamón serrano Revuelto de la ngostinos con acelgas Revuelto de mollejas con fitadas Revuelto de pisto Revuelto de salmóny ajos frescos Índice por temas Revuelto de sesos Revuelto de verduras Tortil la al ESTILO de Burgos Tortil la con calabacines Tortil la con tomate Tortil la de anchoas Tortil la de coliflor Tortil la especi al de patata Tortil la rellena de bacalao Tortil la Sacromonte Volovanes con huevo Vacu no Al bóndigascon champiñonesAlbóndigascon queso Brazo de temera RELLENO Brocheta de carneÍndicepor temas CALDERILLO Callos y morros en salsa Carajaca Carne mechada Carpaccio de ternera con queso Carrilleras con salsa de queso Chuletas gratinadas con queso costilla de ternera asada Escalope milanesa Escalopes de ternera con salsa de ALMENDRAS Estofado de rabo de vaca Estofado de toro con verduras Falda de ternera al horno Falda de ternera estofada Filetes de hígado rellenos Filetes sorpresa Fricandó de ternera Guisote de rabo Hamburguesasal jerezÍndicepor temas Hamburguesas sorpresa Hígado de vacaa la mostaza Lengua de ternera a la jardinera Lengua de ternera en salsa Lengua en salsa de mostaza Lonchitas de ternera al txakoli Mollejas de ternera al cava Pimientos rellenos de rabo Pinchos de hígado Redondo frío con ensaladilla Riñoncitos fritos Rollitos de carne y quesoa la pimienta verdeSan jacobo de hígado Sesoscon salsa de tomate Sesos de ternera a la pimienta verde Sesos rebozados en fritada Ternera fríaa la bilbaínaÍndicepor temas Cerdo Cerdo con guarnición de frutas Chuletas con salsa españolaytuétano Chuletas de cerdo con MEMBRILLO Chuletas de cerdo con miel Chuletas de cerdo con salsa de perejil Chuletas de cerdo con salsa de tuétano Chuletas rellenas Cinta de cerdo asada con costra de sal codillo asado costilla de cerdo al tomillo costilla de cerdo asada Empanadillas de cerdo ENSALADA de solomil lo Flamenquines Jamón asado con salsasJamón serrano con salsa holandesa Jamón serrano RELLENO La saña de jamón serrano Índice por temas Lengua de cerdo en fritada Lengua de cerdo en cebollada Lomo de CERDO A la crema Lomo de cerdo al aroma de vodka Lomo de cerdo asado Lomo de cerdo con ALMENDRAS Magras de jamón con tomate Manitas de cerdo en fritada Manitas de cerdo guisadas Manitas de cerdo rellenas Medallones de cerdoPaté casero Pinchos morunos Quiche de jamón Rollitos de jamón Sanjacobos de cerdo Solomillitos de cerdo al cava Solomil lo a la normanda Solomil lo de cerdo al jerezÍndicepor temas Solomil lo de cerdo con cebolla con fitada Solomil lo de cerdo con ciruelas Terrina de jamón cocido Cordero Asaduril la de cordero al vino blanco Brocheta de cordero Chuletillas de cordero a la gabardina Chuletitas de cordero a la parrilla Chuletitas de cordero con manzanas Chuletitas de cordero con salsa cazadora Chuletitas de cordero en cebolladas Cochifrito Cordero al chilindrón Cordero al tomillo Cordero asado al vinagre Cordero con patatas Cordero con setasÍndicepor temas Cordero en salsa de choriceros costilla de cordero al romero Guiso de cordero Hígado de cordero salteado Manitas de cordero con rabo de vaca Manitas de cordero en salsa Mollejas de cordero al AJILLO Pierna de cordero a la naranja Pierna de cordero salteada Riñones de cordero al vino tinto con pastaRiñones de cordero en cebollados Sorpresas de mollejas y pistoCONEJO Conejo a la cerveza Conejo a la jardinera CONEJO al azafránCONEJO CON aceitunas CONEJO CON ALCACHOFAs Índice por temasCONEJO CON arroz y pimientos CONEJO CON ciruelas pasasCONEJO CON lentejas CONEJO CON mostaza CONEJO CON nuecesCONEJO CON pistoCONEJO de monte en menestra CONEJO en adoboCONEJO picante Guiso de conejo con majado Aves y caza Aves de corr al: pollo y pavo ALAS DE POLLO al AJILLO ALAS DE POLLO al brandy ALAS de pollo con brochetas de pimiento y tomate ALAS de pollo con jamónÍndicepor temasAlbóndigas de pollo Brocheta de pollo en adobo Brochetas de champiñones y polloCóctel de pollo y marisco Guiso de pollo con patatasMus lo de pavo RELLENO Muslos de pavo al limón Muslos de pavo estofados Muslos de POLLO A la barbacoa Muslos de pollo guisados Muslos de pollo picantes Muslos de pollo rellenos Pavo con calabacín Pavo en escabeche a la antigua Pechuga de pavo con mostaza Pechuga de pavo con pimientos Pechugas de pavo con puré de castañas Pechugas de pavo en salsa Pechugas de pollo agridulce Índice por temas Pechugas de pollo al oporto Pechugas de pollo con champiñones Pechugas de pollo rellenas Pechugas de pollo villeroi Pimientos rellenos de pollo y pavo POLLO A la andaluza POLLO A la canela POLLO A la florentina POLLO A la jardinera POLLO A la mostaza POLLO A la naranja pollo adobado pollo asado con bacon pollo asado con peras pollo asado con tomates pollo con berros pollo con guisantes pollo con pasta pollo con pimientos rojosÍndicepor temas pollo con piña pollo con uvas pollo con verduras pollo en escabeche pollo escalfado a la sidra pollo estofado de las Palmas pollo guisado con cerveza Pollos tomateros a la parrilla Rollitos de pollo Salpicón de pollo y cerdo Sanjacobos de pavo Supremas de pollo con plátanos Caza: Becadas, codornices, jabalíes, liebres, palomas, patos, perdices Becadasal costrón Brocheta de paloma y perdiz Civetdel iebre Codornices a la segoviana Índice por temas Codornices con pimientos verdes Codornices con tomate Codornices con uvas Codornices en fritada Codornices escabechadas Codornices salteadas ENSALADA de perdices con gazpachoJab al íestofado Lomo de jab al í marinado Magret de patoa la parrilla Magret de patocon vino espumoso Paloma asada Palomacon vinagre Paloma rellena Palomasal vino tinto Patoa la naranja Pato asado Pechuga de patoa la miel Perdices con chocolate Índice por temas Perdices rellenas Perdiz en ENSALADA CON atún Perdiz estofada ALBÓNDIGAS de bacalao en salsaAlbóndigas de verd el en salsa verde ALMEJAS al horno Almejas con espinacas Anchoas a la cazuela con cebolla Anchoas al papillote Anchoas rellenas Atún aromáticoAtún asadoAtún en fritada con vinagre Bacalao ajoarriero Bacalao al al ioli Bacalao al pil-pilÍndicepor temas Bacalao con migas Bacalao con salsa de pimientos verdes Bacalao con tomate Bacalao con vinagreta Bacalao fresco al horno Bacalao fresco con SALSA TÁRTARA Bacalao mechado Besugo al horno Bocaditos de anchoas con tomate Bonito con pimiento verde Bonito con salsa de chipirón Bonito en cebollado Bonito fresco al jerez Bonito macerado Boquerones malagueños Brochetas de pescado con verduras Buñuelos de bacalaoCab al la en adoboCab al la y mejillones en vinagreta caliente Índice por temas Calamares a la vinagreta negra Calamares al vino blanco Calamares con patatas Calamares en su tinta Calamares fritos Carpa al azafrán con ALMEJAS Carpaccio de atún fresco Carrilleras de rape con calabacínCazóncon tocineta cazuela de fideos cazuela del pescador Chicharro a la mostaza Chicharro bellavista Chicharro con tomate al horno Cogote de salmón al horno Colas de rape asadas con vinagre Con grioa la sidra con grio al azafrán con grio al pimentónÍndicepor temasCon griocon patatas y Almejas con griocon tomate con grio de primavera Croquetas de atún DELICIAS de bonito Empanada de atún ENSALADA de bacalao ENSALADA de bonito fresco con anchoas y queso ENSALADA de chipirones y atún ENSALADA de pulpo ENSALADA de tomate con bonito marinado ENSALADA templada de rape ENSALADA tibia de vieiras Escalivada con bacalao Escalopes de mero al tomillo Escalopes de salmón con crema de JUDÍAS verdes Espuma de la ngostinos Fanecacon crema de mejillones Fanecacon setas y ALCACHOFAs Índice por temas Faneca en salga Filetes de gal lo a la florentina Filetes de gal lo al hinojo Filetes de gal lo al vino blanco Filetes de gal lo rellenos de espárragos Filetes de PESCADILLA rellenos Filetes de verd el al vino blanco Frito mixto de marGallineta con patatasGal lo a la parrillaGal lo con setas Gallosa la molinera Galloscon salsa de ALMEJAS Gambas al AJILLO Guiso de bacalao Guiso de mejillones Hojaldre de salmón Itxaskabra al aroma de pimentónJur el con anchoas Índice por temas Kokotxas club ranero Kokotxas con refrito picante Kokotxas de bacalao con guisantes La ngostinosal horno La saña de anchoas y tomate Lenguado al horno Lenguado en su jugo Locha al vapor con crema de verduras Lubina del norte Marmitako de bonito Mejillones a la marinera Mejillones a la pimienta verde Mejillones al horno Mejillones al jerez Mejillones con patatas Mejillones con queso gratinados Mejillones con cassé Mejillones en fritada Mejillones rellenos Índice por temas Merluza al curry Merluza al horno Merluza bellavista Merluza con marisco Merluza en ajadaa la gallega Merluza en salsa roja Meroa la naranja Mero al ESTILO canario Mero al vino blanco Merocon sofrito de tomate Mero en papillote Mojarra en adobo Mojarra en salsaa la riojana Mousse de pescado y pimientos PASTEL de gambas y mejillones PASTEL de pescado Pastelitos de bonito y pimientos Perlón cocido en salsa Perlón en salsa verdeÍndicepor temas PESCADILLA a la rabiosa PESCADILLA asada PESCADILLA con pisto PESCADILLA con setas PESCADILLA en cebollada PESCADILLA rellena Pescadillas con crema de queso Pescadito frito Pescado en hojaldre Pimientos del piquil lo rojos rellenos de chipirones Pimientos rellenos de PESCADILLA Pincho de pescado con refrito Pintarroja a la caseraPudín de pescado Pulpo guisado Ragout de pescado Rapea la americana Rape al angostado Rape con al medrasÍndicepor temas Rape en salsa Rape RELLENO de gambas Rayaa la sidra Rayacon salsa de cebolla Rayacon salsa de frambuesa Rayacon setas y guisantes Rodab al lo a la gallega Rodab al lo al horno Rodab al lo mediterráneo Rodajas de merluza al azafrán Rollitos de gal lo Salmóna la jardinera Salmóna la plancha con verduras Salmón al vapor Salmón con crema de puerros Salmón con patatas al horno Salmón con salsa de limón Salmón en escabeche Salmón fresco con refrito de sidraÍndicepor temas Salmonetes a la mantequilla Salmonetes al azafrán Salmonetes al horno Salmonetes con fritada de cebolla Salmonetes con tomate Salmonetes marinadosal horno Salmonetes sobre crema de guisantes Salpicón de mejillonesSan jacobos de anchoas al bardadosSan jacobos de rape Sardinas al horno Sardinas con tomate Sardinas fritas Sardinas guisadas Sardinas rebozadas Sardinas rellenas Sargo asado con patatas panadera Terrina de salmón con habasTol la con cebollitas Índice por temas Truchas a la cazuela Truchas a la naranja Truchasal horno Truchasal jerez Truchas con crema de berros Truchas escabechadas Truchas segovianas Txangurro al horno Ventresca de bonito al estragón Verd el y chicharro con cerveza Vieiras a la gallega Vieiras con COSTRA DE HOJALDRE Vieiras con queso Vieiras rellenas Volovanes de marisco Zarzue la de pescado y mariscos Índice por temas Arroz con leche gratinado Arroz dulce al azafrán Batido de chocolate Batido de macedonia Batido de peras Batido de plátano Batido de plátano chocolateado Batido de vera no Bienmellevo Biscuit de frambuesas Bizcocho 1-2-3 Bizcocho con dulce de leche Bizcocho de al mendra Bizcocho de café con salsa de naranja Bizcocho de frutos secos y café Bizcocho de pera con ALMENDRAS Bizcocho de YOGUR Bizcocho de YOGUR y chocolate Bomba heladaÍndicepor temas Brazo de gita no Brocheta de frutasBuñuelos de manzana Buñuelos de plátano caramelo de miel con queso frescoCítricosa la menta Compota Copa de espuma de requesón Copa de la casa Copa de melocotón Copas de galleta y melocotón Corona de fresas Coronadel imónconpuréplátano Cremaa la catalana Crema catalana con frambuesas Crema de aguacate Crepes de naranja y crepes pasas Cuajado de nuezCup de frutasÍndicepor temasCup de vino Empanadillas de frutas ENSALADA de frutas con miel Espuma de plátano Euskalgoxo Filloas Flan de café Flan de chocolate con Chantilly Flan de coco Flan de dulce de leche Flan de guindas Flan de manzana Flan de naranja Flan de pana la canela Flan de pancon mermelada Flan de tocino de melocotón Fritos dulces Fruta en papillote Frutas con YOGURÍndicepor temas Frutas escondidas Galletas de calabaza Galletas de maíz Helado de bizcocho y avellanas Helado de plátano con chocolate Hojaldre de crema Hojaldre de frutas Hojaldre de pasas y al baricoques Hojaldre frutado Kiwis gratinados Leche asada canaria Leche cuajada Leche frita Leche fritacon natillas Limones rellenos Macedonia de plátanos Manzanas a la crema Manzanas al caramelo Manzanas al vino tintoÍndicepor temas Manzanas asadas con salsa de vino Manzanas horneadas Melocotones con crema Melocotones con cuajada Melocotones rellenos Melón con canelaMelónconplátano Mona de pascua Mousse de chocolate Mousse de limón Mousse de naranja Mousse de turrón Moussefácil de limón Naranjas caramelizadas Naranjas con aceite de oliva Naranjas con crema y PLÁTANO Naranjas con miel Naranjas nevadas Naranjas rellenas Índice por temas Naranjas y PLÁTANOs gratinados Natillas con suspiros Nísperos asados Orejas Panecillos de Ávila Paparajotes PASTEL de bizcocho y pistachos PASTEL de chocolate y frambuesas PASTEL de galletas PASTEL de nueces PASTEL de peras PASTEL de queso con kiwi y PLÁTANO PASTEL de queso con melocotón PASTEL de uvaPeras a la crema Peras al vapor de menta Peras con crema al café Peras dulces con nata Pinchos de frutasÍndicepor temasPiña rellena Plátanos con galletas Plátanos con naranja al hornoPlátanos flambeados Profiteroles con caramelo y chocolate Pudín de fresasPudín de frutas del bosquePudín de manzana Pudín de manzana y PLÁTANO Quesada pasiega Rosa de piñay mandarina Rosada de plátanos Roscón de reyes Rosquillas de anís Rosquillas fritas Sandía rellena Sopa de frutas Sopa de leche y nueces Sorbete de chirimoya Índice por temas Soufflé casero Soufflé de mango Soufflé de melón Soufflé de naranja Tarta de ALMENDRAS Tarta de ángel Tarta de arroz con macedonia Tarta de arroz con pasas Tarta de coco Tarta de fresas Tarta de fresas con crema Tarta de fresas y frutos secos Tarta de frutas pasas Tarta de galletas Tarta de higos Tarta de kiwi Tarta de la ABUELA Tarta de limón Tarta de manzana Índice por temas Tarta de melocotón Tarta de melocotóncon ALMENDRAS Tarta de nata y chocolate Tarta de pasas y nueces Tarta de pera caramelizada Tarta de peras Tarta de piña con ALMENDRAS Tarta de piña con crema Tarta de plátanos Tarta de queso Tarta de queso y frutas Tarta de Santiago Tarta de uvas y PLÁTANOs Tartafácil de frutas Tartafácil de piña Tartafría de limón Tarta helada TartatatínTatín de plátanosÍndicepor temas Torrijasal vino tinto Tortil la Al aska Trufas de chocolate Inicio de página",
                 "Consejo DE COCCIÓN: Añade las ALMEJAS siempre al final del proceso (o cuando el sofrito esté listo si buscas su jugo). En cuanto se abran, retíralas o apaga el fuego; si Se cocinan de masiado, sevuelven gomosas y pierden sabor.",
                 "Consejo DE COCCIÓN: Los mejillones se deben añadir al final o abrir al vapor aparte. Cocínalos solo hasta que se abran para que queden jugosos. De secha siempre los que no se hayan abierto tras la cocción.",
                 "Consejo DE COCCIÓN: Añade las ALMEJAS al final. Retíralas en cuanto se abran; el exceso de calor las vuelve gomosas.",
@@ -256117,7 +256477,7 @@
         },
         {
             "id": "receta_1251",
-            "title": "ARROZ TRES DEL ICIAS",
+            "title": "ARROZ TRES DELICIAS",
             "ingredients": [
                 "Arroz 200 gr",
                 "Gambas cocidas 100 gr",
@@ -264424,7 +264784,7 @@
                 "1 unidad 1/2 unidad"
             ],
             "instructions": [
-                "Se dejan las alubias en remojo durante toda la noche. A los pocos minutos de cocción se cambia el agua y después se las espanta un par de veces con agua fría. Se hace un sofrito poco hecho con el tomate la cebolla y los ajos enteros que se añaden a las alubias. Cuando estén cocidas se añade la sal y el sofrito.",
+                "Se dejan las alubias en remojo durante toda la noche. A los pocos minutos de cocción se cambia el agua y después se las espanta un par de veces con agua fría. Se hace un sofrito poco hecho con el tomate la cebolla y los ajos enteros que se añaden Alas ALUBIAs. Cuando estén cocidas se añade la sal y el sofrito.",
                 "Consejo CULINARIO: Para mejorar la digestión, añade una pizca de comino o un trozo de al ga kombu. No añadas la sal hasta el final para que la piel quede tierna.",
                 "TIP SALUD: Empieza comiendo siempre los vegetales (fibra), después la proteína y grasas, y deja los carbohidratos para el final. Este orden aplana tu curva de azúcar, evitando el cansancio post-comida y el almacenamiento de grasa.",
                 "TIP SACIEDAD: Prioriza la proteína en este plato. Consumir al menos 30 g de proteína dispara de forma natural la hormona GLP-1 (la del adelgazamiento), enviando una señal de saciedad inmediata al cerebro."

@@ -273,7 +273,13 @@ class RecipeViewModel(
     suspend fun getRecipeById(id: Int): Recipe? = repository.getRecipeById(id)
     suspend fun syncWithCloud(localVersion: Long) {
         _syncStatus.value = "Sincronizando..."
-        repository.syncWithCloud(localVersion)?.let { repository.clearAll(); repository.insertRecipes(it); _syncStatus.value = "Actualizado" } ?: run { _syncStatus.value = "Al día" }
+        repository.syncWithCloud(localVersion)?.let { cloudList ->
+            if (cloudList.isNotEmpty()) {
+                repository.clearAll()
+                cloudList.chunked(100).forEach { repository.insertRecipes(it) }
+                _syncStatus.value = "Actualizado"
+            }
+        } ?: run { _syncStatus.value = "Al día" }
     }
     suspend fun wipeAndUploadAll(recipes: List<Recipe>) { _syncStatus.value = "Purgando nube..."; repository.uploadToCloud(recipes); _syncStatus.value = "Nube Actualizada" }
     suspend fun uploadInitialDataToCloud(recipes: List<Recipe>) { _syncStatus.value = "Subiendo..."; repository.uploadToCloud(recipes); _syncStatus.value = "Cargado" }

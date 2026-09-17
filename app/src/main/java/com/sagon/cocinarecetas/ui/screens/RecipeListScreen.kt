@@ -342,15 +342,10 @@ fun RecipeListScreen(
             title = { Text("Resetear aplicación") },
             text = { Text("Se restaurarán todas las recetas que hayas ocultado previamente. ¿Deseas continuar?") },
             confirmButton = {
-                Column {
-                    TextButton(
-                        onClick = {
-                            viewModel.restoreAllRecipes()
-                            showResetDialog = false
-                        }
-                    ) {
-                        Text("RESTAURAR OCULTAS")
-                    }
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.End
+                ) {
                     TextButton(
                         onClick = {
                             val localRecipes = JsonAssetImporter.loadRecipesFromAsset(context, "recipes.json")
@@ -360,13 +355,22 @@ fun RecipeListScreen(
                     ) {
                         Text("IMPORTAR DATOS LIMPIOS (v3.0)", color = Color.Red, fontWeight = FontWeight.Bold)
                     }
+                    TextButton(
+                        onClick = {
+                            viewModel.restoreAllRecipes()
+                            showResetDialog = false
+                        }
+                    ) {
+                        Text("RESTAURAR OCULTAS")
+                    }
+                    TextButton(
+                        onClick = { showResetDialog = false }
+                    ) {
+                        Text("CANCELAR", color = MaterialTheme.colorScheme.primary)
+                    }
                 }
             },
-            dismissButton = {
-                TextButton(onClick = { showResetDialog = false }) {
-                    Text("CANCELAR")
-                }
-            }
+            dismissButton = null
         )
     }
 }

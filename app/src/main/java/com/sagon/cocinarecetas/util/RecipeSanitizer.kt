@@ -98,9 +98,52 @@ object RecipeSanitizer {
         return result
     }
 
+    private val spanishCommonWords = setOf(
+        "el", "la", "los", "las", "un", "una", "unos", "unas", "y", "e", "o", "u", "pero", "mas", "sino",
+        "de", "del", "a", "al", "con", "en", "por", "para", "por", "se", "se", "su", "sus", "mi", "tu",
+        "que", "que", "si", "no", "como", "donde", "cuando", "quien", "cual", "cuanto",
+        "este", "esta", "estos", "estas", "ese", "esa", "esos", "esas", "aquel", "aquella", "aquellos", "aquellas",
+        "yo", "tu", "el", "ella", "nosotros", "vosotros", "ellos", "ellas", "me", "te", "se", "nos", "os",
+        "ser", "estar", "haber", "hacer", "ir", "ver", "dar", "decir", "poder", "querer", "saber", "poner", "parecer",
+        "aceite", "agua", "sal", "pimienta", "cebolla", "ajo", "ajos", "tomate", "harina", "huevo", "huevos", "leche",
+        "carne", "pollo", "pescado", "arroz", "pasta", "patatas", "patata", "verdura", "verduras", "fruta", "frutas",
+        "sarten", "cazuela", "horno", "fuego", "minutos", "minuto", "hora", "horas", "cucharada", "cucharadas", "vaso",
+        "bien", "muy", "mas", "menos", "poco", "mucho", "todo", "todos", "toda", "todas", "algun", "algunos", "alguna", "algunas",
+        "vez", "veces", "despues", "luego", "ahora", "antes", "mientras", "durante", "hasta", "desde",
+        "picar", "cortar", "rehogar", "sofreir", "cocer", "hervir", "freir", "asar", "añadir", "mezclar", "servir", "limpiar", "pelar",
+        "aliñar", "sazonar", "escurrir", "triturar", "batir", "rectificar", "adornar", "cubrir", "regar", "tapar", "dejar",
+        "cuando", "donde", "porque", "paraque", "aunque", "mientras", "siempre", "nunca", "jamas", "tambien", "tampoco",
+        "vinagre", "vino", "blanco", "tinto", "pimenton", "dulce", "picante", "perejil", "laurel", "clavo", "canela",
+        "salteado", "guisado", "estofado", "horneado", "cocido", "frio", "caliente", "templado", "fuego", "lento", "suave",
+        "fuerte", "medio", "punto", "pizca", "chorro", "chorrito", "gramos", "litros", "kilos", "unidades", "unidad",
+        "trozos", "trocear", "picado", "picada", "molido", "entero", "entera", "rallado", "rallada", "queso", "jamon",
+        "hacer", "hecho", "hecha", "poner", "puesto", "puesta", "añadir", "añadido", "mezclar", "mezclado", "formar", "forma"
+    )
+
+    /**
+     * Intenta separar palabras pegadas usando el mini-diccionario
+     */
+    private fun autoSplitJoinedWords(text: String): String {
+        return text.split(" ").joinToString(" ") { word ->
+            if (word.length > 6 && word.lowercase() !in spanishCommonWords) {
+                var foundSplit = word
+                // Buscamos puntos de corte donde ambas partes sean palabras válidas
+                for (i in 2 until word.length - 2) {
+                    val part1 = word.substring(0, i).lowercase()
+                    val part2 = word.substring(i).lowercase()
+                    if (part1 in spanishCommonWords && part2 in spanishCommonWords) {
+                        foundSplit = "${word.substring(0, i)} ${word.substring(i)}"
+                        break
+                    }
+                }
+                foundSplit
+            } else word
+        }
+    }
+
     fun fixSpacedText(text: String): String {
         if (text.length < 3) return text
-        var fixed = text
+        var fixed = autoSplitJoinedWords(text) // Aplicamos segmentación inteligente primero
 
         // Limpieza básica de espacios sobrantes y fragmentos de OCR comunes
         fixed = fixed.replace(Regex("""\bdoc\s+[a-zA-Z0-9]+\b""", RegexOption.IGNORE_CASE), "")

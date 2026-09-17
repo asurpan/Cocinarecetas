@@ -24,17 +24,25 @@ object JsonAssetImporter {
     fun loadRecipesFromAsset(context: Context, fileName: String): List<Recipe> {
         val allRecipes = mutableListOf<Recipe>()
         
-        // 1. Carga de la Base Principal con Blindaje
-        try {
-            context.assets.open(fileName).use { stream ->
-                val root = json.decodeFromStream<RecipeJsonRoot>(stream)
-                if (root.recipes.isNotEmpty()) {
-                    allRecipes.addAll(root.recipes)
-                    Log.d("JsonImporter", "Cargadas ${root.recipes.size} recetas principales.")
+        // Archivos a cargar de forma secuencial para evitar límites de tamaño de Asset
+        val assetFiles = if (fileName == "recipes.json") {
+            listOf("recipes_1.json", "recipes_2.json", "recipes_3.json", "recipes_4.json")
+        } else {
+            listOf(fileName)
+        }
+
+        for (file in assetFiles) {
+            try {
+                context.assets.open(file).use { stream ->
+                    val root = json.decodeFromStream<RecipeJsonRoot>(stream)
+                    if (root.recipes.isNotEmpty()) {
+                        allRecipes.addAll(root.recipes)
+                        Log.d("JsonImporter", "Cargadas ${root.recipes.size} recetas desde $file.")
+                    }
                 }
+            } catch (e: Exception) {
+                Log.e("JsonImporter", "Error cargando $file: ${e.message}")
             }
-        } catch (e: Exception) {
-            Log.e("JsonImporter", "Aviso: Error en base principal (posible archivo corrupto). Cargando alternativas...", e)
         }
 
         return allRecipes

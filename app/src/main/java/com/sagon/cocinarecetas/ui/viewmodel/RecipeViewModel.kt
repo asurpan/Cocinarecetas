@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.sagon.cocinarecetas.data.model.*
 import com.sagon.cocinarecetas.data.repository.RecipeRepository
+import com.sagon.cocinarecetas.util.RecipeSanitizer
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -270,7 +271,19 @@ class RecipeViewModel(
         }
     }
 
-    suspend fun getRecipeById(id: Int): Recipe? = repository.getRecipeById(id)
+    suspend fun getRecipeById(id: Int): Recipe? {
+        val recipe = repository.getRecipeById(id)
+        if (recipe != null) {
+            // --- SELF-HEALING AUTOMÁTICO AL ABRIR ---
+            val sanitized = RecipeSanitizer.sanitize(recipe)
+            if (sanitized != recipe) {
+                Log.d("SelfHealing", "Corrigiendo receta '${recipe.title}' automáticamente.")
+                repository.updateRecipe(sanitized)
+                return sanitized
+            }
+        }
+        return recipe
+    }
     
     // --- NOTA IMPORTANTE: FIREBASE DESACTIVADO PERMANENTEMENTE PARA PRIVILEGIAR ASSETS LOCALES ---
     fun syncWithCloud(localVersion: Long) { Log.d("Firebase", "Sincronización Cloud Desactivada.") }

@@ -185,10 +185,14 @@
 
     async function init() {
         try {
-            // Usamos el archivo local relativo en GitHub Pages para garantizar la sincronización al 100% de la web
-            const r = await fetch("../app/src/main/assets/recipes.json");
-            const data = await r.json();
-            allRecipes = data.recipes;
+            // Cargamos las 4 partes del JSON para mejorar velocidad y estabilidad
+            const parts = ["recipes_1.json", "recipes_2.json", "recipes_3.json", "recipes_4.json"];
+            allRecipes = [];
+            for (const part of parts) {
+                const r = await fetch("../app/src/main/assets/" + part);
+                const data = await r.json();
+                allRecipes = allRecipes.concat(data.recipes);
+            }
             if (!localStorage.getItem('web_menu') && allRecipes.length > 0) generateMenu(false);
             switchView('list');
         } catch (e) { console.error(e); }
@@ -533,52 +537,27 @@
 
     function cleanDataText(text) {
         if (!text || typeof text !== 'string') return text;
+
+        // --- DICCIONARIO ESPAÑOL PARA SEGMENTACIÓN INTELIGENTE (WEB) ---
+        const spanishWords = new Set([
+            "el", "la", "los", "las", "un", "una", "unos", "unas", "y", "e", "o", "u", "pero", "mas", "sino",
+            "de", "del", "a", "al", "con", "en", "por", "para", "se", "su", "sus", "mi", "tu", "que", "si", "no",
+            "como", "donde", "cuando", "quien", "cual", "cuanto", "este", "esta", "estos", "estas", "ese", "esa",
+            "esos", "esas", "yo", "tu", "ella", "nosotros", "vosotros", "ellos", "me", "te", "nos", "os",
+            "ser", "estar", "haber", "hacer", "ir", "ver", "dar", "decir", "poder", "querer", "saber", "poner",
+            "aceite", "agua", "sal", "pimienta", "cebolla", "ajo", "ajos", "tomate", "harina", "huevo", "huevos", "leche",
+            "carne", "pollo", "pescado", "arroz", "pasta", "patatas", "patata", "verdura", "fruta", "frutas",
+            "sarten", "cazuela", "horno", "fuego", "minutos", "minuto", "hora", "horas", "cucharada", "vaso",
+            "bien", "muy", "mas", "menos", "poco", "mucho", "todo", "todos", "toda", "todas", "algun", "algunos",
+            "vez", "veces", "despues", "luego", "ahora", "antes", "mientras", "durante", "hasta", "desde",
+            "picar", "cortar", "rehogar", "sofreir", "cocer", "hervir", "freir", "asar", "añadir", "mezclar", "servir",
+            "limpiar", "pelar", "aliñar", "sazonar", "escurrir", "triturar", "batir", "rectificar", "adornar", "cubrir",
+            "regar", "tapar", "dejar", "porque", "paraque", "aunque", "siempre", "nunca", "tambien", "tampoco",
+            "vinagre", "vino", "blanco", "tinto", "pimenton", "dulce", "picante", "perejil", "laurel", "clavo", "canela",
+            "frio", "caliente", "fuego", "lento", "suave", "fuerte", "medio", "punto", "pizca", "chorro", "unidades",
+            "trozos", "picado", "picada", "entero", "entera", "rallado", "rallada", "queso", "jamon", "formar", "forma"
+        ]);
+
         let fixed = text;
 
-        // 1. Limpieza de fragmentos OCR basura y códigos extraños
-        fixed = fixed.replace(/\bdoc\s+[a-zA-Z0-9]+\b/gi, "")
-                     .replace(/\bpage\s+\d+\b/gi, "")
-                     .replace(/---/g, "");
-
-        // 2. Unir letras sueltas que deberían ir juntas (m a c h a c a r -> machacar)
-        // Lo hacemos 3 veces para capturar casos de letras alternas
-        for(let i=0; i<3; i++) {
-            fixed = fixed.replace(/(\b\w)\s+(?=\w\b)/g, "$1");
-        }
-
-        // 3. Diccionario de correcciones de OCR específicas (Basado en la ficha de Albóndigas y otros fallos)
-        const fixes = [
-            [/\bA\s+L\s+B[ÓO]NDIGAS\b/gi, "ALBÓNDIGAS"],
-            [/\bAL\s+B[ÓO]NDIGAS\b/gi, "ALBÓNDIGAS"],
-            [/\bPO\s*[_-]\s*LO\b/gi, "POLLO"],
-            [/\bSepican\b/gi, "Se pican"],
-            [/\bstrozosdepol\s+lo\b/gi, "trozos de pollo"],
-            [/\bs\s+nunbol\b/gi, "en un bol"],
-            [/\be\s+panr\s+al\s+a\s+do\b/gi, "empanado"],
-            [/\bcimadel\b/gi, "encima del"],
-            [/\bHUEVOS\s*,\b/gi, "huevos,"],
-            [/\bSeamasa\b/gi, "Se amasa"],
-            [/\bSelimpian\b/gi, "Se limpian"],
-            [/\bderezanconlas\b/gi, "aderezan con las"],
-            [/\bmachacarene\b/gi, "machacar en el"],
-            [/\bSehaceuns\s+ofri\s+to\b/gi, "Se hace un sofrito"],
-            [/\bdeberánsermuy\b/gi, "deberán ser muy"],
-            [/\bhuevoscon\b/gi, "huevos con"],
-            [/\baguacon\b/gi, "agua con"],
-            [/\bechalos\b/gi, "echa los"],
-            [/\bcab\s+al\s+la\b/gi, "Caballa"],
-            [/\bcaballa\s+sysea\b/gi, "Caballa y se"]
-        ];
-
-        fixes.forEach(([regex, replacement]) => {
-            fixed = fixed.replace(regex, replacement);
-        });
-
-        // 4. Limpieza final de espacios múltiples y limpieza de bordes
-        return fixed.replace(/\s{2,}/g, " ").trim();
-    }
-
-    init();
-</script>
-</body>
-</html>
+        // 1

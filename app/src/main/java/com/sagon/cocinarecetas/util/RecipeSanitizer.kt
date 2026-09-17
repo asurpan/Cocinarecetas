@@ -29,11 +29,50 @@ object RecipeSanitizer {
             }?.key ?: "APERITIVOS"
         }
         val isMain = categoryCleaned !in setOf("POSTRES", "SALSAS")
+
+        // Coletilla de legumbres de bote para gente joven
+        var instructionsCleaned = recipe.instructions.map { fixSpacedText(fixEncoding(it)) }
+        val titleNorm = titleCleaned.lowercase()
+        val allIngredientsNorm = recipe.ingredients.map { it.lowercase() }
+        
+        fun hasIng(vararg keywords: String) = keywords.any { k -> titleNorm.contains(k) || allIngredientsNorm.any { it.contains(k) } }
+
+        // 1. LEGUMBRES (Garbanzos, Lentejas, Alubias, Frijoles)
+        if (hasIng("garbanzo", "lenteja", "alubia", "frijol", "frejol") && instructionsCleaned.none { it.contains("LEGUMBRE DE BOTE", ignoreCase = true) }) {
+            instructionsCleaned = instructionsCleaned + "NOTA PARA LEGUMBRE DE BOTE: Si usas garbanzos, lentejas, alubias o frijoles de bote (ya cocidos), haz todo el proceso de sofrito/caldo igual, lava muy bien las legumbres bajo el grifo para quitar el liquido preservante, añadelas en los ultimos 10-15 minutos de coccion para que tomen el sabor de la receta sin deshacerse."
+        }
+
+        // 2. GUISANTES Y MAIZ
+        if (hasIng("guisante", "chicharo", "maiz") && instructionsCleaned.none { it.contains("CONSERVA DE VERDURA", ignoreCase = true) }) {
+            instructionsCleaned = instructionsCleaned + "NOTA PARA CONSERVA DE VERDURA: Si usas guisantes o maiz de lata, añadelos solo en los ultimos 2-3 minutos de la receta para que mantengan su color brillante y su textura crujiente."
+        }
+
+        // 3. CHAMPINONES Y SETAS
+        if (hasIng("champiñon", "seta") && instructionsCleaned.none { it.contains("SETAS EN CONSERVA", ignoreCase = true) }) {
+            instructionsCleaned = instructionsCleaned + "NOTA PARA SETAS EN CONSERVA: Si usas champiñones o setas de bote, escurelos muy bien y añadelos al final del sofrito o de la coccion; si se cocinan demasiado pueden volverse gomosos."
+        }
+
+        // 4. PATATAS COCIDAS
+        if (hasIng("patata") && instructionsCleaned.none { it.contains("PATATAS DE BOTE", ignoreCase = true) }) {
+            // Nota: Solo añadimos si no es puré o similar, pero por ahora mantenemos el filtro por ingrediente
+            instructionsCleaned = instructionsCleaned + "NOTA PARA PATATAS DE BOTE: Si usas patatas cocidas de frasco, añadelas solo en los ultimos 5-10 minutos del guiso o estofado para que absorban el sabor del caldo sin llegar a deshacerse."
+        }
+
+        // 5. ESPINACAS Y ACELGAS
+        if (hasIng("espinaca", "acelga") && instructionsCleaned.none { it.contains("HOJAS EN CONSERVA", ignoreCase = true) }) {
+            instructionsCleaned = instructionsCleaned + "NOTA PARA HOJAS EN CONSERVA: Si usas espinacas o acelgas de bote, es muy importante escurrirlas y exprimirlas bien con la mano antes de añadirlas al final de la receta; asi evitaras que el exceso de agua agüe el plato."
+        }
+
+        // 6. TIPS DE EXITO PARA REPOSTERIA / BIZCOCHOS (Harinas, Endulzantes, Aceite y Horneado)
+        if (hasIng("bizcocho", "magdalena", "tarta", "cake", "muffin") && instructionsCleaned.none { it.contains("TIPS DE EXITO REPOSTERIA", ignoreCase = true) }) {
+            instructionsCleaned = instructionsCleaned + "TIPS DE EXITO REPOSTERIA: 1) Tipo de Harina: Usa siempre harina comun (floja), NUNCA harina de fuerza, para que el bizcocho quede esponjoso y tierno. 2) Reducir Azucar: Puedes sustituir el azucar por eritritol (misma cantidad) o pure de platano maduro/manzana asada (reduce el liquido de la receta). 3) Reducir Aceite: Puedes cambiar la mitad del aceite por yogur natural o pure de manzana para hacerlo mas ligero sin perder humedad. 4) Horneado: Hornea siempre SIN AIRE (calor arriba y abajo) para que no se reseque por fuera y suba de forma uniforme."
+        }
+
         return recipe.copy(
             title = titleCleaned,
             category = categoryCleaned,
             ingredients = sanitizeIngredients(recipe.ingredients.map { fixEncoding(it) }),
-            instructions = recipe.instructions.map { fixSpacedText(fixEncoding(it)) },
+            instructions = instructionsCleaned,
             isMainDish = isMain
         )
     }

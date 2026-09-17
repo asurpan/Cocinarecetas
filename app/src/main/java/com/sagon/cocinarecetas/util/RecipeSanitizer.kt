@@ -189,6 +189,18 @@ object RecipeSanitizer {
                      .replace(Regex("""\bsalydéjalo\b""", RegexOption.IGNORE_CASE), "sal y déjalo")
                      .replace(Regex("""\bPicadil\s+lo\b""", RegexOption.IGNORE_CASE), "Picadillo")
                      .replace(Regex("""\bpanremojada\b""", RegexOption.IGNORE_CASE), "pan remojada")
+                     
+                     // Nuevas correcciones específicas detectadas en Albóndigas con Queso
+                     .replace(Regex("""\bal\s+bondigashaz\b""", RegexOption.IGNORE_CASE), "albóndigas haz")
+                     .replace(Regex("""\bEn lasal\s+bóndigashaz\b""", RegexOption.IGNORE_CASE), "En las albóndigas haz")
+                     .replace(Regex("""\bcerrándolosa\s+continuaciónPásalaspor\b""", RegexOption.IGNORE_CASE), "cerrándola a continuación. Pásalas por")
+                     .replace(Regex("""\bcerrándolosa\s+continuaciónPásalas\b""", RegexOption.IGNORE_CASE), "cerrándola a continuación. Pásalas")
+                     .replace(Regex("""\bcontinuaciónPásalaspor\b""", RegexOption.IGNORE_CASE), "continuación. Pásalas por")
+                     .replace(Regex("""\bdon\s+de\s+meteráslasalbóndigas\b""", RegexOption.IGNORE_CASE), "donde meterás las albóndigas")
+                     .replace(Regex("""\bmeteráslasalbóndigas\b""", RegexOption.IGNORE_CASE), "meterás las albóndigas")
+                     .replace(Regex("""\bde\s+jándolas\b""", RegexOption.IGNORE_CASE), "dejándolas")
+                     .replace(Regex("""\bhazbolitas\b""", RegexOption.IGNORE_CASE), "haz bolitas")
+                     .replace(Regex("""\bpanremojada\b""", RegexOption.IGNORE_CASE), "pan remojada")
                      .replace(Regex("""\bpanrallado\b""", RegexOption.IGNORE_CASE), "pan rallado")
                      .replace(Regex("""\bsarténpon\b""", RegexOption.IGNORE_CASE), "sartén pon")
                      .replace(Regex("""\bsácalasa\b""", RegexOption.IGNORE_CASE), "sácalas a")

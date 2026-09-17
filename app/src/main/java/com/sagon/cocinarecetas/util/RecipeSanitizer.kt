@@ -125,10 +125,10 @@ object RecipeSanitizer {
      */
     private fun autoSplitJoinedWords(text: String): String {
         return text.split(" ").joinToString(" ") { word ->
-            if (word.length > 6 && word.lowercase() !in spanishCommonWords) {
+            if (word.length >= 4 && word.lowercase() !in spanishCommonWords) {
                 var foundSplit = word
                 // Buscamos puntos de corte donde ambas partes sean palabras válidas
-                for (i in 2 until word.length - 2) {
+                for (i in 1 until word.length - 1) {
                     val part1 = word.substring(0, i).lowercase()
                     val part2 = word.substring(i).lowercase()
                     if (part1 in spanishCommonWords && part2 in spanishCommonWords) {

@@ -560,4 +560,65 @@
 
         let fixed = text;
 
-        // 1
+        // 1. Segmentación Inteligente: Separar palabras pegadas usando el diccionario
+        fixed = fixed.split(" ").map(word => {
+            if (word.length > 7 && !spanishWords.has(word.toLowerCase())) {
+                for (let i = 2; i < word.length - 2; i++) {
+                    const p1 = word.substring(0, i).toLowerCase();
+                    const p2 = word.substring(i).toLowerCase();
+                    if (spanishWords.has(p1) && (spanishWords.has(p2) || p2.length < 3)) {
+                        return word.substring(0, i) + " " + word.substring(i);
+                    }
+                }
+            }
+            return word;
+        }).join(" ");
+
+        // 2. Limpieza de fragmentos OCR basura y códigos extraños
+        fixed = fixed.replace(/\bdoc\s+[a-zA-Z0-9]+\b/gi, "")
+                     .replace(/\bpage\s+\d+\b/gi, "")
+                     .replace(/---/g, "");
+
+        // 3. Unir letras sueltas que deberían ir juntas (m a c h a c a r -> machacar)
+        for(let i=0; i<3; i++) {
+            fixed = fixed.replace(/(\b\w)\s+(?=\w\b)/g, "$1");
+        }
+
+        // 4. Diccionario de correcciones de OCR específicas y pegados comunes
+        const fixes = [
+            [/\bA\s+L\s+B[ÓO]NDIGAS\b/gi, "ALBÓNDIGAS"],
+            [/\bAL\s+B[ÓO]NDIGAS\b/gi, "ALBÓNDIGAS"],
+            [/\bPO\s*[_-]\s*LO\b/gi, "POLLO"],
+            [/\bSepican\b/gi, "Se pican"],
+            [/\bs\s+nunbol\b/gi, "en un bol"],
+            [/\bcimadel\b/gi, "encima del"],
+            [/\bHUEVOS\s*,\b/gi, "huevos,"],
+            [/\bSeamasa\b/gi, "Se amasa"],
+            [/\bSehaceuns\s+ofri\s+to\b/gi, "Se hace un sofrito"],
+            [/\bdeberánsermuy\b/gi, "deberán ser muy"],
+            [/\bhuevoscon\b/gi, "huevos con"],
+            [/\baguacon\b/gi, "agua con"],
+            [/\bechalos\b/gi, "echa los"],
+            [/\baceitefríe\b/gi, "aceite fríe"],
+            [/\bdespuésañade\b/gi, "después añade"],
+            [/\bsalydéjalo\b/gi, "sal y déjalo"],
+            [/\bbañomaria\b/gi, "baño maría"],
+            [/\bpanrallado\b/gi, "pan rallado"],
+            [/\bhabitu\s+al\b/gi, "habitual"],
+            [/\besporfalta\b/gi, "es por falta"],
+            [/\bsaldráncon\b/gi, "saldrán con"],
+            [/\bmuchomás\b/gi, "mucho más"],
+            [/\bsabora\b/gi, "sabor a"]
+        ];
+
+        fixes.forEach(([regex, replacement]) => {
+            fixed = fixed.replace(regex, replacement);
+        });
+
+        return fixed.replace(/\s{2,}/g, " ").trim();
+    }
+
+    init();
+</script>
+</body>
+</html>

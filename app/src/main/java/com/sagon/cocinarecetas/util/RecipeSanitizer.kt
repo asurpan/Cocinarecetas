@@ -37,33 +37,21 @@ object RecipeSanitizer {
         
         fun hasIng(vararg keywords: String) = keywords.any { k -> titleNorm.contains(k) || allIngredientsNorm.any { it.contains(k) } }
 
-        // 1. LEGUMBRES (Garbanzos, Lentejas, Alubias, Frijoles)
         if (hasIng("garbanzo", "lenteja", "alubia", "frijol", "frejol") && instructionsCleaned.none { it.contains("LEGUMBRE DE BOTE", ignoreCase = true) }) {
             instructionsCleaned = instructionsCleaned + "NOTA PARA LEGUMBRE DE BOTE: Si usas garbanzos, lentejas, alubias o frijoles de bote (ya cocidos), haz todo el proceso de sofrito/caldo igual, lava muy bien las legumbres bajo el grifo para quitar el liquido preservante, añadelas en los ultimos 10-15 minutos de coccion para que tomen el sabor de la receta sin deshacerse."
         }
-
-        // 2. GUISANTES Y MAIZ
         if (hasIng("guisante", "chicharo", "maiz") && instructionsCleaned.none { it.contains("CONSERVA DE VERDURA", ignoreCase = true) }) {
             instructionsCleaned = instructionsCleaned + "NOTA PARA CONSERVA DE VERDURA: Si usas guisantes o maiz de lata, añadelos solo en los ultimos 2-3 minutos de la receta para que mantengan su color brillante y su textura crujiente."
         }
-
-        // 3. CHAMPINONES Y SETAS
         if (hasIng("champiñon", "seta") && instructionsCleaned.none { it.contains("SETAS EN CONSERVA", ignoreCase = true) }) {
             instructionsCleaned = instructionsCleaned + "NOTA PARA SETAS EN CONSERVA: Si usas champiñones o setas de bote, escurelos muy bien y añadelos al final del sofrito o de la coccion; si se cocinan demasiado pueden volverse gomosos."
         }
-
-        // 4. PATATAS COCIDAS
         if (hasIng("patata") && instructionsCleaned.none { it.contains("PATATAS DE BOTE", ignoreCase = true) }) {
-            // Nota: Solo añadimos si no es puré o similar, pero por ahora mantenemos el filtro por ingrediente
             instructionsCleaned = instructionsCleaned + "NOTA PARA PATATAS DE BOTE: Si usas patatas cocidas de frasco, añadelas solo en los ultimos 5-10 minutos del guiso o estofado para que absorban el sabor del caldo sin llegar a deshacerse."
         }
-
-        // 5. ESPINACAS Y ACELGAS
         if (hasIng("espinaca", "acelga") && instructionsCleaned.none { it.contains("HOJAS EN CONSERVA", ignoreCase = true) }) {
             instructionsCleaned = instructionsCleaned + "NOTA PARA HOJAS EN CONSERVA: Si usas espinacas o acelgas de bote, es muy importante escurrirlas y exprimirlas bien con la mano antes de añadirlas al final de la receta; asi evitaras que el exceso de agua agüe el plato."
         }
-
-        // 6. TIPS DE EXITO PARA REPOSTERIA / BIZCOCHOS (Harinas, Endulzantes, Aceite y Horneado)
         if (hasIng("bizcocho", "magdalena", "tarta", "cake", "muffin") && instructionsCleaned.none { it.contains("TIPS DE EXITO REPOSTERIA", ignoreCase = true) }) {
             instructionsCleaned = instructionsCleaned + "TIPS DE EXITO REPOSTERIA: 1) Tipo de Harina: Usa siempre harina comun (floja), NUNCA harina de fuerza, para que el bizcocho quede esponjoso y tierno. 2) Reducir Azucar: Puedes sustituir el azucar por eritritol (misma cantidad) o pure de platano maduro/manzana asada (reduce el liquido de la receta). 3) Reducir Aceite: Puedes cambiar la mitad del aceite por yogur natural o pure de manzana para hacerlo mas ligero sin perder humedad. 4) Horneado: Hornea siempre SIN AIRE (calor arriba y abajo) para que no se reseque por fuera y suba de forma uniforme."
         }
@@ -125,27 +113,10 @@ object RecipeSanitizer {
     }
 
     private val spanishCommonWords = setOf(
-        "el", "la", "los", "las", "un", "una", "unos", "unas", "y", "e", "o", "u", "pero", "mas", "sino",
-        "de", "del", "a", "al", "con", "en", "por", "para", "se", "su", "sus", "mi", "tu", "tus",
-        "que", "si", "no", "como", "donde", "cuando", "quien", "cual", "cuanto",
-        "este", "esta", "estos", "estas", "ese", "esa", "esos", "esas", "aquel", "aquella", "aquellos", "aquellas",
-        "yo", "tu", "nosotros", "vosotros", "ellos", "ellas", "me", "te", "nos", "os",
-        "ser", "estar", "haber", "hacer", "ir", "ver", "dar", "decir", "poder", "querer", "saber", "poner", "parecer",
-        "aceite", "agua", "sal", "pimienta", "cebolla", "ajo", "ajos", "tomate", "harina", "huevo", "huevos", "leche",
-        "carne", "pollo", "pescado", "arroz", "pasta", "patatas", "patata", "verdura", "verduras", "fruta", "frutas",
-        "sarten", "cazuela", "horno", "fuego", "minutos", "minuto", "hora", "horas", "cucharada", "cucharadas", "vaso",
-        "bien", "muy", "poco", "mucho", "todo", "todos", "toda", "todas",
-        "vez", "veces", "despues", "luego", "ahora", "antes", "mientras", "durante", "hasta", "desde",
-        "picar", "cortar", "rehogar", "sofreir", "cocer", "hervir", "freir", "asar", "añadir", "mezclar", "servir", "limpiar", "pelar",
-        "aliñar", "sazonar", "escurrir", "triturar", "batir", "rectificar", "adornar", "cubrir", "regar", "tapar", "dejar",
-        "vinagre", "vino", "blanco", "tinto", "pimenton", "perejil", "laurel", "canela", "clavo",
-        "picado", "picada", "molido", "entero", "entera", "rallado", "rallada", "queso", "jamon",
-        "hecho", "hecha", "puesto", "puesta", "añadido", "mezclado", "formar", "forma",
-        "secuenciacion", "nutrientes", "perdida", "peso", "glucosa", "insulina", "almidon", "resistente", "prioriza", "saciedad", "quemagrasas",
-        "science", "ciencia", "pico", "picos", "orden", "fibra", "proteina", "grasa", "grasas", "carbohidratos", "absorcion", "digestion", "metabolismo", "energia", "saludable", "nutricional",
-        "antelacion", "dejalo", "dejalos", "enfriar", "nevera", "comerlo", "puedes", "recalentarlo", "esto", "crea", "alimenta", "bacterias", "reduce", "impacto", "calorico",
-        "vegetales", "despues", "final", "aplana", "curva", "azucar", "azucares", "evitando", "cansancio", "almacenamiento", "manzana", "mejora", "sensibilidad", "frena", "azucares",
-        "caminar", "musculos", "musculo", "muscular", "absorban", "necesidad", "inyecciones", "extra", "añade", "especia", "semilla", "objetivo", "comer", "plantas", "distintas", "semana", "microbiota", "fuerte"
+        "el", "la", "los", "las", "un", "una", "unos", "unas", "de", "del", "a", "al", "con", "en", "por", "para", "se", "su", "sus", "que", "si", "no", "como", "y", "e", "o", "u", "s", "n",
+        "yo", "tu", "me", "te", "nos", "os", "lo", "le", "les", "este", "esta", "esto", "ese", "esa", "eso", "mismo", "misma", "cada", "todo", "toda", "todos", "todas", "otro", "otra", "otros", "otras",
+        "hacer", "poner", "quitar", "anadir", "mezclar", "batir", "cocer", "hervir", "freir", "asar", "hornear", "sofreir", "rehogar", "picar", "cortar", "pelar", "limpiar", "lavar", "escurrir", "triturar", "incorporar", "verter", "echar", "retirar", "dejar", "reposar", "enfriar", "calentar", "precalentar", "dorar", "sellar", "sazonar", "alinar", "salpimentar", "rectificar", "servir", "decorar", "adornar", "cubrir", "tapar", "desmenuzar", "aplastar", "chafar", "moler", "rallar", "tamizar", "montar", "emulsionar", "reducir", "evaporar", "nacarar", "doran", "cuecen", "pican", "cortan", "limpian", "lavan", "anaden", "mezclan", "frien", "hacen", "prepara", "preparar", "quede", "queden", "tomen", "tome", "colocar", "colocan", "quitarle", "echan", "sirven", "hierve", "quita", "saque", "saquen", "meta", "meten", "sofriendo", "batiendo", "mezclando", "anadiendo", "rehogando", "picando", "cociendo", "hirviendo", "friendo", "asando", "horneando", "cortando", "limpiando", "lavando", "escurriendo", "triturando", "incorporando", "virtiendo", "echando", "poniendo", "quitando", "retirando", "dejando", "reposando", "enfriando", "calentando", "dorando", "sellando", "sazonando", "alinando", "sirviendo", "cubriendo", "tapando", "desmenuzando", "aplastando", "chafando", "moliendo", "rallando", "tamizando", "montando", "emulsionando", "reduciendo",
+        "aceite", "agua", "sal", "pimienta", "cebolla", "ajo", "ajos", "tomate", "tomates", "harina", "huevo", "huevos", "leche", "carne", "pollo", "pescado", "arroz", "pasta", "patatas", "patata", "verdura", "verduras", "fruta", "frutas", "vino", "blanco", "tinto", "pimenton", "perejil", "laurel", "canela", "clavo", "queso", "jamon", "nata", "yogur", "azucar", "miel", "levadura", "mantequilla", "manteca", "pan", "migas", "caldo", "limon", "naranja", "vinagre", "mostaza", "mayonesa", "ketchup", "salsa", "salsas", "bacalao", "atun", "merluza", "salmon", "gambas", "gamba", "langostinos", "mejillones", "almejas", "calamares", "pulpo", "albondiga", "albondigas", "filete", "filetes", "lomo", "costilla", "ternera", "cerdo", "cordero", "pavo", "conejo", "garbanzos", "lentejas", "alubias", "frijoles", "frijol", "habas", "guisantes", "chicharos", "maiz", "champinon", "champinones", "setas", "seta", "espinacas", "espinaca", "acelgas", "acelga", "calabaza", "calabacin", "berenjena", "zanahoria", "zanahorias", "pimiento", "pimientos", "pepino", "lechuga", "aguacate", "nueces", "almendras", "avellanas", "pinones", "semillas", "sesamo", "trufa", "albahaca", "cilantro", "perejil", "romero", "tomillo", "oregano", "comino", "curry", "turmeric", "curcuma", "jengibre", "azafran", "vainilla", "canela", "anis", "menta", "espina", "espinas", "piel", "hueso", "huesos", "picada", "picado", "molida", "molido", "rallada", "rallado", "cortada", "cortado", "limpia", "limpio", "lavada", "lavado", "escurrida", "escurrido", "batida", "batido", "mezclada", "mezclado", "cocida", "cocido", "frita", "frito", "asada", "asado", "horneada", "horneado", "sofrida", "sofrito", "rehogada", "rehogado", "triturada", "triturado", "incorporada", "incorporado", "vertida", "vertido", "echada", "echado", "puesta", "puesto", "quitada", "quitado", "retirada", "retirado", "dejada", "dejado", "reposada", "reposado", "enfriada", "enfriado", "calentada", "calentado", "dorada", "dorado", "sellada", "sellado", "sazonada", "sazonado", "alinada", "alinado", "servida", "servido", "cubierta", "cubierto", "tapada", "tapado", "masa", "barro", "cazuela", "sarten", "olla", "horno", "noche", "par", "minutos", "paso", "anade", "anaden", "cebolla"
     )
 
     private fun normalize(text: String): String {
@@ -158,13 +129,15 @@ object RecipeSanitizer {
     private fun autoSplitJoinedWords(word: String): String {
         val normWord = normalize(word)
         if (word.length < 3 || normWord in spanishCommonWords) return word
+        
         for (i in word.length - 1 downTo 1) {
             val prefix = normWord.substring(0, i)
-            if (prefix in spanishCommonWords || (prefix.length == 1 && prefix in setOf("y", "a", "e", "o", "u"))) {
+            if (prefix in spanishCommonWords || (prefix.length == 1 && prefix in setOf("y", "a", "e", "o", "u", "s", "n"))) {
                 val rest = word.substring(i)
                 val restSplit = autoSplitJoinedWords(rest)
-                val restSplitNorm = normalize(restSplit)
-                if (restSplitNorm in spanishCommonWords || restSplit.contains(" ") || (restSplitNorm.length < 3 && restSplitNorm in spanishCommonWords)) {
+                val restSplitFirst = normalize(restSplit.split(" ")[0])
+                
+                if (restSplitFirst in spanishCommonWords || restSplit.contains(" ") || (restSplitFirst.length < 2 && restSplitFirst in spanishCommonWords)) {
                     return "${word.substring(0, i)} $restSplit"
                 }
             }
@@ -176,43 +149,39 @@ object RecipeSanitizer {
         if (text.length < 3) return text
         var fixed = Normalizer.normalize(text, Normalizer.Form.NFC)
         
-        // Corrección de Science 2025 phrases pegadas
-        // Usamos regex muy flexible para capturar variaciones de acentos y caracteres
+        // Reconstrucción OCR "Salsa"
+        fixed = fixed.replace(Regex("""unaS\s+AL\s+SA""", RegexOption.IGNORE_CASE), "unas salsa")
+                     .replace(Regex("""una\s+S\s+AL\s+SA""", RegexOption.IGNORE_CASE), "una salsa")
+                     .replace(Regex("""S\s+AL\s+SA""", RegexOption.IGNORE_CASE), "salsa")
+                     .replace(Regex("""S\s+A\s+l\s+a""", RegexOption.IGNORE_CASE), "salsa")
+
+        // Unir letras sueltas
+        fixed = fixed.replace(Regex("""(\b\w\b\s+)+(\b\w\b)""")) { match ->
+            match.value.replace(" ", "")
+        }
+        
+        val commonSplits = mapOf(
+            "mas a" to "masa",
+            "en harina n" to "enharinan",
+            "en harina r" to "enharinar",
+            "de sal a" to "desala"
+        )
+        for ((old, new) in commonSplits) {
+            fixed = fixed.replace(Regex(old, RegexOption.IGNORE_CASE), new)
+        }
+
         val targets = listOf(
             """antelaci\S+n\S*y\S*d\S+jalos?""" to "antelación y déjalo",
             """reduceelpicodeglucosa""" to "reduce el pico de glucosa",
-            """pastadeesta""" to "pasta de esta",
-            """quemagrasasyreduce""" to "quemagrasas y reduce",
-            """impactocal\S+rico""" to "impacto calórico",
-            """antesdecomerlo""" to "antes de comerlo",
-            """puedesrecalentarlo""" to "puedes recalentarlo",
-            """mejoralasensibilidad""" to "mejora la sensibilidad",
-            """frenalaabsorci\S+n""" to "frena la absorción",
-            """curvadeaz\S+car""" to "curva de azúcar",
-            """evitandoelcansancio""" to "evitando el cansancio",
-            """almacenamientodegrasa""" to "almacenamiento de grasa",
-            """siemprelosvegetales""" to "siempre los vegetales",
-            """laprote\u00EDnaygrasas""" to "la proteína y grasas",
-            """ydejaloscarbohidratos""" to "y deja los carbohidratos",
-            """tusbacterias""" to "tus bacterias",
-            """tusm\u00FAsculos""" to "tus músculos"
+            "pastadeesta" to "pasta de esta",
+            "quemagrasasyreduce" to "quemagrasas y reduce"
         )
-
         for ((pattern, replacement) in targets) {
-            fixed = fixed.replace(Regex(pattern, RegexOption.IGNORE_CASE)) { match ->
-                if (replacement == "antelación y déjalo" && match.value.lowercase().endsWith("s")) {
-                    "antelación y déjalos"
-                } else replacement
-            }
+            fixed = fixed.replace(Regex(pattern, RegexOption.IGNORE_CASE), replacement)
         }
 
-        // Split joined words
         fixed = fixed.split(" ").joinToString(" ") { autoSplitJoinedWords(it) }
 
-        // OCR Fixes
-        val singleLetterPattern = Regex("""(?<=\b\w)\s+(?=\w\b)""")
-        repeat(3) { fixed = fixed.replace(singleLetterPattern, "") }
-        
         return fixed.replace(Regex("""\s{2,}"""), " ").trim()
     }
 }

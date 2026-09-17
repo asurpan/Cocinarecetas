@@ -178,6 +178,17 @@ object RecipeSanitizer {
                      .replace(Regex("""\bsetapay\b""", RegexOption.IGNORE_CASE), "se tapa y")
                      .replace(Regex("""\bSetroceay\b""", RegexOption.IGNORE_CASE), "Se trocea y")
                      .replace(Regex("""\bEsrecomendable\b""", RegexOption.IGNORE_CASE), "Es recomendable")
+                     
+                     // Nuevas correcciones específicas detectadas en Albóndigas con Champiñones
+                     .replace(Regex("""\bsalbóndigas\b""", RegexOption.IGNORE_CASE), "albóndigas")
+                     .replace(Regex("""\bpásalaspor\b""", RegexOption.IGNORE_CASE), "pásalas por")
+                     .replace(Regex("""\baceitefríe\b""", RegexOption.IGNORE_CASE), "aceite fríe")
+                     .replace(Regex("""\bdespuésañade\b""", RegexOption.IGNORE_CASE), "después añade")
+                     .replace(Regex("""\bsalydejalo\b""", RegexOption.IGNORE_CASE), "sal y déjalo")
+                     .replace(Regex("""\bsalydejálo\b""", RegexOption.IGNORE_CASE), "sal y déjalo")
+                     .replace(Regex("""\bsalydéjalo\b""", RegexOption.IGNORE_CASE), "sal y déjalo")
+                     .replace(Regex("""\bPicadil\s+lo\b""", RegexOption.IGNORE_CASE), "Picadillo")
+                     .replace(Regex("""\bpanremojada\b""", RegexOption.IGNORE_CASE), "pan remojada")
                      .replace(Regex("""\bpanrallado\b""", RegexOption.IGNORE_CASE), "pan rallado")
                      .replace(Regex("""\bsarténpon\b""", RegexOption.IGNORE_CASE), "sartén pon")
                      .replace(Regex("""\bsácalasa\b""", RegexOption.IGNORE_CASE), "sácalas a")

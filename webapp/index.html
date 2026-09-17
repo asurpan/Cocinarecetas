@@ -185,8 +185,8 @@
 
     async function init() {
         try {
-            // Cargamos las 4 partes del JSON para mejorar velocidad y estabilidad
-            const parts = ["recipes_1.json", "recipes_2.json", "recipes_3.json", "recipes_4.json"];
+            // Cargamos las 5 partes del JSON para mejorar velocidad y estabilidad
+            const parts = ["recipes_1.json", "recipes_2.json", "recipes_3.json", "recipes_4.json", "recipes_5.json"];
             allRecipes = [];
             for (const part of parts) {
                 const r = await fetch("../app/src/main/assets/" + part);

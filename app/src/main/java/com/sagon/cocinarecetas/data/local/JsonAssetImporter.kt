@@ -26,7 +26,7 @@ object JsonAssetImporter {
         
         // Archivos a cargar de forma secuencial para evitar límites de tamaño de Asset
         val assetFiles = if (fileName == "recipes.json") {
-            listOf("recipes_1.json", "recipes_2.json", "recipes_3.json", "recipes_4.json")
+            listOf("recipes_1.json", "recipes_2.json", "recipes_3.json", "recipes_4.json", "recipes_5.json")
         } else {
             listOf(fileName)
         }

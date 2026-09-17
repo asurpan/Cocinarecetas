@@ -20,7 +20,7 @@ class CleanDatabaseTask {
 
     @Test
     fun cleanAndExportJson() {
-        val parts = listOf("recipes_1.json", "recipes_2.json", "recipes_3.json", "recipes_4.json")
+        val parts = listOf("recipes_1.json", "recipes_2.json", "recipes_3.json", "recipes_4.json", "recipes_5.json")
         
         for (part in parts) {
             val jsonFile = File("C:/Users/Jose/AndroidStudioProjects/CocinaREcetas/app/src/main/assets/$part")

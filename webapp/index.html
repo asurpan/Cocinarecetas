@@ -185,7 +185,8 @@
 
     async function init() {
         try {
-            const r = await fetch("https://raw.githubusercontent.com/asurpan/Cocinarecetas/main/app/src/main/assets/recipes.json");
+            // Usamos el archivo local relativo en GitHub Pages para garantizar la sincronización al 100% de la web
+            const r = await fetch("../app/src/main/assets/recipes.json");
             const data = await r.json();
             allRecipes = data.recipes;
             if (!localStorage.getItem('web_menu') && allRecipes.length > 0) generateMenu(false);

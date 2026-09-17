@@ -271,19 +271,12 @@ class RecipeViewModel(
     }
 
     suspend fun getRecipeById(id: Int): Recipe? = repository.getRecipeById(id)
-    suspend fun syncWithCloud(localVersion: Long) {
-        _syncStatus.value = "Sincronizando..."
-        repository.syncWithCloud(localVersion)?.let { cloudList ->
-            if (cloudList.isNotEmpty()) {
-                repository.clearAll()
-                cloudList.chunked(100).forEach { repository.insertRecipes(it) }
-                _syncStatus.value = "Actualizado"
-            }
-        } ?: run { _syncStatus.value = "Al día" }
-    }
-    suspend fun wipeAndUploadAll(recipes: List<Recipe>) { _syncStatus.value = "Purgando nube..."; repository.uploadToCloud(recipes); _syncStatus.value = "Nube Actualizada" }
-    suspend fun uploadInitialDataToCloud(recipes: List<Recipe>) { _syncStatus.value = "Subiendo..."; repository.uploadToCloud(recipes); _syncStatus.value = "Cargado" }
-    suspend fun uploadRecipeToCloud(recipe: Recipe): Boolean = repository.uploadOneToCloud(recipe)
+    
+    // --- NOTA IMPORTANTE: FIREBASE DESACTIVADO PERMANENTEMENTE PARA PRIVILEGIAR ASSETS LOCALES ---
+    fun syncWithCloud(localVersion: Long) { Log.d("Firebase", "Sincronización Cloud Desactivada.") }
+    fun wipeAndUploadAll(recipes: List<Recipe>) { Log.d("Firebase", "Subida Cloud Desactivada.") }
+    fun uploadInitialDataToCloud(recipes: List<Recipe>) { Log.d("Firebase", "Subida Inicial Cloud Desactivada.") }
+    fun uploadRecipeToCloud(recipe: Recipe): Boolean = false
 
     private fun normalizeForSearch(t: String): String = t.trim().lowercase().replace("á","a").replace("é","e").replace("í","i").replace("ó","o").replace("ú","u").replace("ü","u").replace("ñ","n")
     private fun loadUserProfile(): UserProfile {

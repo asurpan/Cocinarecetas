@@ -93,27 +93,13 @@ class RecipeViewModel(
             } else normalizedQuery
 
             repository.searchRecipes(queryToSearch, category.lowercase()).flatMapLatest { list ->
-                if (list.isEmpty() && queryToSearch.length > 2) {
-                    flow {
-                        val sample = repository.getRandomRecipesSample(500, category.lowercase())
-                        val fuzzyResults = sample.filter { recipe ->
-                            val normTitle = normalizeForSearch(recipe.title)
-                            val normIngs = recipe.ingredients.map { normalizeForSearch(it) }
-                            (fuzzyMatch(queryToSearch, normTitle) || normIngs.any { fuzzyMatch(queryToSearch, it) })
-                                    && isRecipeAptForHealthTag(recipe, healthTag)
-                        }
-                        _searchSuggestions.value = fuzzyResults.take(5).map { it.title }.distinct()
-                        emit(fuzzyResults)
-                    }
-                } else {
-                    flowOf(list.filter { recipe ->
-                        val normTitle = normalizeForSearch(recipe.title)
-                        val normIngs = recipe.ingredients.map { normalizeForSearch(it) }
-                        val match = if (queryToSearch.isEmpty()) true 
-                                   else normTitle.contains(queryToSearch) || normIngs.any { it.contains(queryToSearch) }
-                        match && isRecipeAptForHealthTag(recipe, healthTag)
-                    })
-                }
+                flowOf(list.filter { recipe ->
+                    val normTitle = normalizeForSearch(recipe.title)
+                    val normIngs = recipe.ingredients.map { normalizeForSearch(it) }
+                    val match = if (queryToSearch.isEmpty()) true 
+                               else normTitle.contains(queryToSearch) || normIngs.any { it.contains(queryToSearch) }
+                    match && isRecipeAptForHealthTag(recipe, healthTag)
+                })
             }
         }
         .onEach { _isLoading.value = false }

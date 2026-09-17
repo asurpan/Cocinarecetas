@@ -86,8 +86,8 @@ class RecipeViewModel(
             val normalizedQuery = normalizeForSearch(query)
             val queryToSearch = if (normalizedQuery.length > 3) {
                 when {
-                    normalizedQuery.endsWith("es") -> normalizedQuery.dropLast(2)
-                    normalizedQuery.endsWith("s") -> normalizedQuery.dropLast(1)
+                    normalizedQuery.endsWith("es") && !normalizedQuery.endsWith("champiñones") -> normalizedQuery.dropLast(2)
+                    normalizedQuery.endsWith("s") && !normalizedQuery.endsWith("albondigas") && !normalizedQuery.endsWith("champiñones") -> normalizedQuery.dropLast(1)
                     else -> normalizedQuery
                 }
             } else normalizedQuery

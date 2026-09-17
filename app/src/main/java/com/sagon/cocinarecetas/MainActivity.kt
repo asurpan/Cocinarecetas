@@ -86,10 +86,6 @@ class MainActivity : ComponentActivity() {
                             // 1. Carga inicial desde el nuevo JSON v3.0 si la DB está vacía
                             val localRecipes = JsonAssetImporter.loadRecipesFromAsset(this@MainActivity, "recipes.json")
                             viewModel.insertInitialData(localRecipes)
-                            
-                            // 2. Sincronización con la nube
-                            val localVersion = prefs.getLong("cloud_version", 0L)
-                            viewModel.syncWithCloud(localVersion)
                         } catch (e: Exception) {
                             Log.e("Firebase", "Error de datos", e)
                         }

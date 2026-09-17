@@ -31,6 +31,7 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import com.sagon.cocinarecetas.data.model.Recipe
 import com.sagon.cocinarecetas.ui.viewmodel.RecipeViewModel
+import com.sagon.cocinarecetas.util.RecipeSanitizer
 import com.sagon.cocinarecetas.util.SoundUtil
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -74,7 +75,7 @@ fun RecipeDetailScreen(
                 actions = {
                     IconButton(onClick = {
                         SoundUtil.playBeep()
-                        val shareText = "Receta: ${recipe.title}\n\nIngredientes:\n${recipe.ingredients.joinToString("\n") { "• $it" }}\n\nPreparación:\n${recipe.instructions.joinToString("\n") { "• $it" }}"
+                        val shareText = "Receta: ${recipe.title}\n\nIngredientes:\n${recipe.ingredients.joinToString("\n") { "• $it" }}\n\nPreparación:\n${recipe.instructions.joinToString("\n") { "• ${RecipeSanitizer.fixSpacedText(it)}" }}"
                         val sendIntent = Intent().apply { action = Intent.ACTION_SEND; putExtra(Intent.EXTRA_TEXT, shareText); type = "text/plain" }
                         context.startActivity(Intent.createChooser(sendIntent, "Enviar receta a..."))
                     }) {
@@ -612,6 +613,6 @@ fun PreparationStep(stepNumber: Int, instruction: String) {
                 Text(text = stepNumber.toString(), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
             }
         }
-        Text(text = instruction, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(start = 12.dp))
+        Text(text = RecipeSanitizer.fixSpacedText(instruction), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(start = 12.dp))
     }
 }

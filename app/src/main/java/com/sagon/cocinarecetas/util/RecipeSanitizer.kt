@@ -137,6 +137,31 @@ object RecipeSanitizer {
                      .replace(Regex("""(\d)a(\d)"""), "$1 a $2") // "2a3" -> "2 a 3"
                      .replace(Regex("""\bde\s+l\b""", RegexOption.IGNORE_CASE), "del")
                      .replace(Regex("""\bde\s+be\b""", RegexOption.IGNORE_CASE), "debe")
+                     // Corrección de Alcachofas de al Faro y OCR de texto roto
+                     .replace("Sehierven la salc acho fasd uran te15 minutos", "Se hierven las alcachofas durante 15 minutos")
+                     .replace("cambiándo lese la guaalm en os", "cambiándoles el agua al menos")
+                     .replace("Sesazonan y Seescurren", "Se sazonan y se escurren")
+                     .replace("En unasarténsesofríen e ndos cucharadasd eaceite", "En una sartén se sofríen en dos cucharadas de aceite")
+                     .replace("cuatrod ientes", "cuatro dientes")
+                     .replace("Sevierteels ofri tosobr el asal cach ofasyse", "Se vierte el sofrito sobre las alcachofas y se")
+                     
+                     // Nuevas correcciones de OCR y palabras pegadas o rotas solicitadas
+                     .replace(Regex("""\bantelaciónydéjalos\b""", RegexOption.IGNORE_CASE), "antelación y déjalos")
+                     .replace(Regex("""\blasíntesis\b""", RegexOption.IGNORE_CASE), "la síntesis")
+                     .replace(Regex("""\bcuandoesté\b""", RegexOption.IGNORE_CASE), "cuando esté")
+                     .replace(Regex("""\bpocoa poco\b""", RegexOption.IGNORE_CASE), "poco a poco")
+                     .replace(Regex("""\bde\s+rretida\b""", RegexOption.IGNORE_CASE), "derretida")
+                     .replace(Regex("""\bde\s+jar\b""", RegexOption.IGNORE_CASE), "dejar")
+                     .replace(Regex("""\bal\s+uminio\b""", RegexOption.IGNORE_CASE), "aluminio")
+                     .replace(Regex("""\bcon\s+gelador\b""", RegexOption.IGNORE_CASE), "congelador")
+                     .replace(Regex("""\bde\s+ntro\b""", RegexOption.IGNORE_CASE), "dentro")
+                     .replace(Regex("""\bretíralodel\b""", RegexOption.IGNORE_CASE), "retíralo del")
+                     .replace(Regex("""\brellénaloscon\b""", RegexOption.IGNORE_CASE), "rellénalos con")
+                     .replace(Regex("""\bvinoblanco\b""", RegexOption.IGNORE_CASE), "vino blanco")
+                     .replace(Regex("""\blasalmejas\b""", RegexOption.IGNORE_CASE), "las almejas")
+                     .replace(Regex("""\bharinayfríel\s*as\b""", RegexOption.IGNORE_CASE), "harina y fríelas")
+                     .replace(Regex("""\bsedejac\b""", RegexOption.IGNORE_CASE), "se deja")
+                     .replace(Regex("""\bsedebenañadir\b""", RegexOption.IGNORE_CASE), "se deben añadir")
 
         // Unir letras sueltas y corregir espaciados dobles
         val singleLetterPattern = Regex("""(?<=\b\w)\s+(?=\w\b)""")

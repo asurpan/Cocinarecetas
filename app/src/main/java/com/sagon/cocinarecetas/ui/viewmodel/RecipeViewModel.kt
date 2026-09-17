@@ -6,8 +6,10 @@ import androidx.lifecycle.*
 import com.sagon.cocinarecetas.data.model.*
 import com.sagon.cocinarecetas.data.repository.RecipeRepository
 import com.sagon.cocinarecetas.util.RecipeSanitizer
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
@@ -156,23 +158,29 @@ class RecipeViewModel(
 
     fun forceReloadFromAssets(recipes: List<Recipe>) {
         if (recipes.isEmpty()) {
-            _syncStatus.value = "Error: Archivo de recetas vacío o ilegible."
-            Log.e("RecipeViewModel", "forceReloadFromAssets: Lista recibida vacía.")
+            _syncStatus.value = "Error: Sin recetas."
             return
         }
-        viewModelScope.launch {
-            _syncStatus.value = "Limpiando base de datos..."
-            repository.clearAll()
-            _syncStatus.value = "Importando ${recipes.size} recetas..."
-            recipes.chunked(100).forEachIndexed { i, chunk ->
-                repository.insertRecipes(chunk)
-                _syncStatus.value = "Cargando... (${(i + 1) * 100}/${recipes.size})"
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.value = true
+                _syncStatus.value = "Limpiando..."
+                repository.clearAll()
+                
+                _syncStatus.value = "Importando..."
+                recipes.chunked(100).forEach { chunk ->
+                    repository.insertRecipes(chunk)
+                }
+                
+                _syncStatus.value = "¡Completado!"
+                _isLoading.value = false
+                Log.d("RecipeViewModel", "Carga local finalizada.")
+            } catch (e: Exception) {
+                _isLoading.value = false
+                _syncStatus.value = "Error"
             }
-            _syncStatus.value = "Sincronizando con la nube..."
-            repository.uploadToCloud(recipes)
-            _syncStatus.value = "¡Sincronización Total Completada!"
-            Log.d("RecipeViewModel", "forceReloadFromAssets: Proceso finalizado.")
         }
+    }
     }
 
     private val breakfastWildcards = listOf(

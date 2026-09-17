@@ -30,6 +30,9 @@ import com.sagon.cocinarecetas.data.local.JsonAssetImporter
 import com.sagon.cocinarecetas.data.model.Recipe
 import com.sagon.cocinarecetas.ui.viewmodel.RecipeViewModel
 import com.sagon.cocinarecetas.util.SoundUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -40,6 +43,7 @@ fun RecipeListScreen(
     onHealthClick: () -> Unit
 ) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     val recipes by viewModel.recipes.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
     val searchSuggestions by viewModel.searchSuggestions.collectAsState()
@@ -348,9 +352,13 @@ fun RecipeListScreen(
                 ) {
                     TextButton(
                         onClick = {
-                            val localRecipes = JsonAssetImporter.loadRecipesFromAsset(context, "recipes.json")
-                            viewModel.forceReloadFromAssets(localRecipes)
-                            showResetDialog = false
+                            scope.launch(Dispatchers.IO) {
+                                val localRecipes = JsonAssetImporter.loadRecipesFromAsset(context, "recipes.json")
+                                withContext(Dispatchers.Main) {
+                                    viewModel.forceReloadFromAssets(localRecipes)
+                                    showResetDialog = false
+                                }
+                            }
                         }
                     ) {
                         Text("IMPORTAR DATOS LIMPIOS (v3.0)", color = Color.Red, fontWeight = FontWeight.Bold)

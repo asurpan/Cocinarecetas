@@ -37,10 +37,8 @@ object JsonAssetImporter {
                 context.assets.open(file).use { stream ->
                     val root = json.decodeFromStream<RecipeJsonRoot>(stream)
                     if (root.recipes.isNotEmpty()) {
-                        // --- LIMPIEZA AUTOMÁTICA AL CARGAR CADA RECETA ---
-                        val cleaned = root.recipes.map { RecipeSanitizer.sanitize(it) }
-                        allRecipes.addAll(cleaned)
-                        Log.d("JsonImporter", "Cargadas ${root.recipes.size} recetas desde $file (Saneadas automáticamente).")
+                        allRecipes.addAll(root.recipes)
+                        Log.d("JsonImporter", "Cargadas ${root.recipes.size} recetas desde $file.")
                     }
                 }
             } catch (e: Exception) {

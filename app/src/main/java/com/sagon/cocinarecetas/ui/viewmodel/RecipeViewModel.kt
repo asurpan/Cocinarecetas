@@ -41,7 +41,7 @@ class RecipeViewModel(
     private val _userProfile = MutableStateFlow(loadUserProfile())
     val userProfile: StateFlow<UserProfile> = _userProfile.asStateFlow()
 
-    private val _selectedPeriod = MutableStateFlow("Semana") // "Semana", "Mes"
+    private val _selectedPeriod = MutableStateFlow("Semana")
     val selectedPeriod: StateFlow<String> = _selectedPeriod.asStateFlow()
 
     val filteredHealthRecords: StateFlow<List<HealthRecord>> = combine(
@@ -65,48 +65,41 @@ class RecipeViewModel(
     private val _selectedCategory = MutableStateFlow(initialCategory)
     val selectedCategory: StateFlow<String> = _selectedCategory.asStateFlow()
 
-    private val _searchSuggestions = MutableStateFlow<List<String>>(emptyList())
-    val searchSuggestions: StateFlow<List<String>> = _searchSuggestions.asStateFlow()
-
-    private val _weeklyMenu = MutableStateFlow<Map<Int, DayMenu>>(emptyMap())
-    val weeklyMenu: StateFlow<Map<Int, DayMenu>> = _weeklyMenu.asStateFlow()
-
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
     private val _syncStatus = MutableStateFlow("Al día")
     val syncStatus: StateFlow<String> = _syncStatus.asStateFlow()
 
+    private val _weeklyMenu = MutableStateFlow<Map<Int, DayMenu>>(emptyMap())
+    val weeklyMenu: StateFlow<Map<Int, DayMenu>> = _weeklyMenu.asStateFlow()
+
+    val searchSuggestions = MutableStateFlow<List<String>>(emptyList())
+
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     val recipes: StateFlow<List<Recipe>> = combine(_searchQuery, _selectedHealthTag, _selectedCategory) { query, healthTag, category ->
         Triple(query, healthTag, category)
     }
-        .debounce { (query, healthTag, category) ->
-            if (query.isEmpty() && healthTag.isEmpty() && category.isEmpty()) 0 else 150
-        }
-        .flatMapLatest { (query, healthTag, category) ->
-            _isLoading.value = true
-            val normalizedQuery = normalizeForSearch(query)
-            val queryToSearch = if (normalizedQuery.length > 3) {
-                when {
-                    normalizedQuery.endsWith("es") && !normalizedQuery.endsWith("champiñones") -> normalizedQuery.dropLast(2)
-                    normalizedQuery.endsWith("s") && !normalizedQuery.endsWith("albondigas") && !normalizedQuery.endsWith("champiñones") -> normalizedQuery.dropLast(1)
-                    else -> normalizedQuery
-                }
-            } else normalizedQuery
-
-            repository.searchRecipes(queryToSearch, category.lowercase()).map { list ->
-                list.map { corregirRecetaInvisiblente(it) }.filter { recipe ->
-                    val normTitle = normalizeForSearch(recipe.title)
-                    val normIngs = recipe.ingredients.map { normalizeForSearch(it) }
-                    val match = if (queryToSearch.isEmpty()) true 
-                               else normTitle.contains(queryToSearch) || normIngs.any { it.contains(queryToSearch) }
-                    match && isRecipeAptForHealthTag(recipe, healthTag)
-                }
+    .debounce { 150 }
+    .flatMapLatest { (query, healthTag, category) ->
+        val normalizedQuery = normalizeForSearch(query)
+        val queryToSearch = if (normalizedQuery.length > 3) {
+            when {
+                normalizedQuery.endsWith("es") && !normalizedQuery.endsWith("champiñones") -> normalizedQuery.dropLast(2)
+                normalizedQuery.endsWith("s") && !normalizedQuery.endsWith("albondigas") && !normalizedQuery.endsWith("champiñones") -> normalizedQuery.dropLast(1)
+                else -> normalizedQuery
             }
+        } else normalizedQuery
+
+        repository.searchRecipes(queryToSearch, category.lowercase()).map { list ->
+            // Corregimos solo lo necesario para el listado para no bloquear
+            list.map { recipe -> 
+                recipe.copy(title = corregirTextoInvisiblente(recipe.title).uppercase()) 
+            }.filter { isRecipeAptForHealthTag(it, healthTag) }
         }
-        .onEach { _isLoading.value = false }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    }
+    .flowOn(Dispatchers.Default)
+    .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private fun isRecipeAptForHealthTag(recipe: Recipe, healthTag: String): Boolean {
         if (healthTag.isEmpty()) return true
@@ -116,8 +109,6 @@ class RecipeViewModel(
             "perder peso" -> recipe.goals.weightLoss
             "músculo", "musculo" -> recipe.goals.muscleGain
             "diabéticos", "diabetico" -> recipe.goals.diabeticFriendly
-            "alto en proteina" -> recipe.goals.highProtein
-            "bajo en carbohidratos" -> recipe.goals.lowCarb
             else -> null
         }
         if (goalMatch == true) return true
@@ -134,12 +125,28 @@ class RecipeViewModel(
     fun restoreAllRecipes() { viewModelScope.launch { repository.restoreAllHidden() } }
     fun updateRecipeNotes(recipe: Recipe, newNotes: String) { viewModelScope.launch { repository.updateRecipe(recipe.copy(notes = newNotes)) } }
 
+    fun resetHealthData() { viewModelScope.launch { repository.clearHealthData(); saveUserProfile(UserProfile()) } }
+    fun updateWeight(w: Float) { val t = System.currentTimeMillis() / (24*60*60*1000) * (24*60*60*1000); viewModelScope.launch { val r = repository.getHealthRecordByDate(t) ?: HealthRecord(t); repository.insertHealthRecord(r.copy(weight = w)); saveUserProfile(_userProfile.value.copy(weight = w)) } }
+    fun addCalories(c: Int) { val t = System.currentTimeMillis() / (24*60*60*1000) * (24*60*60*1000); viewModelScope.launch { val r = repository.getHealthRecordByDate(t) ?: HealthRecord(t); repository.insertHealthRecord(r.copy(caloriesConsumed = r.caloriesConsumed + c)) } }
+    fun addNutritionFromRecipe(recipe: Recipe) {
+        val t = System.currentTimeMillis() / (24*60*60*1000) * (24*60*60*1000)
+        val kcal = recipe.nutrition.perServing.kcal?.toInt() ?: 450
+        val prot = recipe.nutrition.perServing.protein_g?.toFloat() ?: 20f
+        val carbs = recipe.nutrition.perServing.carbohydrate_g?.toFloat() ?: 40f
+        val fat = recipe.nutrition.perServing.fat_g?.toFloat() ?: 15f
+        viewModelScope.launch {
+            val r = repository.getHealthRecordByDate(t) ?: HealthRecord(t)
+            repository.insertHealthRecord(r.copy(caloriesConsumed = r.caloriesConsumed + kcal, proteinConsumed = r.proteinConsumed + prot, carbsConsumed = r.carbsConsumed + carbs, fatConsumed = r.fatConsumed + fat))
+        }
+    }
+
     fun insertInitialData(recipes: List<Recipe>) {
         if (recipes.isEmpty()) return
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             if (repository.getRecipeCount() < 100) {
                 repository.clearAll()
-                recipes.chunked(100).forEach { repository.insertRecipes(it) }
+                recipes.chunked(200).forEach { repository.insertRecipes(it) }
+                Log.d("RecipeViewModel", "Datos iniciales cargados correctamente.")
             }
         }
     }
@@ -150,15 +157,47 @@ class RecipeViewModel(
             try {
                 _isLoading.value = true
                 repository.clearAll()
-                recipes.chunked(100).forEach { repository.insertRecipes(it) }
-                _syncStatus.value = "¡Completado!"
-                _isLoading.value = false
+                recipes.chunked(200).forEach { repository.insertRecipes(it) }
+                withContext(Dispatchers.Main) {
+                    _isLoading.value = false
+                    _syncStatus.value = "¡Completado!"
+                }
             } catch (e: Exception) {
-                _isLoading.value = false
+                withContext(Dispatchers.Main) { _isLoading.value = false }
             }
         }
     }
 
+    fun corregirTextoInvisiblente(texto: String): String {
+        if (texto.length < 3) return texto
+        val fixes = mapOf(
+            "A TÚN" to "ATÚN", "A T UN" to "ATÚN", "A JO" to "AJO", "A CEITE" to "ACEITE",
+            "ydejalo" to "y dejalo", "mojacon" to "moja con", "al bahaca" to "albahaca",
+            "la ngostinos" to "langostinos", "an te s" to "antes", "de ja" to "deja",
+            "so lo" to "solo", "se l la" to "sella", "su el te" to "suelte"
+        )
+        var result = texto
+        fixes.forEach { (k, v) -> result = result.replace(k, v, ignoreCase = true) }
+        result = result.replace(Regex("""(\b\w\b\s+)+(\b\w\b)""")) { it.value.replace(" ", "") }
+        return result.replace(Regex("""\s{2,}"""), " ").trim()
+    }
+
+    suspend fun getRecipeById(id: Int): Recipe? {
+        val recipe = repository.getRecipeById(id)
+        return recipe?.let { r ->
+            r.copy(
+                title = corregirTextoInvisiblente(r.title).uppercase(),
+                ingredients = r.ingredients.map { corregirTextoInvisiblente(it) },
+                instructions = r.instructions.map { corregirTextoInvisiblente(it) }
+            )
+        }
+    }
+
+    // --- MÉTODOS DE APOYO ---
+    private fun normalizeForSearch(t: String): String = t.trim().lowercase().replace("á","a").replace("é","e").replace("í","i").replace("ó","o").replace("ú","u").replace("ü","u").replace("ñ","n")
+    private fun loadUserProfile(): UserProfile = try { prefs.getString("user_profile", null)?.let { json.decodeFromString<UserProfile>(it) } ?: UserProfile() } catch (e: Exception) { UserProfile() }
+    fun saveUserProfile(p: UserProfile) { _userProfile.value = p; prefs.edit().putString("user_profile", json.encodeToString(p)).apply() }
+    
     private val breakfastWildcards = listOf(
         Recipe(title = "Tostadas integrales con AOVE y tomate", category = "DESAYUNO", nutrition = Nutrition(perServing = NutritionValues(kcal = 250.0, protein_g = 8.0)), mealSuitability = MealSuitability(breakfast = true)),
         Recipe(title = "Tortilla francesa (2 huevos) con pavo", category = "DESAYUNO", nutrition = Nutrition(perServing = NutritionValues(kcal = 220.0, protein_g = 18.0)), mealSuitability = MealSuitability(breakfast = true)),
@@ -255,74 +294,6 @@ class RecipeViewModel(
         }
     }
 
-    /**
-     * Función mágica e invisible que corrige el texto de la receta al vuelo.
-     * Se ejecuta cada vez que el usuario abre una receta o ve el listado.
-     */
-    private fun corregirRecetaInvisiblente(recipe: Recipe): Recipe {
-        val correcciones = mapOf(
-            "A TÚN" to "ATÚN", "A T UN" to "ATÚN", "A JO" to "AJO", "A CEITE" to "ACEITE",
-            "A RROZ" to "ARROZ", "ydejalo" to "y dejalo", "mojacon" to "moja con",
-            "al bahaca" to "albahaca", "salgorda" to "sal gorda", "al as" to "alas",
-            "de n" to "den", "la ngostinos" to "langostinos", "tacitacon" to "tacita con",
-            "diluyestas" to "diluye estas", "estohara" to "esto hara", "su el te" to "suelte",
-            "su el te n" to "suelten", "de ja" to "deja", "so lo" to "solo", "A ÑADE" to "AÑADE",
-            "huevoyfrieel" to "huevo y frie el", "an te s" to "antes"
-        )
-
-        fun limpiarTexto(t: String): String {
-            var resultado = t
-            correcciones.forEach { (mal, bien) ->
-                resultado = resultado.replace(mal, bien, ignoreCase = true)
-            }
-            // Reparación de letras sueltas pegadas (S A L S A -> SALSA)
-            resultado = resultado.replace(Regex("""(\b\w\b\s+)+(\b\w\b)""")) { it.value.replace(" ", "") }
-            return resultado.replace(Regex("""\s{2,}"""), " ").trim()
-        }
-
-        return recipe.copy(
-            title = limpiarTexto(recipe.title).uppercase(),
-            ingredients = recipe.ingredients.map { limpiarTexto(it) },
-            instructions = recipe.instructions.map { limpiarTexto(it) }
-        )
-    }
-
-    suspend fun getRecipeById(id: Int): Recipe? {
-        val recipe = repository.getRecipeById(id)
-        return recipe?.let { corregirRecetaInvisiblente(it) }
-    }
-    
-    // --- NOTA IMPORTANTE: FIREBASE DESACTIVADO PERMANENTEMENTE PARA PRIVILEGIAR ASSETS LOCALES ---
-    fun syncWithCloud(localVersion: Long) { Log.d("Firebase", "Sincronización Cloud Desactivada.") }
-    fun wipeAndUploadAll(recipes: List<Recipe>) { Log.d("Firebase", "Subida Cloud Desactivada.") }
-    fun uploadInitialDataToCloud(recipes: List<Recipe>) { Log.d("Firebase", "Subida Inicial Cloud Desactivada.") }
-    fun uploadRecipeToCloud(recipe: Recipe): Boolean = false
-
-    private fun normalizeForSearch(t: String): String = t.trim().lowercase().replace("á","a").replace("é","e").replace("í","i").replace("ó","o").replace("ú","u").replace("ü","u").replace("ñ","n")
-    private fun loadUserProfile(): UserProfile {
-        return try { prefs.getString("user_profile", null)?.let { json.decodeFromString<UserProfile>(it) } ?: UserProfile() } catch (e: Exception) { UserProfile() }
-    }
-    fun saveUserProfile(p: UserProfile) { _userProfile.value = p; prefs.edit().putString("user_profile", json.encodeToString(p)).apply() }
-    fun resetHealthData() { viewModelScope.launch { repository.clearHealthData(); saveUserProfile(UserProfile()) } }
-    fun updateWeight(w: Float) { val t = System.currentTimeMillis() / (24*60*60*1000) * (24*60*60*1000); viewModelScope.launch { val r = repository.getHealthRecordByDate(t) ?: HealthRecord(t); repository.insertHealthRecord(r.copy(weight = w)); saveUserProfile(_userProfile.value.copy(weight = w)) } }
-    fun addCalories(c: Int) { val t = System.currentTimeMillis() / (24*60*60*1000) * (24*60*60*1000); viewModelScope.launch { val r = repository.getHealthRecordByDate(t) ?: HealthRecord(t); repository.insertHealthRecord(r.copy(caloriesConsumed = r.caloriesConsumed + c)) } }
-    fun addNutritionFromRecipe(recipe: Recipe) {
-        val t = System.currentTimeMillis() / (24*60*60*1000) * (24*60*60*1000)
-        val kcal = recipe.nutrition.perServing.kcal?.toInt() ?: 450
-        val prot = recipe.nutrition.perServing.protein_g?.toFloat() ?: 20f
-        val carbs = recipe.nutrition.perServing.carbohydrate_g?.toFloat() ?: 40f
-        val fat = recipe.nutrition.perServing.fat_g?.toFloat() ?: 15f
-        viewModelScope.launch {
-            val r = repository.getHealthRecordByDate(t) ?: HealthRecord(t)
-            repository.insertHealthRecord(r.copy(caloriesConsumed = r.caloriesConsumed + kcal, proteinConsumed = r.proteinConsumed + prot, carbsConsumed = r.carbsConsumed + carbs, fatConsumed = r.fatConsumed + fat))
-        }
-    }
-    private fun fuzzyMatch(q: String, t: String): Boolean {
-        if (q.isEmpty()) return true; if (t.isEmpty()) return false
-        var qi = 0; var ti = 0
-        while (qi < q.length && ti < t.length) { if (q[qi] == t[ti]) qi++; ti++ }
-        return qi == q.length
-    }
 }
 
 class RecipeViewModelFactory(
@@ -333,10 +304,7 @@ class RecipeViewModelFactory(
     private val initialCategory: String = ""
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(RecipeViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return RecipeViewModel(repository, prefs, initialSearch, initialHealthTag, initialCategory) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
+        @Suppress("UNCHECKED_CAST")
+        return RecipeViewModel(repository, prefs, initialSearch, initialHealthTag, initialCategory) as T
     }
 }

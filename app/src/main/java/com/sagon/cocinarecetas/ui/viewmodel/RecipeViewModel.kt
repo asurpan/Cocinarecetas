@@ -95,14 +95,14 @@ class RecipeViewModel(
                 }
             } else normalizedQuery
 
-            repository.searchRecipes(queryToSearch, category.lowercase()).flatMapLatest { list ->
-                flowOf(list.filter { recipe ->
+            repository.searchRecipes(queryToSearch, category.lowercase()).map { list ->
+                list.map { corregirRecetaInvisiblente(it) }.filter { recipe ->
                     val normTitle = normalizeForSearch(recipe.title)
                     val normIngs = recipe.ingredients.map { normalizeForSearch(it) }
                     val match = if (queryToSearch.isEmpty()) true 
                                else normTitle.contains(queryToSearch) || normIngs.any { it.contains(queryToSearch) }
                     match && isRecipeAptForHealthTag(recipe, healthTag)
-                })
+                }
             }
         }
         .onEach { _isLoading.value = false }
@@ -111,8 +111,6 @@ class RecipeViewModel(
     private fun isRecipeAptForHealthTag(recipe: Recipe, healthTag: String): Boolean {
         if (healthTag.isEmpty()) return true
         val tag = healthTag.lowercase().trim()
-        
-        // 1. Verificación por Objetivos Estructurados (Solo si el campo NO es nulo)
         val goalMatch: Boolean? = when (tag) {
             "sana" -> recipe.goals.healthy
             "perder peso" -> recipe.goals.weightLoss
@@ -122,11 +120,7 @@ class RecipeViewModel(
             "bajo en carbohidratos" -> recipe.goals.lowCarb
             else -> null
         }
-        
-        // Si el objetivo está marcado explícitamente como TRUE, aceptamos
         if (goalMatch == true) return true
-        
-        // 2. Respaldo: Verificación por Etiquetas Clásicas (Para las 1.453 recetas originales)
         return recipe.healthTags.any { it.lowercase().contains(tag) }
     }
 
@@ -141,43 +135,26 @@ class RecipeViewModel(
     fun updateRecipeNotes(recipe: Recipe, newNotes: String) { viewModelScope.launch { repository.updateRecipe(recipe.copy(notes = newNotes)) } }
 
     fun insertInitialData(recipes: List<Recipe>) {
-        if (recipes.isEmpty()) {
-            Log.e("RecipeViewModel", "insertInitialData: ¡La lista de recetas está VACÍA!")
-            return
-        }
+        if (recipes.isEmpty()) return
         viewModelScope.launch {
-            val currentCount = repository.getRecipeCount()
-            Log.d("RecipeViewModel", "insertInitialData: Count actual = $currentCount. Intentando insertar ${recipes.size} recetas.")
-            if (currentCount < 100) {
+            if (repository.getRecipeCount() < 100) {
                 repository.clearAll()
                 recipes.chunked(100).forEach { repository.insertRecipes(it) }
-                Log.d("RecipeViewModel", "insertInitialData: Inserción completada con éxito.")
             }
         }
     }
 
     fun forceReloadFromAssets(recipes: List<Recipe>) {
-        if (recipes.isEmpty()) {
-            _syncStatus.value = "Error: Sin recetas."
-            return
-        }
+        if (recipes.isEmpty()) return
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _isLoading.value = true
-                _syncStatus.value = "Limpiando..."
                 repository.clearAll()
-                
-                _syncStatus.value = "Importando..."
-                recipes.chunked(100).forEach { chunk ->
-                    repository.insertRecipes(chunk)
-                }
-                
+                recipes.chunked(100).forEach { repository.insertRecipes(it) }
                 _syncStatus.value = "¡Completado!"
                 _isLoading.value = false
-                Log.d("RecipeViewModel", "Carga local finalizada.")
             } catch (e: Exception) {
                 _isLoading.value = false
-                _syncStatus.value = "Error"
             }
         }
     }
@@ -278,18 +255,41 @@ class RecipeViewModel(
         }
     }
 
+    /**
+     * Función mágica e invisible que corrige el texto de la receta al vuelo.
+     * Se ejecuta cada vez que el usuario abre una receta o ve el listado.
+     */
+    private fun corregirRecetaInvisiblente(recipe: Recipe): Recipe {
+        val correcciones = mapOf(
+            "A TÚN" to "ATÚN", "A T UN" to "ATÚN", "A JO" to "AJO", "A CEITE" to "ACEITE",
+            "A RROZ" to "ARROZ", "ydejalo" to "y dejalo", "mojacon" to "moja con",
+            "al bahaca" to "albahaca", "salgorda" to "sal gorda", "al as" to "alas",
+            "de n" to "den", "la ngostinos" to "langostinos", "tacitacon" to "tacita con",
+            "diluyestas" to "diluye estas", "estohara" to "esto hara", "su el te" to "suelte",
+            "su el te n" to "suelten", "de ja" to "deja", "so lo" to "solo", "A ÑADE" to "AÑADE",
+            "huevoyfrieel" to "huevo y frie el", "an te s" to "antes"
+        )
+
+        fun limpiarTexto(t: String): String {
+            var resultado = t
+            correcciones.forEach { (mal, bien) ->
+                resultado = resultado.replace(mal, bien, ignoreCase = true)
+            }
+            // Reparación de letras sueltas pegadas (S A L S A -> SALSA)
+            resultado = resultado.replace(Regex("""(\b\w\b\s+)+(\b\w\b)""")) { it.value.replace(" ", "") }
+            return resultado.replace(Regex("""\s{2,}"""), " ").trim()
+        }
+
+        return recipe.copy(
+            title = limpiarTexto(recipe.title).uppercase(),
+            ingredients = recipe.ingredients.map { limpiarTexto(it) },
+            instructions = recipe.instructions.map { limpiarTexto(it) }
+        )
+    }
+
     suspend fun getRecipeById(id: Int): Recipe? {
         val recipe = repository.getRecipeById(id)
-        if (recipe != null) {
-            // --- SELF-HEALING AUTOMÁTICO AL ABRIR ---
-            val sanitized = RecipeSanitizer.sanitize(recipe)
-            if (sanitized != recipe) {
-                Log.d("SelfHealing", "Corrigiendo receta '${recipe.title}' automáticamente.")
-                repository.updateRecipe(sanitized)
-                return sanitized
-            }
-        }
-        return recipe
+        return recipe?.let { corregirRecetaInvisiblente(it) }
     }
     
     // --- NOTA IMPORTANTE: FIREBASE DESACTIVADO PERMANENTEMENTE PARA PRIVILEGIAR ASSETS LOCALES ---

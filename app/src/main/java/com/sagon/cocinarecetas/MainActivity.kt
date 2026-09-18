@@ -201,8 +201,7 @@ fun RecipeApp(viewModel: RecipeViewModel) {
                 onRecipeClick = { recipe ->
                     navController.navigate("detail/${recipe.id}")
                 },
-                onWeeklyMenuClick = {
-                    viewModel.generateWeeklyMenu()
+                onWeeklyMenuClick = { viewModel.generateWeeklyMenu()
                     navController.navigate("weekly_menu")
                 },
                 onHealthClick = {

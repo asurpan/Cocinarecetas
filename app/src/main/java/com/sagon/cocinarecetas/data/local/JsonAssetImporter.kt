@@ -3,6 +3,7 @@ package com.sagon.cocinarecetas.data.local
 import android.content.Context
 import android.util.Log
 import com.sagon.cocinarecetas.data.model.Recipe
+import com.sagon.cocinarecetas.util.RecipeSanitizer
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -24,6 +25,7 @@ object JsonAssetImporter {
     fun loadRecipesFromAsset(context: Context, fileName: String): List<Recipe> {
         val allRecipes = mutableListOf<Recipe>()
         
+        // Archivos a cargar de forma secuencial para evitar límites de tamaño de Asset
         val assetFiles = if (fileName == "recipes.json") {
             listOf("recipes_1.json", "recipes_2.json", "recipes_3.json", "recipes_4.json", "recipes_5.json")
         } else {
@@ -35,8 +37,10 @@ object JsonAssetImporter {
                 context.assets.open(file).use { stream ->
                     val root = json.decodeFromStream<RecipeJsonRoot>(stream)
                     if (root.recipes.isNotEmpty()) {
-                        allRecipes.addAll(root.recipes)
-                        Log.d("JsonImporter", "Cargadas ${root.recipes.size} recetas desde $file.")
+                        // --- LIMPIEZA AUTOMÁTICA AL CARGAR CADA RECETA ---
+                        val cleaned = root.recipes.map { RecipeSanitizer.sanitize(it) }
+                        allRecipes.addAll(cleaned)
+                        Log.d("JsonImporter", "Cargadas ${root.recipes.size} recetas desde $file (Saneadas automáticamente).")
                     }
                 }
             } catch (e: Exception) {

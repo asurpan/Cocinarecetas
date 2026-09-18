@@ -181,7 +181,6 @@ class RecipeViewModel(
             }
         }
     }
-    }
 
     private val breakfastWildcards = listOf(
         Recipe(title = "Tostadas integrales con AOVE y tomate", category = "DESAYUNO", nutrition = Nutrition(perServing = NutritionValues(kcal = 250.0, protein_g = 8.0)), mealSuitability = MealSuitability(breakfast = true)),

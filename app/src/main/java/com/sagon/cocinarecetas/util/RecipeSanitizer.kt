@@ -19,6 +19,17 @@ object RecipeSanitizer {
         "SALSAS" to listOf("salsa", "salsas", "aliño", "aliños", "vinagreta", "vinagretas", "mayonesa")
     )
 
+    private val commonKeywords = setOf(
+        // Articulos, Preposiciones, Pronombres y letras sueltas de plural
+        "el", "la", "los", "las", "un", "una", "unos", "unas", "de", "del", "a", "al", "con", "en", "por", "para", "se", "su", "sus", "que", "si", "no", "como", "y", "e", "o", "u", "s", "n",
+        "yo", "tu", "me", "te", "nos", "os", "lo", "le", "les", "este", "esta", "esto", "ese", "esa", "eso", "mismo", "misma", "cada", "todo", "toda", "todos", "todas", "otro", "otra", "otros", "otras",
+        // Verbos (Gerundios y formas comunes - Normalizados sin acentos)
+        "hacer", "poner", "quitar", "anadir", "añadir", "mezclar", "batir", "cocer", "hervir", "freir", "fríe", "frie", "asar", "hornear", "sofreir", "rehogar", "picar", "cortar", "pelar", "limpiar", "lavar", "escurrir", "triturar", "incorporar", "verter", "echar", "retirar", "dejar", "deja", "reposar", "enfriar", "calentar", "precalentar", "dorar", "sellar", "sella", "sazonar", "alinar", "aliñar", "salpimentar", "rectificar", "servir", "decorar", "adornar", "cubrir", "tapar", "desmenuzar", "aplastar", "chafar", "moler", "rallar", "tamizar", "montar", "emulsionar", "reducir", "evaporar", "nacarar", "doran", "cuecen", "pican", "cortan", "limpian", "lavan", "anaden", "añaden", "mezclan", "frien", "hacen", "prepara", "preparar", "quede", "queden", "tomen", "tome", "colocar", "colocan", "quitarle", "echan", "sirven", "hierve", "quita", "saque", "saquen", "meta", "meten", "sofriendo", "batiendo", "mezclando", "anadiendo", "añadiendo", "rehogando", "picando", "cociendo", "hirviendo", "friendo", "asando", "horneando", "cortando", "limpiando", "lavando", "escurriendo", "triturando", "incorporando", "virtiendo", "echando", "poniendo", "quitando", "retirando", "dejando", "reposando", "enfriando", "calentando", "dorando", "sellando", "sazonando", "alinando", "aliñando", "sirviendo", "cubriendo", "tapando", "desmenuzando", "aplastando", "chafando", "moliendo", "rallando", "tamizando", "montando", "emulsionando", "reduciendo", "diluir", "diluye", "hara", "hará",
+        "aceite", "agua", "sal", "pimienta", "cebolla", "ajo", "ajos", "tomate", "tomates", "harina", "huevo", "huevos", "leche", "carne", "pollo", "pescado", "arroz", "pasta", "patatas", "patata", "verdura", "verduras", "fruta", "frutas", "vino", "blanco", "tinto", "pimenton", "perejil", "laurel", "canela", "clavo", "queso", "jamon", "nata", "yogur", "azucar", "miel", "levadura", "mantequilla", "manteca", "pan", "migas", "caldo", "limon", "naranja", "vinagre", "mostaza", "mayonesa", "ketchup", "salsa", "salsas", "bacalao", "atun", "merluza", "salmon", "gambas", "gamba", "langostinos", "mejillones", "almejas", "calamares", "pulpo", "albondiga", "albondigas", "filete", "filetes", "lomo", "costilla", "ternera", "cerdo", "cordero", "pavo", "conejo", "garbanzos", "lentejas", "alubias", "frijoles", "frijol", "habas", "guisantes", "chicharos", "maiz", "maíz", "champinon", "champinones", "champiñón", "champiñones", "setas", "seta", "espinacas", "espinaca", "acelgas", "acelga", "calabaza", "calabacin", "berenjena", "zanahoria", "zanahorias", "pimiento", "pimientos", "pepino", "lechuga", "aguacate", "nueces", "almendras", "avellanas", "pinones", "piñones", "semillas", "sesamo", "sésamo", "trufa", "albahaca", "cilantro", "romero", "tomillo", "oregano", "orégano", "comino", "curry", "turmeric", "curcuma", "jengibre", "azafran", "azafrán", "vainilla", "canela", "anis", "menta", "espina", "espinas", "piel", "hueso", "huesos", "picada", "picado", "molida", "molido", "rallada", "rallado", "cortada", "cortado", "limpia", "limpio", "lavada", "lavado", "escurrida", "escurrida", "batida", "batido", "mezclada", "mezclado", "cocida", "cocido", "frita", "frito", "asada", "asado", "horneada", "horneado", "sofrida", "sofrito", "rehogada", "rehogado", "triturada", "triturado", "incorporada", "incorporado", "vertida", "vertido", "echada", "echado", "puesta", "puesto", "quitada", "quitado", "retirada", "retirado", "dejada", "dejado", "reposada", "reposado", "enfriada", "enfriado", "calentada", "calentado", "dorada", "dorado", "sellada", "sellado", "sazonada", "sazonado", "alinada", "alinado", "aliñada", "aliñado", "servida", "servido", "cubierta", "cubierto", "tapada", "tapado", "masa", "barro", "cazuela", "sarten", "sartén", "olla", "horno", "fuego", "nevera", "barro", "par", "minutos", "paso", "solo", "antes", "botellita", "chorrito", "tacita"
+    )
+
+    private val commonWordsNorm = commonKeywords.map { normalize(it) }.toSet()
+
     fun sanitize(recipe: Recipe): Recipe {
         val titleCleaned = fixSpacedText(fixEncoding(recipe.title)).uppercase().trim()
         var categoryCleaned = fixEncoding(recipe.category).trim().uppercase()
@@ -30,13 +41,16 @@ object RecipeSanitizer {
         }
         val isMain = categoryCleaned !in setOf("POSTRES", "SALSAS")
 
-        // Coletilla de legumbres de bote para gente joven
         var instructionsCleaned = recipe.instructions.map { fixSpacedText(fixEncoding(it)) }
         val titleNorm = titleCleaned.lowercase()
-        val allIngredientsNorm = recipe.ingredients.map { it.lowercase() }
+        val allIngredientsNorm = recipe.ingredients.map { normalize(it) }
         
-        fun hasIng(vararg keywords: String) = keywords.any { k -> titleNorm.contains(k) || allIngredientsNorm.any { it.contains(k) } }
+        fun hasIng(vararg keywords: String) = keywords.any { k -> 
+            val nk = normalize(k)
+            titleNorm.contains(nk) || allIngredientsNorm.any { it.contains(nk) } 
+        }
 
+        // --- Inyección automática de notas (Gente Joven) ---
         if (hasIng("garbanzo", "lenteja", "alubia", "frijol", "frejol") && instructionsCleaned.none { it.contains("LEGUMBRE DE BOTE", ignoreCase = true) }) {
             instructionsCleaned = instructionsCleaned + "NOTA PARA LEGUMBRE DE BOTE: Si usas garbanzos, lentejas, alubias o frijoles de bote (ya cocidos), haz todo el proceso de sofrito/caldo igual, lava muy bien las legumbres bajo el grifo para quitar el liquido preservante, añadelas en los ultimos 10-15 minutos de coccion para que tomen el sabor de la receta sin deshacerse."
         }
@@ -78,47 +92,6 @@ object RecipeSanitizer {
         return fixed
     }
 
-    private fun isQuantityOnly(text: String): Boolean {
-        val t = text.trim().lowercase()
-        return t.matches(Regex("""^(\d+|½|¼|¾|1/|1 /|2 /|3 /|4 /|l|L|I|z|[1-9]/[1-9])$""")) ||
-               t.matches(Regex("""^\d+\s*(gr|g|kg|ml|cl|l|cuch|cdta|cucharada|vaso|taza|pizca|gramos|litro|unidad)$""")) ||
-               t in setOf("gr", "g", "kg", "ml", "cl", "l", "cuch", "cucharada", "gramos", "litro", "unidades")
-    }
-
-    fun sanitizeIngredients(ingredients: List<String>): List<String> {
-        if (ingredients.isEmpty()) return emptyList()
-        val cleaned = ingredients.map { fixSpacedText(it) }.filter { it.isNotBlank() }
-        val result = mutableListOf<String>()
-        var i = 0
-        while (i < cleaned.size) {
-            var current = cleaned[i].trim()
-            if (i < cleaned.size - 1) {
-                val next = cleaned[i + 1].trim()
-                if (isQuantityOnly(current) && !isQuantityOnly(next)) {
-                    current = "$current $next"
-                    i++
-                } else if (!isQuantityOnly(current) && isQuantityOnly(next)) {
-                    current = "$next $current"
-                    i++
-                }
-            }
-            val formatted = current.replace(Regex("""(\d+)\s*/\s*(\d+)"""), "$1/$2")
-                .replace(Regex("""(\d+)\s*(gr|g|ml|Kg|kg|cl|l|unidades|unidad|dientes|diente|porciones|porcion|cucharadas|cucharada|vaso|taza|pizca|gramos|litro)""", RegexOption.IGNORE_CASE)) { "${it.groupValues[1]} ${it.groupValues[2]}" }
-                .replace(Regex("""([a-zA-ZñÑáéíóúÁÉÍÓÚ])(\d)"""), "$1 $2")
-                .replace(Regex("""^[-*•.]\s*"""), "")
-            result.add(formatted.trim().replace(Regex("""\s{2,}"""), " "))
-            i++
-        }
-        return result
-    }
-
-    private val spanishCommonWords = setOf(
-        "el", "la", "los", "las", "un", "una", "unos", "unas", "de", "del", "a", "al", "con", "en", "por", "para", "se", "su", "sus", "que", "si", "no", "como", "y", "e", "o", "u", "s", "n",
-        "yo", "tu", "me", "te", "nos", "os", "lo", "le", "les", "este", "esta", "esto", "ese", "esa", "eso", "mismo", "misma", "cada", "todo", "toda", "todos", "todas", "otro", "otra", "otros", "otras",
-        "hacer", "poner", "quitar", "anadir", "mezclar", "batir", "cocer", "hervir", "freir", "asar", "hornear", "sofreir", "rehogar", "picar", "cortar", "pelar", "limpiar", "lavar", "escurrir", "triturar", "incorporar", "verter", "echar", "retirar", "dejar", "reposar", "enfriar", "calentar", "precalentar", "dorar", "sellar", "sazonar", "alinar", "salpimentar", "rectificar", "servir", "decorar", "adornar", "cubrir", "tapar", "desmenuzar", "aplastar", "chafar", "moler", "rallar", "tamizar", "montar", "emulsionar", "reducir", "evaporar", "nacarar", "doran", "cuecen", "pican", "cortan", "limpian", "lavan", "anaden", "mezclan", "frien", "hacen", "prepara", "preparar", "quede", "queden", "tomen", "tome", "colocar", "colocan", "quitarle", "echan", "sirven", "hierve", "quita", "saque", "saquen", "meta", "meten", "sofriendo", "batiendo", "mezclando", "anadiendo", "rehogando", "picando", "cociendo", "hirviendo", "friendo", "asando", "horneando", "cortando", "limpiando", "lavando", "escurriendo", "triturando", "incorporando", "virtiendo", "echando", "poniendo", "quitando", "retirando", "dejando", "reposando", "enfriando", "calentando", "dorando", "sellando", "sazonando", "alinando", "sirviendo", "cubriendo", "tapando", "desmenuzando", "aplastando", "chafando", "moliendo", "rallando", "tamizando", "montando", "emulsionando", "reduciendo",
-        "aceite", "agua", "sal", "pimienta", "cebolla", "ajo", "ajos", "tomate", "tomates", "harina", "huevo", "huevos", "leche", "carne", "pollo", "pescado", "arroz", "pasta", "patatas", "patata", "verdura", "verduras", "fruta", "frutas", "vino", "blanco", "tinto", "pimenton", "perejil", "laurel", "canela", "clavo", "queso", "jamon", "nata", "yogur", "azucar", "miel", "levadura", "mantequilla", "manteca", "pan", "migas", "caldo", "limon", "naranja", "vinagre", "mostaza", "mayonesa", "ketchup", "salsa", "salsas", "bacalao", "atun", "merluza", "salmon", "gambas", "gamba", "langostinos", "mejillones", "almejas", "calamares", "pulpo", "albondiga", "albondigas", "filete", "filetes", "lomo", "costilla", "ternera", "cerdo", "cordero", "pavo", "conejo", "garbanzos", "lentejas", "alubias", "frijoles", "frijol", "habas", "guisantes", "chicharos", "maiz", "champinon", "champinones", "setas", "seta", "espinacas", "espinaca", "acelgas", "acelga", "calabaza", "calabacin", "berenjena", "zanahoria", "zanahorias", "pimiento", "pimientos", "pepino", "lechuga", "aguacate", "nueces", "almendras", "avellanas", "pinones", "semillas", "sesamo", "trufa", "albahaca", "cilantro", "perejil", "romero", "tomillo", "oregano", "comino", "curry", "turmeric", "curcuma", "jengibre", "azafran", "vainilla", "canela", "anis", "menta", "espina", "espinas", "piel", "hueso", "huesos", "picada", "picado", "molida", "molido", "rallada", "rallado", "cortada", "cortado", "limpia", "limpio", "lavada", "lavado", "escurrida", "escurrido", "batida", "batido", "mezclada", "mezclado", "cocida", "cocido", "frita", "frito", "asada", "asado", "horneada", "horneado", "sofrida", "sofrito", "rehogada", "rehogado", "triturada", "triturado", "incorporada", "incorporado", "vertida", "vertido", "echada", "echado", "puesta", "puesto", "quitada", "quitado", "retirada", "retirado", "dejada", "dejado", "reposada", "reposado", "enfriada", "enfriado", "calentada", "calentado", "dorada", "dorado", "sellada", "sellado", "sazonada", "sazonado", "alinada", "alinado", "servida", "servido", "cubierta", "cubierto", "tapada", "tapado", "masa", "barro", "cazuela", "sarten", "olla", "horno", "noche", "par", "minutos", "paso", "anade", "anaden", "cebolla"
-    )
-
     private fun normalize(text: String): String {
         return Normalizer.normalize(text, Normalizer.Form.NFD)
             .replace(Regex("\\p{InCombiningDiacriticalMarks}+"), "")
@@ -128,18 +101,14 @@ object RecipeSanitizer {
 
     private fun autoSplitJoinedWords(word: String): String {
         val normWord = normalize(word)
-        if (word.length < 3 || normWord in spanishCommonWords) return word
+        if (normWord.length < 3 || normWord in commonWordsNorm) return word
         
-        for (i in word.length - 1 downTo 1) {
-            val prefix = normWord.substring(0, i)
-            if (prefix in spanishCommonWords || (prefix.length == 1 && prefix in setOf("y", "a", "e", "o", "u", "s", "n"))) {
+        for (i in normWord.length - 1 downTo 2) {
+            val prefixNorm = normWord.substring(0, i)
+            if (prefixNorm in commonWordsNorm) {
                 val rest = word.substring(i)
                 val restSplit = autoSplitJoinedWords(rest)
-                val restSplitFirst = normalize(restSplit.split(" ")[0])
-                
-                if (restSplitFirst in spanishCommonWords || restSplit.contains(" ") || (restSplitFirst.length < 2 && restSplitFirst in spanishCommonWords)) {
-                    return "${word.substring(0, i)} $restSplit"
-                }
+                return "${word.substring(0, i)} $restSplit"
             }
         }
         return word
@@ -149,39 +118,50 @@ object RecipeSanitizer {
         if (text.length < 3) return text
         var fixed = Normalizer.normalize(text, Normalizer.Form.NFC)
         
-        // Reconstrucción OCR "Salsa"
-        fixed = fixed.replace(Regex("""unaS\s+AL\s+SA""", RegexOption.IGNORE_CASE), "unas salsa")
-                     .replace(Regex("""una\s+S\s+AL\s+SA""", RegexOption.IGNORE_CASE), "una salsa")
-                     .replace(Regex("""S\s+AL\s+SA""", RegexOption.IGNORE_CASE), "salsa")
-                     .replace(Regex("""S\s+A\s+l\s+a""", RegexOption.IGNORE_CASE), "salsa")
-
-        // Unir letras sueltas
+        // Unir letras sueltas (S A L S A -> SALSA)
         fixed = fixed.replace(Regex("""(\b\w\b\s+)+(\b\w\b)""")) { match ->
             match.value.replace(" ", "")
         }
-        
-        val commonSplits = mapOf(
-            "mas a" to "masa",
-            "en harina n" to "enharinan",
-            "en harina r" to "enharinar",
-            "de sal a" to "desala"
-        )
-        for ((old, new) in commonSplits) {
-            fixed = fixed.replace(Regex(old, RegexOption.IGNORE_CASE), new)
-        }
 
-        val targets = listOf(
-            """antelaci\S+n\S*y\S*d\S+jalos?""" to "antelación y déjalo",
-            """reduceelpicodeglucosa""" to "reduce el pico de glucosa",
-            "pastadeesta" to "pasta de esta",
-            "quemagrasasyreduce" to "quemagrasas y reduce"
+        // Corregir patrones conocidos pegados o rotos (Aggressive Regex)
+        val patterns = mapOf(
+            """y\s*dejalos?""" to "y dejalo",
+            """moja\s*con""" to "moja con",
+            """sal\s*gorda""" to "sal gorda",
+            """al\s*bahaca""" to "albahaca",
+            """al\s*as""" to "alas",
+            """de\s*n""" to "den",
+            """langostinos?""" to "langostinos",
+            """huevo\s*y\s*frie\s*el""" to "huevo y frie el",
+            """tacita\s*con""" to "tacita con",
+            """diluye\s*estas""" to "diluye estas",
+            """esto\s*hara""" to "esto hara",
+            """su\s*el\s*te\s*n?""" to "suelte",
+            """an\s*te\s*s""" to "antes",
+            """de\s*ja""" to "deja",
+            """so\s*lo""" to "solo",
+            """A\s*TíšN""" to "ATUN",
+            """A\s*JO""" to "AJO",
+            """A\s*CEITE""" to "ACEITE",
+            """A\s*RROZ""" to "ARROZ"
         )
-        for ((pattern, replacement) in targets) {
+        
+        for ((pattern, replacement) in patterns) {
             fixed = fixed.replace(Regex(pattern, RegexOption.IGNORE_CASE), replacement)
         }
 
+        // Split automático por diccionario
         fixed = fixed.split(" ").joinToString(" ") { autoSplitJoinedWords(it) }
 
         return fixed.replace(Regex("""\s{2,}"""), " ").trim()
+    }
+
+    fun sanitizeIngredients(ingredients: List<String>): List<String> {
+        val result = mutableListOf<String>()
+        for (ing in ingredients) {
+            val clean = fixSpacedText(ing)
+            if (clean.isNotBlank()) result.add(clean)
+        }
+        return result
     }
 }
